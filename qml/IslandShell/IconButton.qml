@@ -13,7 +13,7 @@ Rectangle {
 
     signal clicked()
 
-    implicitWidth: text ? label.implicitWidth + 24 : 36
+    implicitWidth: text ? content.implicitWidth + 28 : 36
     implicitHeight: 36
     radius: height / 2
     color: highlighted ? Theme.accent
@@ -23,21 +23,26 @@ Rectangle {
 
     Behavior on color { ColorAnimation { duration: 120 } }
 
-    IconImage {
+    Row {
+        id: content
         anchors.centerIn: parent
-        visible: button.icon !== ""
-        source: button.icon ? Icons.source(button.icon) : ""
-        size: button.iconSize
-    }
+        spacing: 8
 
-    Text {
-        id: label
-        anchors.centerIn: parent
-        visible: button.text !== ""
-        text: button.text
-        color: Theme.foreground
-        font.pixelSize: 13
-        font.weight: Font.Medium
+        IconImage {
+            anchors.verticalCenter: parent.verticalCenter
+            visible: button.icon !== ""
+            source: button.icon ? Icons.source(button.icon) : ""
+            size: button.text ? Math.min(button.iconSize, 16) : button.iconSize
+        }
+
+        Text {
+            anchors.verticalCenter: parent.verticalCenter
+            visible: button.text !== ""
+            text: button.text
+            color: Theme.foreground
+            font.pixelSize: 13
+            font.weight: Font.Medium
+        }
     }
 
     MouseArea {

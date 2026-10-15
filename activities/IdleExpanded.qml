@@ -68,6 +68,33 @@ Item {
             }
         }
 
+        // Shortcuts, so the expanded island is useful even with nothing else
+        // to show.
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: 10
+
+            IconButton {
+                icon: "system-search-symbolic"
+                text: qsTr("Search apps")
+                onClicked: ShellControl.ToggleLauncher()
+            }
+            IconButton {
+                icon: "preferences-system-symbolic"
+                text: qsTr("Quick settings")
+                onClicked: ShellControl.ShowQuickSettings()
+            }
+            IconButton {
+                icon: ShellControl.dnd ? "notifications-disabled-symbolic" : "notifications-symbolic"
+                highlighted: ShellControl.dnd
+                onClicked: ShellControl.dnd = !ShellControl.dnd
+            }
+            IconButton {
+                icon: "system-shutdown-symbolic"
+                onClicked: ShellControl.ShowPower()
+            }
+        }
+
         NotificationHistory {
             id: history
             width: parent.width

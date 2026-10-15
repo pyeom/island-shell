@@ -37,6 +37,16 @@
         <source>No events</source>
         <translation>Sin eventos</translation>
     </message>
+    <message>
+        <location filename="../activities/IdleExpanded.qml" line="79"/>
+        <source>Search apps</source>
+        <translation>Buscar apps</translation>
+    </message>
+    <message>
+        <location filename="../activities/IdleExpanded.qml" line="84"/>
+        <source>Quick settings</source>
+        <translation>Ajustes rápidos</translation>
+    </message>
 </context>
 <context>
     <name>LauncherPanel</name>
@@ -109,11 +119,16 @@
     </message>
     <message>
         <location filename="../activities/PowerPanel.qml" line="171"/>
+        <source>Nested session: actions are only logged</source>
+        <translation>Sesión anidada: las acciones solo se registran</translation>
+    </message>
+    <message>
+        <location filename="../activities/PowerPanel.qml" line="172"/>
         <source>Dry run: actions are only logged</source>
         <translation>Modo de prueba: las acciones solo se registran</translation>
     </message>
     <message>
-        <location filename="../activities/PowerPanel.qml" line="172"/>
+        <location filename="../activities/PowerPanel.qml" line="173"/>
         <source>Hold to confirm</source>
         <translation>Mantén presionado para confirmar</translation>
     </message>

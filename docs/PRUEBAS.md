@@ -24,8 +24,14 @@ QT_LOGGING_RULES='island.*=true' ...                   # más detalle al lanzarl
 
 ## 1. Entorno anidado (no toca tu sesión)
 
-Hyprland corre como ventana, con su propio D-Bus. Nada de lo que pase ahí
-llega a tu sesión real.
+Hyprland corre como ventana, con su propio D-Bus.
+
+> **El power menu usa logind del sistema real.** Dentro del anidado la isla
+> lo bloquea siempre (detecta que el Hyprland es anidado) y el panel dice
+> "Sesión anidada: las acciones solo se registran". Si no ves ese texto, no
+> pruebes Apagar/Reiniciar/Suspender.
+
+Ojo: el volumen, el perfil de energía y Bluetooth sí son los reales.
 
 ```sh
 scripts/testing/run-nested.sh
@@ -87,6 +93,9 @@ Discord y la cámara reales.
 ```sh
 ISLAND_SHELL_DRY_RUN=1 build/dev/src/island-shell
 ```
+
+> Aquí **no** hay anidado que proteja: sin `ISLAND_SHELL_DRY_RUN=1`, Apagar
+> apaga. Antes de tocar el power menu confirma que dice "Modo de prueba".
 
 (`Ctrl+C` en esa terminal la cierra; todo vuelve a como estaba.)
 

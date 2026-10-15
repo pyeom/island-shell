@@ -1,8 +1,14 @@
 # shellcheck shell=bash
-# Source from bash: talk to the nested island-shell and take screenshots.
-_ish_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Source from bash or zsh: talk to the nested island-shell and take screenshots.
+#   source scripts/testing/lib.sh && $CTL activities
+if [ -n "${BASH_SOURCE[0]:-}" ]; then
+    _ish_self="${BASH_SOURCE[0]}"
+else
+    _ish_self="${(%):-%x}" # zsh: path of the sourced file
+fi
+_ish_dir="$(cd "$(dirname "$_ish_self")" && pwd)"
 eval "$("$_ish_dir/env.sh")"
-CTL="$_ish_dir/../../build/dev/tools/islandctl/islandctl"
+CTL="$(cd "$_ish_dir/../.." && pwd)/build/dev/tools/islandctl/islandctl"
 mkdir -p /tmp/ish-shots
 
 # Island layer position on the nested output.

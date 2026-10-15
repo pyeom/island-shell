@@ -168,7 +168,8 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 12
-        text: Power.dryRun ? qsTr("Dry run: actions are only logged")
+        text: Power.nested ? qsTr("Nested session: actions are only logged")
+            : Power.dryRun ? qsTr("Dry run: actions are only logged")
             : panel.items[panel.selected].hold ? qsTr("Hold to confirm") : " "
         color: Theme.secondaryForeground
         font.pixelSize: 11

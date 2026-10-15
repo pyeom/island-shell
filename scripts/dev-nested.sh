@@ -5,10 +5,13 @@
 #   scripts/dev-nested.sh            # build (dev preset) and launch
 #   scripts/dev-nested.sh --demo     # extra args are passed to island-shell
 #   NESTED_SIZE=1600x900 scripts/dev-nested.sh
-#   ISLAND_SHELL_DRY_RUN=1 scripts/dev-nested.sh   # power menu only logs
+#
+# The power menu never runs real actions here: ISLAND_SHELL_DRY_RUN defaults
+# to 1, and island-shell also refuses them under any nested Hyprland.
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export ISLAND_SHELL_DRY_RUN="${ISLAND_SHELL_DRY_RUN:-1}"
 build="$root/build/dev"
 size="${NESTED_SIZE:-1920x1080}"
 

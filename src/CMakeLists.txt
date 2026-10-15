@@ -6,6 +6,7 @@ add_library(islandlogic STATIC
     services/notifications/notificationrules.h services/notifications/notificationrules.cpp
     services/apps/desktopentry.h services/apps/desktopentry.cpp
     services/calendar/calendarparse.h services/calendar/calendarparse.cpp
+    services/power/nesteddetect.h services/power/nesteddetect.cpp
     activity/selection.h
 )
 target_include_directories(islandlogic PUBLIC
@@ -15,7 +16,8 @@ target_include_directories(islandlogic PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/services/hyprland
     ${CMAKE_CURRENT_SOURCE_DIR}/services/notifications
     ${CMAKE_CURRENT_SOURCE_DIR}/services/apps
-    ${CMAKE_CURRENT_SOURCE_DIR}/services/calendar)
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/calendar
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/power)
 target_link_libraries(islandlogic PUBLIC Qt6::Core Qt6::Gui tomlplusplus::tomlplusplus
     PkgConfig::LIBICAL)
 

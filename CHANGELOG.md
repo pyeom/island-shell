@@ -7,6 +7,12 @@ listed here.
 
 First release.
 
+### Safety
+- Power actions are always dry runs under a nested Hyprland (detected from
+  the compositor's own environment), whatever `ISLAND_SHELL_DRY_RUN` says;
+  `scripts/dev-nested.sh` also defaults it to 1. Before this, a nested test
+  session could power off the host through logind.
+
 ### Release
 - Spanish translation, picked from the system locale.
 - `island-shell-run` restarts the shell after crashes; optional systemd user
@@ -31,6 +37,7 @@ First release.
   `IslandSlider` in the public module; `Audio.setVolume/setMuted`,
   `Brightness.setLevel`.
 - The clock stays visible while media plays.
+- Shortcuts row (search, quick settings, DND, power) in the expanded idle view.
 - Notification server (`org.freedesktop.Notifications`): popups in the island,
   actions, inline reply, images, per-app rules, do-not-disturb, history saved
   across restarts and shown in the expanded idle view.

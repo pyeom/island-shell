@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "hyprland.h"
+#include "nesteddetect.h"
 
 #include <QCoreApplication>
 #include <QDBusConnection>
@@ -22,7 +23,11 @@ Power* Power::create(QQmlEngine*, QJSEngine*) {
 }
 
 Power::Power(QObject* parent)
-    : QObject(parent), m_dryRun(qEnvironmentVariableIntValue("ISLAND_SHELL_DRY_RUN") != 0) {}
+    : QObject(parent), m_nested(runningUnderNestedHyprland()),
+      m_dryRun(m_nested || qEnvironmentVariableIntValue("ISLAND_SHELL_DRY_RUN") != 0) {
+    if (m_nested)
+        qCInfo(lcPower) << "nested Hyprland: power actions are dry runs";
+}
 
 void Power::logind(const char* method) {
     auto msg = QDBusMessage::createMethodCall(
