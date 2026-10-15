@@ -16,7 +16,35 @@ Q_IMPORT_QML_PLUGIN(IslandShellPlugin)
 Q_IMPORT_QML_PLUGIN(IslandShell_ActivitiesPlugin)
 Q_IMPORT_QML_PLUGIN(IslandShell_AppPlugin)
 
+namespace {
+
+// --help and --version must work without a display (SSH, package checks), so
+// they are answered before the GUI application exists.
+bool wantsInfoOnly(int argc, char* argv[]) {
+    for (int i = 1; i < argc; ++i) {
+        const QByteArrayView a(argv[i]);
+        if (a == "--help" || a == "-h" || a == "--version" || a == "-v" || a == "--help-all")
+            return true;
+    }
+    return false;
+}
+
+} // namespace
+
 int main(int argc, char* argv[]) {
+    if (wantsInfoOnly(argc, argv)) {
+        QCoreApplication info(argc, argv);
+        QCoreApplication::setApplicationName(QStringLiteral("island-shell"));
+        QCoreApplication::setApplicationVersion(QStringLiteral(ISLAND_VERSION));
+        QCommandLineParser parser;
+        parser.setApplicationDescription(QStringLiteral("Dynamic Island style shell for Hyprland"));
+        parser.addHelpOption();
+        parser.addVersionOption();
+        parser.addOption({QStringLiteral("demo"), QStringLiteral("Cycle through island states for testing.")});
+        parser.process(info); // prints and exits
+        return 0;
+    }
+
     QGuiApplication app(argc, argv);
     QGuiApplication::setApplicationName(QStringLiteral("island-shell"));
     QGuiApplication::setApplicationVersion(QStringLiteral(ISLAND_VERSION));
