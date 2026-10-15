@@ -7,6 +7,7 @@
 #include <QJsonObject>
 #include <QLoggingCategory>
 #include <QProcess>
+#include <QRegularExpression>
 
 #include <pipewire/extensions/metadata.h>
 #include <pipewire/pipewire.h>
@@ -15,6 +16,7 @@
 #include <spa/pod/iter.h>
 #include <spa/utils/result.h>
 
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <optional>
@@ -22,6 +24,30 @@
 Q_LOGGING_CATEGORY(lcAudio, "island.audio")
 
 namespace island {
+
+namespace {
+
+// One followed default node (output or microphone).
+struct Followed {
+    Audio::Private* d = nullptr;
+    bool isSource = false;
+    QString defaultName; // node.name from the "default" metadata
+    pw_node* node = nullptr;
+    uint32_t id = SPA_ID_INVALID;
+    spa_hook listener{};
+    bool have = false;
+    qreal volume = 0;
+    bool muted = false;
+    QString description;
+};
+
+struct Device {
+    QString name;
+    QString description;
+    bool isSource = false;
+};
+
+} // namespace
 
 struct Audio::Private {
     Audio* q = nullptr;
@@ -36,26 +62,14 @@ struct Audio::Private {
     pw_metadata* metadata = nullptr;
     spa_hook metadataListener{};
 
-    struct SinkInfo {
-        QString name;
-        QString description;
-    };
-    QHash<uint32_t, SinkInfo> sinks;
-    QString defaultSinkName;
-
-    pw_node* node = nullptr;
-    uint32_t nodeId = SPA_ID_INVALID;
-    spa_hook nodeListener{};
-
+    QHash<uint32_t, Device> devices;
+    Followed sink;
+    Followed source;
     bool connected = false;
-    bool haveState = false;
-    qreal volume = 0.0;
-    bool muted = false;
-    QString description;
 
-    void bindDefaultSink();
-    void unbindNode();
-    void onParam(const spa_pod* param);
+    void follow(Followed& f);
+    void unbind(Followed& f);
+    void onParam(Followed& f, const spa_pod* param);
 };
 
 namespace {
@@ -78,8 +92,9 @@ const pw_core_events kCoreEvents = [] {
 
 void onNodeParam(void* data, int /*seq*/, uint32_t id, uint32_t /*index*/, uint32_t /*next*/,
                  const spa_pod* param) {
+    auto* f = static_cast<Followed*>(data);
     if (id == SPA_PARAM_Props)
-        static_cast<Audio::Private*>(data)->onParam(param);
+        f->d->onParam(*f, param);
 }
 
 const pw_node_events kNodeEvents = [] {
@@ -92,14 +107,20 @@ const pw_node_events kNodeEvents = [] {
 int onMetadataProperty(void* data, uint32_t subject, const char* key, const char* /*type*/,
                        const char* value) {
     auto* d = static_cast<Audio::Private*>(data);
-    if (subject != PW_ID_CORE || !key || std::strcmp(key, "default.audio.sink") != 0)
+    if (subject != PW_ID_CORE || !key)
+        return 0;
+    Followed* f = std::strcmp(key, "default.audio.sink") == 0     ? &d->sink
+                  : std::strcmp(key, "default.audio.source") == 0 ? &d->source
+                                                                   : nullptr;
+    if (!f)
         return 0;
     // value: {"name":"alsa_output..."}
     const auto name = value ? QJsonDocument::fromJson(value).object()[u"name"].toString()
                             : QString();
-    if (name != d->defaultSinkName) {
-        d->defaultSinkName = name;
-        d->bindDefaultSink();
+    if (name != f->defaultName) {
+        f->defaultName = name;
+        d->follow(*f);
+        emit d->q->devicesChanged();
     }
     return 0;
 }
@@ -125,21 +146,33 @@ void onGlobal(void* data, uint32_t id, uint32_t /*permissions*/, const char* typ
         pw_metadata_add_listener(d->metadata, &d->metadataListener, &kMetadataEvents, d);
     } else if (std::strcmp(type, PW_TYPE_INTERFACE_Node) == 0) {
         const char* mediaClass = spa_dict_lookup(props, PW_KEY_MEDIA_CLASS);
-        if (!mediaClass || std::strcmp(mediaClass, "Audio/Sink") != 0)
+        if (!mediaClass)
+            return;
+        const bool sink = std::strcmp(mediaClass, "Audio/Sink") == 0;
+        const bool source = std::strcmp(mediaClass, "Audio/Source") == 0;
+        if (!sink && !source)
             return;
         const char* name = spa_dict_lookup(props, PW_KEY_NODE_NAME);
         const char* desc = spa_dict_lookup(props, PW_KEY_NODE_DESCRIPTION);
-        d->sinks.insert(id, {QString::fromUtf8(name ? name : ""),
-                             QString::fromUtf8(desc ? desc : (name ? name : ""))});
-        d->bindDefaultSink();
+        d->devices.insert(id, {QString::fromUtf8(name ? name : ""),
+                               QString::fromUtf8(desc ? desc : (name ? name : "")), source});
+        d->follow(source ? d->source : d->sink);
+        emit d->q->devicesChanged();
     }
 }
 
 void onGlobalRemove(void* data, uint32_t id) {
     auto* d = static_cast<Audio::Private*>(data);
-    d->sinks.remove(id);
-    if (id == d->nodeId)
-        d->unbindNode();
+    if (d->devices.remove(id) == 0)
+        return;
+    for (Followed* f : {&d->sink, &d->source}) {
+        if (f->id == id) {
+            d->unbind(*f);
+            f->have = false;
+            emit d->q->stateChanged();
+        }
+    }
+    emit d->q->devicesChanged();
 }
 
 const pw_registry_events kRegistryEvents = [] {
@@ -152,36 +185,37 @@ const pw_registry_events kRegistryEvents = [] {
 
 } // namespace
 
-void Audio::Private::unbindNode() {
-    if (!node)
+void Audio::Private::unbind(Followed& f) {
+    if (!f.node)
         return;
-    spa_hook_remove(&nodeListener);
-    pw_proxy_destroy(reinterpret_cast<pw_proxy*>(node));
-    node = nullptr;
-    nodeId = SPA_ID_INVALID;
+    spa_hook_remove(&f.listener);
+    pw_proxy_destroy(reinterpret_cast<pw_proxy*>(f.node));
+    f.node = nullptr;
+    f.id = SPA_ID_INVALID;
 }
 
-void Audio::Private::bindDefaultSink() {
-    for (auto it = sinks.cbegin(); it != sinks.cend(); ++it) {
-        if (it->name != defaultSinkName)
+void Audio::Private::follow(Followed& f) {
+    for (auto it = devices.cbegin(); it != devices.cend(); ++it) {
+        if (it->isSource != f.isSource || it->name != f.defaultName)
             continue;
-        if (it.key() == nodeId)
+        if (it.key() == f.id)
             return;
-        unbindNode();
-        nodeId = it.key();
-        description = it->description;
-        node = static_cast<pw_node*>(
-            pw_registry_bind(registry, nodeId, PW_TYPE_INTERFACE_Node, PW_VERSION_NODE, 0));
-        spa_zero(nodeListener);
-        pw_node_add_listener(node, &nodeListener, &kNodeEvents, this);
+        unbind(f);
+        f.id = it.key();
+        f.description = it->description;
+        f.node = static_cast<pw_node*>(
+            pw_registry_bind(registry, f.id, PW_TYPE_INTERFACE_Node, PW_VERSION_NODE, 0));
+        spa_zero(f.listener);
+        pw_node_add_listener(f.node, &f.listener, &kNodeEvents, &f);
         uint32_t ids[] = {SPA_PARAM_Props};
-        pw_node_subscribe_params(node, ids, 1);
-        qCInfo(lcAudio).noquote() << "default sink:" << description;
+        pw_node_subscribe_params(f.node, ids, 1);
+        qCInfo(lcAudio).noquote() << (f.isSource ? "default source:" : "default sink:")
+                                  << f.description;
         return;
     }
 }
 
-void Audio::Private::onParam(const spa_pod* param) {
+void Audio::Private::onParam(Followed& f, const spa_pod* param) {
     if (!param || !spa_pod_is_object(param))
         return;
     const auto* obj = reinterpret_cast<const spa_pod_object*>(param);
@@ -208,17 +242,22 @@ void Audio::Private::onParam(const spa_pod* param) {
     }
     if (!newVolume && !newMuted)
         return;
-    const qreal v = newVolume.value_or(volume);
-    const bool m = newMuted.value_or(muted);
-    const bool differs = std::abs(v - volume) > 0.004 || m != muted;
-    const bool first = !haveState;
-    volume = v;
-    muted = m;
-    haveState = true;
-    if (differs || first)
+    const qreal v = newVolume.value_or(f.volume);
+    const bool m = newMuted.value_or(f.muted);
+    const bool volumeDiffers = std::abs(v - f.volume) > 0.004;
+    const bool muteDiffers = m != f.muted;
+    const bool first = !f.have;
+    f.volume = v;
+    f.muted = m;
+    f.have = true;
+    if (volumeDiffers || muteDiffers || first)
         emit q->stateChanged();
-    if (differs && !first)
+    if (first)
+        return;
+    if (!f.isSource && (volumeDiffers || muteDiffers))
         emit q->changed();
+    if (f.isSource && muteDiffers)
+        emit q->micMuteChanged();
 }
 
 Audio* Audio::instance() {
@@ -234,9 +273,13 @@ Audio* Audio::create(QQmlEngine*, QJSEngine*) {
 
 Audio::Audio(QObject* parent) : QObject(parent), d(std::make_unique<Private>()) {
     d->q = this;
+    d->sink.d = d.get();
+    d->source.d = d.get();
+    d->source.isSource = true;
     m_volumeThrottle.setSingleShot(true);
     m_volumeThrottle.setInterval(40);
-    connect(&m_volumeThrottle, &QTimer::timeout, this, &Audio::flushVolume);
+    connect(&m_volumeThrottle, &QTimer::timeout, this, &Audio::flushVolumes);
+
     pw_init(nullptr, nullptr);
     d->loop = pw_loop_new(nullptr);
     if (!d->loop)
@@ -262,7 +305,8 @@ Audio::Audio(QObject* parent) : QObject(parent), d(std::make_unique<Private>()) 
 Audio::~Audio() {
     if (m_notifier)
         m_notifier->setEnabled(false);
-    d->unbindNode();
+    d->unbind(d->sink);
+    d->unbind(d->source);
     if (d->metadata) {
         spa_hook_remove(&d->metadataListener);
         pw_proxy_destroy(reinterpret_cast<pw_proxy*>(d->metadata));
@@ -282,30 +326,85 @@ Audio::~Audio() {
     }
 }
 
+namespace {
+void wpctl(const QStringList& args) {
+    QProcess::startDetached(QStringLiteral("wpctl"), args);
+}
+} // namespace
+
 void Audio::setVolume(qreal volume) {
     m_pendingVolume = std::clamp(volume, 0.0, 1.5);
     if (!m_volumeThrottle.isActive())
         m_volumeThrottle.start();
 }
 
-void Audio::flushVolume() {
-    if (m_pendingVolume < 0)
-        return;
-    QProcess::startDetached(QStringLiteral("wpctl"),
-                            {QStringLiteral("set-volume"), QStringLiteral("@DEFAULT_AUDIO_SINK@"),
-                             QString::number(m_pendingVolume, 'f', 3)});
-    m_pendingVolume = -1;
+void Audio::setMicVolume(qreal volume) {
+    m_pendingMicVolume = std::clamp(volume, 0.0, 1.5);
+    if (!m_volumeThrottle.isActive())
+        m_volumeThrottle.start();
+}
+
+void Audio::flushVolumes() {
+    if (m_pendingVolume >= 0)
+        wpctl({QStringLiteral("set-volume"), QStringLiteral("@DEFAULT_AUDIO_SINK@"),
+               QString::number(m_pendingVolume, 'f', 3)});
+    if (m_pendingMicVolume >= 0)
+        wpctl({QStringLiteral("set-volume"), QStringLiteral("@DEFAULT_AUDIO_SOURCE@"),
+               QString::number(m_pendingMicVolume, 'f', 3)});
+    m_pendingVolume = m_pendingMicVolume = -1;
 }
 
 void Audio::setMuted(bool muted) {
-    QProcess::startDetached(QStringLiteral("wpctl"),
-                            {QStringLiteral("set-mute"), QStringLiteral("@DEFAULT_AUDIO_SINK@"),
-                             muted ? QStringLiteral("1") : QStringLiteral("0")});
+    wpctl({QStringLiteral("set-mute"), QStringLiteral("@DEFAULT_AUDIO_SINK@"),
+           muted ? QStringLiteral("1") : QStringLiteral("0")});
+}
+
+void Audio::setMicMuted(bool muted) {
+    wpctl({QStringLiteral("set-mute"), QStringLiteral("@DEFAULT_AUDIO_SOURCE@"),
+           muted ? QStringLiteral("1") : QStringLiteral("0")});
+}
+
+void Audio::setDefault(int id) {
+    if (!d->devices.contains(static_cast<uint32_t>(id)))
+        return;
+    wpctl({QStringLiteral("set-default"), QString::number(id)});
 }
 
 bool Audio::available() const { return d->connected; }
-qreal Audio::volume() const { return d->volume; }
-bool Audio::muted() const { return d->muted; }
-QString Audio::sinkDescription() const { return d->description; }
+qreal Audio::volume() const { return d->sink.volume; }
+bool Audio::muted() const { return d->sink.muted; }
+QString Audio::sinkDescription() const { return d->sink.description; }
+bool Audio::hasMicrophone() const { return d->source.have; }
+qreal Audio::micVolume() const { return d->source.volume; }
+bool Audio::micMuted() const { return d->source.muted; }
+QString Audio::sourceDescription() const { return d->source.description; }
+
+namespace {
+QVariantList deviceList(const QHash<uint32_t, Device>& devices, bool sources,
+                        const QString& defaultName) {
+    QVariantList out;
+    for (auto it = devices.cbegin(); it != devices.cend(); ++it) {
+        if (it->isSource != sources)
+            continue;
+        // "Ellesmere HDMI Audio [Radeon RX 470/480] Digital Stereo (HDMI 3)":
+        // the bracketed chip name is noise in a menu.
+        static const QRegularExpression brackets(QStringLiteral("\\s*\\[[^\\]]*\\]"));
+        out.append(QVariantMap{
+            {QStringLiteral("id"), it.key()},
+            {QStringLiteral("name"), it->name},
+            {QStringLiteral("description"), QString(it->description).remove(brackets).simplified()},
+            {QStringLiteral("isDefault"), it->name == defaultName},
+        });
+    }
+    std::ranges::sort(out, [](const QVariant& a, const QVariant& b) {
+        return QString::localeAwareCompare(a.toMap().value(QStringLiteral("description")).toString(),
+                                           b.toMap().value(QStringLiteral("description")).toString()) < 0;
+    });
+    return out;
+}
+} // namespace
+
+QVariantList Audio::sinks() const { return deviceList(d->devices, false, d->sink.defaultName); }
+QVariantList Audio::sources() const { return deviceList(d->devices, true, d->source.defaultName); }
 
 } // namespace island

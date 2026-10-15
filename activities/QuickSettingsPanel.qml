@@ -76,13 +76,20 @@ Item {
         }
     }
 
+    // Which device list is open: "", "sinks" or "sources".
+    property string devicePicker: ""
+
     component SliderRow: Row {
         id: sliderRow
         property string icon
         property real value
         property string label
+        // Shows a chevron that opens a device list.
+        property bool expandable: false
+        property bool expanded: false
         signal iconClicked()
         signal moved(real value)
+        signal expandClicked()
 
         width: column.width
         spacing: 12
@@ -97,7 +104,7 @@ Item {
         }
         IslandSlider {
             anchors.verticalCenter: parent.verticalCenter
-            width: parent.width - 32 - 44 - 24
+            width: parent.width - 32 - 44 - 24 - (sliderRow.expandable ? 28 + 12 : 0)
             value: sliderRow.value
             onMoved: v => sliderRow.moved(v)
         }
@@ -109,6 +116,18 @@ Item {
             color: Theme.secondaryForeground
             font.pixelSize: 12
             font.features: { "tnum": 1 }
+        }
+        IconButton {
+            anchors.verticalCenter: parent.verticalCenter
+            visible: sliderRow.expandable
+            width: 28
+            height: 28
+            icon: "go-down-symbolic"
+            iconSize: 12
+            highlighted: sliderRow.expanded
+            rotation: sliderRow.expanded ? 180 : 0
+            Behavior on rotation { NumberAnimation { duration: 150 } }
+            onClicked: sliderRow.expandClicked()
         }
     }
 
@@ -122,6 +141,7 @@ Item {
 
         Row {
             spacing: 10
+            visible: panel.devicePicker === ""
 
             Tile {
                 readonly property bool wifi: Network.hasWifi && Network.primaryType !== "ethernet"
@@ -163,11 +183,14 @@ Item {
         }
 
         SliderRow {
-            visible: Audio.available
+            visible: Audio.available && panel.devicePicker !== "sources"
             icon: Audio.muted ? "audio-volume-muted-symbolic" : "audio-volume-high-symbolic"
             value: Audio.muted ? 0 : Math.min(Audio.volume, 1)
             label: Audio.muted ? qsTr("Mute") : Math.round(Audio.volume * 100) + "%"
+            expandable: Audio.sinks.length > 1
+            expanded: panel.devicePicker === "sinks"
             onIconClicked: Audio.setMuted(!Audio.muted)
+            onExpandClicked: panel.devicePicker = expanded ? "" : "sinks"
             onMoved: v => {
                 if (Audio.muted)
                     Audio.setMuted(false)
@@ -175,8 +198,38 @@ Item {
             }
         }
 
+        AudioDeviceList {
+            visible: panel.devicePicker === "sinks"
+            width: column.width
+            devices: Audio.sinks
+            icon: "audio-speakers-symbolic"
+        }
+
         SliderRow {
-            visible: Brightness.available
+            visible: Audio.hasMicrophone && panel.devicePicker !== "sinks"
+            icon: Audio.micMuted ? "microphone-sensitivity-muted-symbolic" : "audio-input-microphone-symbolic"
+            value: Audio.micMuted ? 0 : Math.min(Audio.micVolume, 1)
+            label: Audio.micMuted ? qsTr("Mute") : Math.round(Audio.micVolume * 100) + "%"
+            expandable: Audio.sources.length > 1
+            expanded: panel.devicePicker === "sources"
+            onIconClicked: Audio.setMicMuted(!Audio.micMuted)
+            onExpandClicked: panel.devicePicker = expanded ? "" : "sources"
+            onMoved: v => {
+                if (Audio.micMuted)
+                    Audio.setMicMuted(false)
+                Audio.setMicVolume(v)
+            }
+        }
+
+        AudioDeviceList {
+            visible: panel.devicePicker === "sources"
+            width: column.width
+            devices: Audio.sources
+            icon: "audio-input-microphone-symbolic"
+        }
+
+        SliderRow {
+            visible: Brightness.available && panel.devicePicker === ""
             icon: "brightness-high-symbolic"
             value: Brightness.level
             label: Math.round(Brightness.level * 100) + "%"
@@ -186,6 +239,7 @@ Item {
         // Power profile: segmented control.
         Rectangle {
             visible: PowerProfiles.available && PowerProfiles.profiles.length > 0
+                     && panel.devicePicker === ""
             width: column.width
             height: 36
             radius: 18
@@ -228,6 +282,7 @@ Item {
         Row {
             anchors.right: parent.right
             spacing: 8
+            visible: panel.devicePicker === ""
             IconButton {
                 height: 30
                 icon: "system-shutdown-symbolic"

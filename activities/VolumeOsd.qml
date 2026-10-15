@@ -9,17 +9,21 @@ Activity {
     id: root
 
     property bool showing: false
-    // "volume" | "brightness": whichever changed last.
+    // "volume" | "brightness" | "mic": whichever changed last.
     property string kind: "volume"
 
+    readonly property bool isMic: kind === "mic"
     readonly property real level: kind === "brightness" ? Brightness.level
                                 : Audio.muted ? 0 : Audio.volume
-    readonly property string label: kind === "brightness" ? Math.round(Brightness.level * 100) + "%"
+    readonly property string label: isMic ? (Audio.micMuted ? qsTr("Microphone muted") : qsTr("Microphone on"))
+                                   : kind === "brightness" ? Math.round(Brightness.level * 100) + "%"
                                    : Audio.muted ? qsTr("Mute")
                                    : Math.round(Audio.volume * 100) + "%"
     readonly property bool overdrive: kind === "volume" && Audio.volume > 1
 
-    readonly property string iconName: kind === "brightness" ? "brightness-high-symbolic"
+    readonly property string iconName: isMic ? (Audio.micMuted ? "microphone-sensitivity-muted-symbolic"
+                                                               : "audio-input-microphone-symbolic")
+                                     : kind === "brightness" ? "brightness-high-symbolic"
                                      : Audio.muted || Audio.volume <= 0 ? "audio-volume-muted-symbolic"
                                      : Audio.volume < 0.34 ? "audio-volume-low-symbolic"
                                      : Audio.volume < 0.67 ? "audio-volume-medium-symbolic"
@@ -45,6 +49,11 @@ Activity {
         function onChanged() { root.show("volume") }
     }
 
+    property Connections _mic: Connections {
+        target: Audio
+        function onMicMuteChanged() { root.show("mic") }
+    }
+
     property Connections _brightness: Connections {
         target: Brightness
         function onChanged() { root.show("brightness") }
@@ -63,6 +72,7 @@ Activity {
 
             Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
+                visible: !root.isMic
                 width: 120
                 height: 6
                 radius: 3
@@ -79,10 +89,10 @@ Activity {
 
             Text {
                 anchors.verticalCenter: parent.verticalCenter
-                width: 34
+                width: root.isMic ? implicitWidth : 34
                 horizontalAlignment: Text.AlignRight
+                color: root.isMic && Audio.micMuted ? Theme.danger : Theme.foreground
                 text: root.label
-                color: Theme.foreground
                 font.pixelSize: 12
                 font.features: { "tnum": 1 }
             }

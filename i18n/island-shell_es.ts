@@ -136,22 +136,22 @@
 <context>
     <name>PrivacyIndicator</name>
     <message>
-        <location filename="../activities/PrivacyIndicator.qml" line="94"/>
+        <location filename="../activities/PrivacyIndicator.qml" line="114"/>
         <source>Microphone</source>
         <translation>Micrófono</translation>
     </message>
     <message>
-        <location filename="../activities/PrivacyIndicator.qml" line="100"/>
+        <location filename="../activities/PrivacyIndicator.qml" line="120"/>
         <source>Camera</source>
         <translation>Cámara</translation>
     </message>
     <message>
-        <location filename="../activities/PrivacyIndicator.qml" line="106"/>
+        <location filename="../activities/PrivacyIndicator.qml" line="126"/>
         <source>Screen</source>
         <translation>Pantalla</translation>
     </message>
     <message>
-        <location filename="../activities/PrivacyIndicator.qml" line="107"/>
+        <location filename="../activities/PrivacyIndicator.qml" line="127"/>
         <source>being shared</source>
         <translation>se está compartiendo</translation>
     </message>
@@ -159,71 +159,72 @@
 <context>
     <name>QuickSettingsPanel</name>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="129"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="148"/>
         <source>Wi-Fi</source>
         <translation>Wi-Fi</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="129"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="148"/>
         <source>VPN</source>
         <translation>VPN</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="129"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="148"/>
         <source>Network</source>
         <translation>Red</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="130"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="147"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="149"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="166"/>
         <source>Unavailable</source>
         <translation>No disponible</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="131"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="148"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="159"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="150"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="167"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="178"/>
         <source>Off</source>
         <translation>Desactivado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="133"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="152"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="146"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="165"/>
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="150"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="159"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="169"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="178"/>
         <source>On</source>
         <translation>Activado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="158"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="177"/>
         <source>Do not disturb</source>
         <translation>No molestar</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="169"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="188"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="211"/>
         <source>Mute</source>
         <translation>Silencio</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="211"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="263"/>
         <source>Power saver</source>
         <translation>Ahorro de energía</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="212"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="264"/>
         <source>Performance</source>
         <translation>Rendimiento</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="213"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="265"/>
         <source>Balanced</source>
         <translation>Equilibrado</translation>
     </message>
@@ -258,6 +259,16 @@
     <name>VolumeOsd</name>
     <message>
         <location filename="../activities/VolumeOsd.qml" line="18"/>
+        <source>Microphone muted</source>
+        <translation>Micrófono silenciado</translation>
+    </message>
+    <message>
+        <location filename="../activities/VolumeOsd.qml" line="18"/>
+        <source>Microphone on</source>
+        <translation>Micrófono activado</translation>
+    </message>
+    <message>
+        <location filename="../activities/VolumeOsd.qml" line="20"/>
         <source>Mute</source>
         <translation>Silencio</translation>
     </message>

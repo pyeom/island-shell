@@ -27,6 +27,7 @@ qt_add_qml_module(islandactivities
         PowerPanel.qml
         QuickSettings.qml
         QuickSettingsPanel.qml
+        AudioDeviceList.qml
         PrivacyIndicator.qml
         CalendarMonth.qml
         EventList.qml
