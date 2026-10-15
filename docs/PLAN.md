@@ -48,12 +48,12 @@ Ningún cambio de estado de la isla genera un `configure` nuevo ni toca la reser
 
   ```qml
   Activity {
-      id: "media"; priority: 50
+      name: "media"; priority: 50
       active: Mpris.current?.playing ?? false
-      compactLeading:  AlbumArt {}
-      compactTrailing: Waveform {}
-      minimal:         AlbumArt {}     // burbuja secundaria
-      expanded:        MediaPanel {}
+      compactLeading:  Component { AlbumArt {} }
+      compactTrailing: Component { Waveform {} }
+      minimal:         Component { AlbumArt {} }     // burbuja secundaria
+      expanded:        Component { MediaPanel {} }
   }
   ```
 
@@ -72,7 +72,7 @@ Nombre de bus `org.islandshell.Shell`, objeto `/org/islandshell/Shell`.
 | `org.islandshell.LiveActivities` | `Push(id, props) → handle`, `Update(id, props)`, `End(id)`, señal `ActionInvoked(id, action)` |
 | `org.islandshell.Notifications.History` | `List`, `Clear`, `Dismiss(id)` |
 
-- `islandctl` es un cliente D-Bus delgado (sdbus-cpp). Ejemplos: `islandctl launcher toggle`, `islandctl expand media`, `islandctl power`, `islandctl push --id build --progress 0.4 "Compilando"`.
+- `islandctl` es un cliente D-Bus delgado. Shell y CLI usan QtDBus (integrado con el event loop de Qt); el adaptor y el proxy se generan del mismo XML (`data/dbus/`). Ejemplos: `islandctl launcher toggle`, `islandctl expand media`, `islandctl power`, `islandctl push --id build --progress 0.4 "Compilando"`.
 - Props de una live activity: `title`, `subtitle`, `icon`, `progress` (0–1 o vacío), `state` (`running|success|error`), `ttl`, `actions` (label → id o comando).
 - Ciclo de vida:
   - Clientes D-Bus: sus actividades terminan cuando se desconectan (`NameOwnerChanged`), salvo `persist=true`.
@@ -111,6 +111,13 @@ Batería: el indicador solo aparece si UPower detecta una.
 
 Al llegar al MVP, la isla reemplaza a waybar, hyprpanel, swaync, rofi (SUPER+R), `power-menu.sh` (ALT+TAB) y `music-player.sh` (ALT+p). No se toca la config de Hyprland automáticamente: la documentación incluye un snippet en Lua listo para pegar.
 
+## Notas de implementación
+
+- `Activity.name` en vez de `id` (`id` está reservado en QML). Las presentaciones son `Component` porque cada isla (una por monitor) crea su propia instancia.
+- Módulos QML: `IslandShell` (API pública: tipos C++, `Clock`), `IslandShell.Activities` (incluidas), `IslandShell.App` (Shell e Island, internos). Separados para evitar imports circulares.
+- Los errores de `config.toml` y de actividades de usuario se muestran en la isla (actividad `errors`, prioridad 90).
+- Variables de entorno para desarrollo: `ISLAND_SHELL_CONFIG`, `ISLAND_SHELL_ACTIVITIES`.
+
 ## Layout del repo
 
 ```
@@ -140,8 +147,8 @@ island-shell/
 
 | Fase | Contenido | Hito verificable |
 |---|---|---|
-| **F0 Fundación** | CMake y presets, CI, `dev-nested.sh`, superficie layer-shell por monitor, exclusive zone, input mask, springs, píldora con reloj | La isla se expande y contrae con hover y clic sin mover ninguna ventana, y los clics fuera de la píldora pasan |
-| **F1 Framework** | `Activity` y árbitro, módulo `IslandShell 0.1`, Loader aislado, config TOML con recarga, tema y pywal, D-Bus `Control` e `islandctl`, servicio Hyprland, actividad de workspaces | Una actividad de usuario en `~/.config/island-shell/activities/` aparece y se recarga en caliente |
+| **F0 Fundación** ✅ | CMake y presets, CI, `dev-nested.sh`, superficie layer-shell por monitor, exclusive zone, input mask, springs, píldora con reloj | La isla se expande y contrae con hover y clic sin mover ninguna ventana, y los clics fuera de la píldora pasan |
+| **F1 Framework** ✅ | `Activity` y árbitro, módulo `IslandShell 0.1`, Loader aislado, config TOML con recarga, tema y pywal, D-Bus `Control` e `islandctl`, servicio Hyprland, actividad de workspaces | Una actividad de usuario en `~/.config/island-shell/activities/` aparece y se recarga en caliente |
 | **F2 Núcleo MVP** | Notificaciones, OSD de audio, Media, Live Activities, Launcher, Power menu | En el entorno anidado se puede prescindir de waybar, hyprpanel, swaync y rofi |
 | **F3 Sistema** | Quick settings, privacidad, calendario (requiere `libical`) | MVP completo |
 | **F4 Release v0.1** | Traducción `es`, docs, PKGBUILD, prueba en nspawn, migración de la sesión real con 3 monitores | `makepkg -si` en un Arch limpio funciona; la sesión diaria usa la isla |
@@ -149,6 +156,6 @@ island-shell/
 
 ## Dependencias
 
-Runtime: `qt6-base`, `qt6-declarative`, `qt6-wayland`, `qt6-svg`, `layer-shell-qt`, `sdbus-cpp`, `tomlplusplus`, `libpipewire`, `libical` (F3), `hyprland`.
+Runtime: `qt6-base`, `qt6-declarative`, `qt6-wayland`, `qt6-svg`, `layer-shell-qt`, `tomlplusplus`, `libpipewire` (F2), `libical` (F3), `hyprland`.
 
 Build: `cmake`, `ninja`, `gcc`, `qt6-shadertools`.

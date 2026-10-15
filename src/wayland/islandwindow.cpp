@@ -47,12 +47,19 @@ void IslandWindow::setScreenName(const QString& name) {
     emit screenNameChanged();
 }
 
-void IslandWindow::setInputRect(const QRectF& rect) {
-    if (m_inputRect == rect)
+void IslandWindow::setInputRects(const QList<QRectF>& rects) {
+    if (m_inputRects == rects)
         return;
-    m_inputRect = rect;
+    m_inputRects = rects;
     applyMask();
-    emit inputRectChanged();
+    emit inputRectsChanged();
+}
+
+void IslandWindow::setFocused(bool focused) {
+    if (m_focused == focused)
+        return;
+    m_focused = focused;
+    emit focusedChanged();
 }
 
 void IslandWindow::setExclusiveZone(int zone) {
@@ -75,10 +82,12 @@ void IslandWindow::applyMask() {
         return;
     // An empty QRegion means "no mask" (the whole surface takes input), which
     // would block the windows below. Keep at least one pixel.
-    QRect r = m_inputRect.toAlignedRect();
-    if (r.isEmpty())
-        r = QRect(0, 0, 1, 1);
-    setMask(QRegion(r));
+    QRegion region;
+    for (const auto& r : std::as_const(m_inputRects))
+        region += r.toAlignedRect();
+    if (region.isEmpty())
+        region = QRect(0, 0, 1, 1);
+    setMask(region);
 }
 
 } // namespace island

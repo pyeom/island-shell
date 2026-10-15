@@ -14,7 +14,7 @@ jobs:
           pacman -Syu --noconfirm --needed \
             base-devel cmake ninja git \
             qt6-base qt6-declarative qt6-wayland qt6-svg qt6-shadertools \
-            layer-shell-qt
+            layer-shell-qt tomlplusplus
 
       - uses: actions/checkout@v4
 

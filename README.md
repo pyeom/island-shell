@@ -17,7 +17,7 @@ Dependencies (Arch Linux):
 
 ```sh
 sudo pacman -S --needed cmake ninja qt6-base qt6-declarative qt6-wayland \
-    qt6-svg qt6-shadertools layer-shell-qt
+    qt6-svg qt6-shadertools layer-shell-qt tomlplusplus
 ```
 
 Build and test:
@@ -41,6 +41,22 @@ scripts/dev-nested.sh --demo   # cycle through states automatically
 
 Inside the nested session: `SUPER+Return` opens a terminal, `SUPER+R` restarts
 the shell, `SUPER+SHIFT+E` exits.
+
+To test with a throwaway config instead of `~/.config/island-shell`:
+
+```sh
+ISLAND_SHELL_CONFIG=/tmp/test/config.toml \
+ISLAND_SHELL_ACTIVITIES=/tmp/test/activities \
+scripts/dev-nested.sh
+```
+
+## Configuration and activities
+
+- Config: copy [`data/config.toml`](data/config.toml) to
+  `~/.config/island-shell/config.toml`. Changes apply on save.
+- Activities: see [docs/activities.md](docs/activities.md) and
+  [`examples/activities/`](examples/activities/).
+- Control from scripts or Hyprland binds with `islandctl` (`islandctl --help`).
 
 ## License
 

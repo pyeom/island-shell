@@ -1,0 +1,52 @@
+# island-shell configuration
+#
+# Copy to ~/.config/island-shell/config.toml. Changes apply on save.
+# Every key is optional; the values below are the defaults.
+
+[island]
+# Pill size in its resting state. The compact pill grows to fit its content.
+compact_width = 190
+compact_height = 36
+# Extra size while the pointer hovers ("peek").
+peek_extra_width = 40
+peek_extra_height = 6
+# Fallback size for expanded activities that do not declare their own.
+expanded_width = 420
+expanded_height = 200
+expanded_radius = 34
+# Gap between the top of the screen and the pill.
+top_margin = 6
+# Space reserved for the island at the top of every monitor. Windows are laid
+# out below it; the expanded island floats over them.
+exclusive_zone = 44
+# Size of the transparent layer surface the island animates inside. It never
+# resizes, so it must fit the largest state (raised automatically if not).
+surface_width = 600
+surface_height = 420
+
+[animations]
+# "full" (springs), "reduced" (no bounce) or "off".
+mode = "full"
+
+[theme]
+# "static" or "pywal" (reads ~/.cache/wal/colors.json and follows changes).
+source = "static"
+# "black" (solid, like iOS) or "blur" (translucent; also add the layerrule
+# from docs/activities.md so Hyprland blurs what is behind the island).
+style = "black"
+# Accent color for progress bars, toggles, etc.
+accent = "#0a84ff"
+# With source = "pywal": which pywal color to use as accent.
+pywal_accent = "color4"
+# With style = "blur": fill opacity of the pill.
+blur_opacity = 0.6
+
+[clock]
+# Qt time format: "HH:mm" (24h), "h:mm AP" (12h), "HH:mm:ss", ...
+format = "HH:mm"
+
+# Settings for activities live under [activities.<name>] and are read with
+# Config.get("activities.<name>.<key>", default).
+#
+# [activities.pomodoro]
+# minutes = 25

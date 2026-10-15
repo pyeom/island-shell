@@ -1,6 +1,37 @@
-qt_add_executable(island-shell main.cpp)
+# Pure logic shared with the unit tests (no QML, no Wayland).
+add_library(islandlogic STATIC
+    core/configdata.h core/configdata.cpp
+    core/pywal.h core/pywal.cpp
+    services/hyprland/hyprlandparse.h services/hyprland/hyprlandparse.cpp
+    activity/selection.h
+)
+target_include_directories(islandlogic PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/activity
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/hyprland)
+target_link_libraries(islandlogic PUBLIC Qt6::Core Qt6::Gui tomlplusplus::tomlplusplus)
 
-target_link_libraries(island-shell PRIVATE Qt6::Gui Qt6::Quick islandshellplugin)
+# Internal module: the shell root and the island itself.
+qt_add_qml_module(islandapp
+    URI IslandShell.App
+    VERSION 0.1
+    STATIC
+    OUTPUT_DIRECTORY ${ISLAND_QML_OUTPUT}/IslandShell/App
+    IMPORTS IslandShell IslandShell.Activities
+    QML_FILES
+        app/Shell.qml
+        app/Island.qml
+)
+target_link_libraries(islandapp PUBLIC islandshell islandactivities)
+
+qt_add_executable(island-shell main.cpp)
+target_compile_definitions(island-shell PRIVATE ISLAND_VERSION="${PROJECT_VERSION}")
+target_link_libraries(island-shell PRIVATE
+    Qt6::Gui Qt6::Quick
+    islandshell
+    islandshellplugin
+    islandactivitiesplugin
+    islandappplugin)
 
 install(TARGETS island-shell RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-target_compile_definitions(island-shell PRIVATE ISLAND_VERSION="${PROJECT_VERSION}")

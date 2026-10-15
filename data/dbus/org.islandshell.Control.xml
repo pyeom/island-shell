@@ -1,0 +1,31 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+  "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<!--
+  Bus name: org.islandshell.Shell
+  Object:   /org/islandshell/Shell
+-->
+<node>
+  <interface name="org.islandshell.Control">
+    <!-- Open or close the launcher on the focused monitor. -->
+    <method name="ToggleLauncher"/>
+    <!-- Expand the island on the focused monitor. An empty name expands the
+         current primary activity. Fails with org.islandshell.Error.UnknownActivity. -->
+    <method name="Expand">
+      <arg name="activity" type="s" direction="in"/>
+    </method>
+    <method name="Collapse"/>
+    <!-- Re-read config.toml, the theme and user activities. -->
+    <method name="Reload"/>
+    <method name="SetDnd">
+      <arg name="enabled" type="b" direction="in"/>
+    </method>
+    <!-- Open the power menu on the focused monitor. -->
+    <method name="ShowPower"/>
+    <!-- Names of all registered activities. -->
+    <method name="ListActivities">
+      <arg name="names" type="as" direction="out"/>
+    </method>
+    <property name="Dnd" type="b" access="read"/>
+    <property name="Version" type="s" access="read"/>
+  </interface>
+</node>
