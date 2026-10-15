@@ -9,6 +9,7 @@ qt_add_qml_module(islandactivities
     IMPORTS IslandShell
     QML_FILES
         Idle.qml
+        ClockText.qml
         IdleExpanded.qml
         WorkspaceDots.qml
         ShellErrors.qml
@@ -24,6 +25,12 @@ qt_add_qml_module(islandactivities
         LauncherPanel.qml
         PowerMenu.qml
         PowerPanel.qml
+        QuickSettings.qml
+        QuickSettingsPanel.qml
+        PrivacyIndicator.qml
+        CalendarMonth.qml
+        EventList.qml
+        EventSoon.qml
 )
 
 target_link_libraries(islandactivities PUBLIC islandshell)

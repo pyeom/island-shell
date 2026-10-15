@@ -35,6 +35,7 @@ commands:
   expand [activity]       expand the island (current activity if omitted)
   collapse                collapse the island
   power                   open the power menu
+  quick                   open quick settings
   dnd on|off|toggle       set do-not-disturb
   dnd                     print do-not-disturb state
   activities              list registered activities
@@ -231,6 +232,8 @@ int main(int argc, char* argv[]) {
         return check(shell.Collapse());
     if (cmd == u"power")
         return check(shell.ShowPower());
+    if (cmd == u"quick")
+        return check(shell.ShowQuickSettings());
     if (cmd == u"reload")
         return check(shell.Reload());
     if (cmd == u"activities") {

@@ -159,6 +159,25 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
         readString(*t, "launcher", "launch_prefix", cfg.launcher.launchPrefix, {}, errors);
     }
 
+    if (const auto* t = cfg.raw["calendar"].as_table()) {
+        auto& c = cfg.calendar;
+        if (const auto* node = t->get("paths")) {
+            if (const auto* arr = node->as_array()) {
+                c.paths.clear();
+                for (const auto& item : *arr) {
+                    if (const auto v = item.value<std::string>())
+                        c.paths.push_back(*v);
+                    else
+                        errors.emplace_back("calendar.paths: expected strings");
+                }
+            } else {
+                errors.emplace_back("calendar.paths: expected an array of strings");
+            }
+        }
+        readInt(*t, "calendar", "days", c.days, 1, 730, errors);
+        readInt(*t, "calendar", "reminder_minutes", c.reminderMinutes, 0, 1440, errors);
+    }
+
     if (const auto* t = cfg.raw["power"].as_table()) {
         readString(*t, "power", "lock_command", cfg.power.lockCommand, {}, errors);
         readInt(*t, "power", "hold_ms", cfg.power.holdMs, 0, 5000, errors);

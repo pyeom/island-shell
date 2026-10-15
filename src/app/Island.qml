@@ -194,9 +194,16 @@ Item {
         }
 
         // Expanded content may contain buttons, so taps there do not collapse.
+        // Right click opens quick settings.
         TapHandler {
             enabled: !root.expanded && !root.demo
-            onTapped: root.expand(null)
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onTapped: (point, button) => {
+                if (button === Qt.RightButton)
+                    ShellControl.ShowQuickSettings()
+                else
+                    root.expand(null)
+            }
         }
     }
 

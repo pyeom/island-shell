@@ -26,6 +26,10 @@ public:
     bool available() const { return !m_dir.isEmpty(); }
     qreal level() const { return m_level; }
 
+    // Through logind (no root needed); writes the file directly for a test
+    // directory set with $ISLAND_SHELL_BACKLIGHT.
+    Q_INVOKABLE void setLevel(qreal level);
+
 signals:
     // Not emitted for the initial value.
     void changed();
@@ -37,6 +41,7 @@ private:
     QString m_dir;
     QTimer m_poll;
     qreal m_level = -1;
+    bool m_fake = false;
 };
 
 } // namespace island

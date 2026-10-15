@@ -33,7 +33,7 @@ qt_add_dbus_adaptor(dbus_adaptor
     LiveActivitiesAdaptor)
 
 # PipeWire's C headers are not -Wpedantic clean.
-set_source_files_properties(${src}/services/audio/audio.cpp PROPERTIES
+set_source_files_properties(${src}/services/audio/audio.cpp ${src}/services/privacy/privacy.cpp PROPERTIES
     COMPILE_OPTIONS "-Wno-pedantic;-Wno-missing-field-initializers")
 
 qt_add_qml_module(islandshell
@@ -55,6 +55,7 @@ qt_add_qml_module(islandshell
         ${src}/activity/useractivities.h ${src}/activity/useractivities.cpp
         ${src}/dbus/shellcontrol.h ${src}/dbus/shellcontrol.cpp
         ${src}/services/hyprland/hyprland.h ${src}/services/hyprland/hyprland.cpp
+        ${src}/services/hyprland/hyprlandipc.h ${src}/services/hyprland/hyprlandipc.cpp
         ${src}/services/notifications/notifications.h ${src}/services/notifications/notifications.cpp
         ${src}/services/audio/audio.h ${src}/services/audio/audio.cpp
         ${src}/services/mpris/mpris.h ${src}/services/mpris/mpris.cpp
@@ -62,6 +63,13 @@ qt_add_qml_module(islandshell
         ${src}/services/apps/apps.h ${src}/services/apps/apps.cpp
         ${src}/services/power/power.h ${src}/services/power/power.cpp
         ${src}/services/brightness/brightness.h ${src}/services/brightness/brightness.cpp
+        ${src}/services/network/network.h ${src}/services/network/network.cpp
+        ${src}/services/bluetooth/bluetooth.h ${src}/services/bluetooth/bluetooth.cpp
+        ${src}/services/powerprofiles/powerprofiles.h ${src}/services/powerprofiles/powerprofiles.cpp
+        ${src}/services/privacy/privacy.h ${src}/services/privacy/privacy.cpp
+        ${src}/services/calendar/calendar.h ${src}/services/calendar/calendar.cpp
+        ${src}/dbus/dbusutil.h
+        ${src}/dbus/dbusproperties.h ${src}/dbus/dbusproperties.cpp
         ${src}/core/icons.h ${src}/core/icons.cpp
         ${src}/wayland/scrimwindow.h ${src}/wayland/scrimwindow.cpp
         ${dbus_adaptor}
@@ -70,6 +78,7 @@ qt_add_qml_module(islandshell
         IconImage.qml
         IconButton.qml
         ProgressRing.qml
+        IslandSlider.qml
 )
 
 target_include_directories(islandshell PUBLIC
@@ -86,6 +95,11 @@ target_include_directories(islandshell PUBLIC
     ${src}/services/apps
     ${src}/services/power
     ${src}/services/brightness
+    ${src}/services/network
+    ${src}/services/bluetooth
+    ${src}/services/powerprofiles
+    ${src}/services/privacy
+    ${src}/services/calendar
     ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(islandshell PUBLIC

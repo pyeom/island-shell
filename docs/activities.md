@@ -4,6 +4,9 @@ Everything the island shows is an **activity**: the clock, notifications, media,
 the volume OSD, live activities, the launcher and the power menu. The built-in
 ones (in [`activities/`](../activities/)) use the same API described here.
 
+> Don't name an activity file like a singleton (`Privacy.qml`, `Calendar.qml`,
+> ...): inside that file the name would refer to the file, not the service.
+
 > The API is `import IslandShell 0.x` and may change between minor versions
 > until 1.0. Breaking changes are listed in `CHANGELOG.md`.
 
@@ -61,11 +64,13 @@ Built-in priorities:
 
 | Activity | Priority |
 |---|---|
-| `launcher`, `power` (modal) | 1000 |
+| `launcher`, `power`, `quicksettings` (modal) | 1000 |
 | `notification` (critical) | 100 |
 | `errors` | 90 |
 | `osd` (volume, brightness) | 80 |
 | `notification` | 70 |
+| `privacy` (mic, camera, screen) | 60 |
+| `event` (calendar event starting soon) | 55 |
 | `live:<id>` | 50 |
 | `media` | 40 |
 | `idle` (workspaces, clock, notification history) | 0 |
@@ -119,7 +124,12 @@ Activity {
 | `Apps` | `search(query)`, `launch(id, action)`, `run(command)`. |
 | `Power` | `run("shutdown" \| "reboot" \| "suspend" \| "logout" \| "lock")`. |
 | `Icons` | `Icons.source(nameOrPath, fallback)` → an `Image` source from the icon theme. |
-| `IconImage`, `IconButton`, `ProgressRing` | Small components used by the built-in activities. |
+| `Network` | `connected`, `primaryType`, `ssid`, `strength`, `iconName`, `wifiEnabled`, `setWifiEnabled(b)`. |
+| `Bluetooth` | `available`, `powered`, `connectedDevices`, `setPowered(b)`. |
+| `PowerProfiles` | `active`, `profiles`, `setActive(name)`. |
+| `Privacy` | `microphone`, `microphoneApps`, `camera`, `cameraApps`, `screen`, `any`. |
+| `Calendar` | `eventsOn(date)`, `upcoming(n)`, `busyDays(year, month)`, `soon`, `revision` (bind to it to refresh). |
+| `IconImage`, `IconButton`, `ProgressRing`, `IslandSlider` | Small components used by the built-in activities. |
 
 ## islandctl
 
@@ -128,6 +138,7 @@ islandctl expand [activity]   expand (the current activity if omitted)
 islandctl collapse
 islandctl launcher toggle
 islandctl power
+islandctl quick               quick settings (also: right click on the island)
 islandctl activities          list names
 islandctl reload              reload config, theme and activities
 islandctl dnd on|off|toggle

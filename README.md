@@ -17,7 +17,7 @@ Dependencies (Arch Linux):
 
 ```sh
 sudo pacman -S --needed cmake ninja qt6-base qt6-declarative qt6-wayland \
-    qt6-svg qt6-shadertools layer-shell-qt tomlplusplus libpipewire
+    qt6-svg qt6-shadertools layer-shell-qt tomlplusplus libpipewire libical
 ```
 
 Build and test:
@@ -85,6 +85,44 @@ island-shell is a notification server. Only one program can own
 `org.freedesktop.Notifications`, so stop swaync, mako, dunst or hyprpanel
 first; if another one holds the name, the island shows an error and leaves it
 alone.
+
+## Calendar
+
+The island reads local calendars (vdir collections or folders of `.ics`
+files); it never talks to calendar servers itself. To show Google, iCloud,
+Nextcloud or any CalDAV calendar, sync it with
+[vdirsyncer](https://vdirsyncer.pimutils.org/):
+
+```ini
+# ~/.config/vdirsyncer/config
+[general]
+status_path = "~/.local/share/vdirsyncer/status/"
+
+[pair personal]
+a = "personal_remote"
+b = "personal_local"
+collections = ["from a"]
+
+[storage personal_remote]
+type = "caldav"
+url = "https://caldav.example.com/"
+username = "me"
+password.fetch = ["command", "secret-tool", "lookup", "caldav", "me"]
+
+[storage personal_local]
+type = "filesystem"
+path = "~/.calendars/"
+fileext = ".ics"
+```
+
+Then `vdirsyncer discover && vdirsyncer sync` (and a timer for periodic
+syncs). `~/.calendars` is in the default `[calendar] paths`. For Google
+Calendar use vdirsyncer's `google_calendar` storage.
+
+## Quick settings
+
+Right click on the island, or `islandctl quick`: network, Bluetooth,
+do-not-disturb, volume, brightness (laptops) and power profile.
 
 ## License
 

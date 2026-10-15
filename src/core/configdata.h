@@ -54,6 +54,13 @@ struct LauncherConfig {
     std::string launchPrefix;  // e.g. "uwsm app --"
 };
 
+struct CalendarConfig {
+    // vdir collections (as written by vdirsyncer) or folders of .ics files.
+    std::vector<std::string> paths = {"~/.calendars", "~/.local/share/calendars"};
+    int days = 60;               // how far ahead to expand events
+    int reminderMinutes = 10;    // show an upcoming event this long before
+};
+
 struct PowerConfig {
     std::string lockCommand = "hyprlock";
     int holdMs = 800; // press-and-hold time for shutdown and reboot
@@ -67,6 +74,7 @@ struct ConfigData {
     NotificationsConfig notifications;
     LauncherConfig launcher;
     PowerConfig power;
+    CalendarConfig calendar;
     std::string iconTheme; // empty: platform default
     toml::table raw; // the whole document, for activity-specific settings
 };

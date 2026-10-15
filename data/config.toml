@@ -70,6 +70,17 @@ terminal = ""
 # Prepended to every launch command, e.g. "uwsm app --" for uwsm sessions.
 launch_prefix = ""
 
+[calendar]
+# vdir collections (what vdirsyncer writes) or any folders of .ics files,
+# searched recursively. Sync with Google, iCloud, Nextcloud... is up to
+# vdirsyncer; see README.
+paths = ["~/.calendars", "~/.local/share/calendars"]
+# How many days ahead to expand events.
+days = 60
+# Show an upcoming event in the island this many minutes before it starts
+# (0 disables).
+reminder_minutes = 10
+
 [power]
 lock_command = "hyprlock"
 # Press-and-hold time for shut down and restart (ms).

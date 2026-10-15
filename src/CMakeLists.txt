@@ -5,6 +5,7 @@ add_library(islandlogic STATIC
     services/hyprland/hyprlandparse.h services/hyprland/hyprlandparse.cpp
     services/notifications/notificationrules.h services/notifications/notificationrules.cpp
     services/apps/desktopentry.h services/apps/desktopentry.cpp
+    services/calendar/calendarparse.h services/calendar/calendarparse.cpp
     activity/selection.h
 )
 target_include_directories(islandlogic PUBLIC
@@ -13,8 +14,10 @@ target_include_directories(islandlogic PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/activity
     ${CMAKE_CURRENT_SOURCE_DIR}/services/hyprland
     ${CMAKE_CURRENT_SOURCE_DIR}/services/notifications
-    ${CMAKE_CURRENT_SOURCE_DIR}/services/apps)
-target_link_libraries(islandlogic PUBLIC Qt6::Core Qt6::Gui tomlplusplus::tomlplusplus)
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/apps
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/calendar)
+target_link_libraries(islandlogic PUBLIC Qt6::Core Qt6::Gui tomlplusplus::tomlplusplus
+    PkgConfig::LIBICAL)
 
 # Internal module: the shell root and the island itself.
 qt_add_qml_module(islandapp

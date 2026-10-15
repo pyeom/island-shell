@@ -5,7 +5,21 @@ listed here.
 
 ## Unreleased
 
+### Fixed
+- Startup could stall for ~10 s (and freeze the compositor) when Hyprland IPC
+  requests were in flight while a window was being created. Hyprland IPC now
+  runs on its own thread.
+
 ### Added
+- Quick settings (right click or `islandctl quick`): network, Bluetooth,
+  do-not-disturb, volume and brightness sliders, power profiles.
+- Privacy indicators for microphone, camera and screen sharing.
+- Calendar: month view and upcoming events in the expanded idle view, and an
+  "event starting soon" activity; reads vdir/.ics folders via libical.
+- `Network`, `Bluetooth`, `PowerProfiles`, `Privacy`, `Calendar` and
+  `IslandSlider` in the public module; `Audio.setVolume/setMuted`,
+  `Brightness.setLevel`.
+- The clock stays visible while media plays.
 - Notification server (`org.freedesktop.Notifications`): popups in the island,
   actions, inline reply, images, per-app rules, do-not-disturb, history saved
   across restarts and shown in the expanded idle view.

@@ -21,6 +21,8 @@
     </method>
     <!-- Open the power menu on the focused monitor. -->
     <method name="ShowPower"/>
+    <!-- Open quick settings (network, bluetooth, volume, ...) on the focused monitor. -->
+    <method name="ShowQuickSettings"/>
     <!-- Names of all registered activities. -->
     <method name="ListActivities">
       <arg name="names" type="as" direction="out"/>

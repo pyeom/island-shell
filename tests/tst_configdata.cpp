@@ -105,6 +105,24 @@ rules = [
         QCOMPARE(cfg.notifications.rules[1].urgency, 0);
     }
 
+    void calendar() {
+        std::vector<std::string> errors;
+        auto cfg = parseConfig("", errors);
+        QCOMPARE(cfg.calendar.paths.size(), size_t(2)); // defaults
+        cfg = parseConfig(R"(
+[calendar]
+paths = ["~/cal", 3]
+days = 30
+reminder_minutes = 5
+)",
+                          errors);
+        QCOMPARE(errors.size(), size_t(1)); // the 3
+        QCOMPARE(cfg.calendar.paths.size(), size_t(1));
+        QCOMPARE(cfg.calendar.paths[0], std::string("~/cal"));
+        QCOMPARE(cfg.calendar.days, 30);
+        QCOMPARE(cfg.calendar.reminderMinutes, 5);
+    }
+
     void rawKeepsUnknownSections() {
         std::vector<std::string> errors;
         const auto cfg = parseConfig("[activities.weather]\ncity = \"Santiago\"\n", errors);

@@ -3,7 +3,12 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusPendingCall>
 #include <QJSEngine>
+
+#include <cmath>
 
 namespace island {
 
@@ -26,6 +31,7 @@ Brightness* Brightness::create(QQmlEngine*, QJSEngine*) {
 
 Brightness::Brightness(QObject* parent) : QObject(parent) {
     m_dir = qEnvironmentVariable("ISLAND_SHELL_BACKLIGHT");
+    m_fake = !m_dir.isEmpty();
     if (m_dir.isEmpty()) {
         const QDir sys(QStringLiteral("/sys/class/backlight"));
         const auto devices = sys.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
@@ -38,6 +44,25 @@ Brightness::Brightness(QObject* parent) : QObject(parent) {
     connect(&m_poll, &QTimer::timeout, this, &Brightness::poll);
     m_poll.start();
     poll();
+}
+
+void Brightness::setLevel(qreal level) {
+    const qint64 max = readNumber(m_dir + QLatin1String("/max_brightness"));
+    if (max <= 0)
+        return;
+    // Never fully dark: 1% minimum so the screen stays usable.
+    const auto value = static_cast<uint>(std::round(std::clamp(level, 0.01, 1.0) * max));
+    if (m_fake) {
+        QFile f(m_dir + QLatin1String("/actual_brightness"));
+        if (f.open(QIODevice::WriteOnly | QIODevice::Truncate))
+            f.write(QByteArray::number(value));
+        return;
+    }
+    auto msg = QDBusMessage::createMethodCall(
+        QStringLiteral("org.freedesktop.login1"), QStringLiteral("/org/freedesktop/login1/session/auto"),
+        QStringLiteral("org.freedesktop.login1.Session"), QStringLiteral("SetBrightness"));
+    msg.setArguments({QStringLiteral("backlight"), QDir(m_dir).dirName(), value});
+    QDBusConnection::systemBus().asyncCall(msg);
 }
 
 void Brightness::poll() {

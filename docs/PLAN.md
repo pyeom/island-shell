@@ -120,6 +120,11 @@ Al llegar al MVP, la isla reemplaza a waybar, hyprpanel, swaync, rofi (SUPER+R),
 - Launcher y power menu son actividades `modal`: abren expandidas, toman el teclado (layer-shell exclusive) y una capa transparente a pantalla completa (scrim) las cierra al hacer clic fuera.
 - uwsm: en vez de autodetectarlo, `launcher.launch_prefix = "uwsm app --"` en el TOML. Más simple y explícito.
 - Brillo: lee `/sys/class/backlight` por polling (sysfs no notifica). Solo portátiles; monitores externos por DDC quedan fuera.
+- La IPC con Hyprland corre en su propio hilo. Hyprland atiende `.socket.sock` de forma síncrona: si el request se escribiera desde el hilo de la UI mientras este espera al compositor (EGL hace un roundtrip de Wayland al crear una ventana), ambos se bloquean hasta el timeout de Hyprland (~10 s). Pasó en F3 y se corrigió así.
+- Privacidad: micrófono = streams de captura de PipeWire en estado running, sin contar capturas de sinks (cava, grabadores de audio del escritorio) ni medidores de nivel; cámara = procesos con `/dev/video*` abierto (inotify + `/proc`), porque muchas apps usan V4L2 sin PipeWire; pantalla = eventos `screencast` de Hyprland.
+- Calendario: libical expande RRULE/EXDATE/RECURRENCE-ID en una ventana de fechas; lee `displayname` y `color` de cada colección vdir.
+- Con media, privacidad o un evento próximo, el reloj sigue visible a la derecha de la píldora.
+- Herramientas de prueba en `scripts/testing/` (fixtures en `/tmp/ish-test`, emisor de notificaciones, player MPRIS falso).
 - El entorno anidado usa un bus D-Bus sin directorios de servicio, para que nada se active por D-Bus y le quite `org.freedesktop.Notifications` a la isla.
 
 ## Layout del repo
@@ -154,7 +159,7 @@ island-shell/
 | **F0 Fundación** ✅ | CMake y presets, CI, `dev-nested.sh`, superficie layer-shell por monitor, exclusive zone, input mask, springs, píldora con reloj | La isla se expande y contrae con hover y clic sin mover ninguna ventana, y los clics fuera de la píldora pasan |
 | **F1 Framework** ✅ | `Activity` y árbitro, módulo `IslandShell 0.1`, Loader aislado, config TOML con recarga, tema y pywal, D-Bus `Control` e `islandctl`, servicio Hyprland, actividad de workspaces | Una actividad de usuario en `~/.config/island-shell/activities/` aparece y se recarga en caliente |
 | **F2 Núcleo MVP** ✅ | Notificaciones, OSD de audio, Media, Live Activities, Launcher, Power menu | En el entorno anidado se puede prescindir de waybar, hyprpanel, swaync y rofi |
-| **F3 Sistema** | Quick settings, privacidad, calendario (requiere `libical`) | MVP completo |
+| **F3 Sistema** ✅ | Quick settings, privacidad, calendario (requiere `libical`) | MVP completo |
 | **F4 Release v0.1** | Traducción `es`, docs, PKGBUILD, prueba en nspawn, migración de la sesión real con 3 monitores | `makepkg -si` en un Arch limpio funciona; la sesión diaria usa la isla |
 | **Después** | Calculadora, emojis y portapapeles en el launcher, timer/pomodoro, clima, indicador de grabación, API 1.0 | — |
 

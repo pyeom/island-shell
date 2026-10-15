@@ -1,5 +1,6 @@
 #include "hyprland.h"
 
+#include "hyprlandipc.h"
 #include "hyprlandparse.h"
 
 #include <QCoreApplication>
@@ -37,64 +38,44 @@ Hyprland::Hyprland(QObject* parent) : QObject(parent) {
     m_refresh.setInterval(25);
     connect(&m_refresh, &QTimer::timeout, this, &Hyprland::refresh);
 
-    m_reconnect.setSingleShot(true);
-    m_reconnect.setInterval(1000);
-    connect(&m_reconnect, &QTimer::timeout, this, &Hyprland::connectEvents);
-
-    connect(&m_events, &QLocalSocket::readyRead, this, &Hyprland::onEventData);
-    connect(&m_events, &QLocalSocket::connected, this, &Hyprland::refresh);
-    connect(&m_events, &QLocalSocket::disconnected, &m_reconnect, qOverload<>(&QTimer::start));
-    connect(&m_events, &QLocalSocket::errorOccurred, this, [this](QLocalSocket::LocalSocketError) {
-        qCWarning(lcHypr) << "event socket:" << m_events.errorString();
-        m_reconnect.start();
-    });
-
-    connectEvents();
+    m_ipc = new HyprlandIpc(m_socketDir);
+    m_ipc->moveToThread(&m_thread);
+    connect(&m_thread, &QThread::started, m_ipc, &HyprlandIpc::start);
+    connect(&m_thread, &QThread::finished, m_ipc, &QObject::deleteLater);
+    connect(m_ipc, &HyprlandIpc::event, this, &Hyprland::onEvent);
+    connect(m_ipc, &HyprlandIpc::reply, this, &Hyprland::onReply);
+    connect(m_ipc, &HyprlandIpc::eventsConnected, this, &Hyprland::refresh);
+    m_thread.setObjectName(QStringLiteral("HyprlandIpc"));
+    m_thread.start();
 }
 
-void Hyprland::connectEvents() {
-    m_eventBuffer.clear();
-    m_events.abort();
-    m_events.connectToServer(m_socketDir + QLatin1String("/.socket2.sock"));
+Hyprland::~Hyprland() {
+    m_thread.quit();
+    m_thread.wait();
 }
 
-void Hyprland::onEventData() {
-    m_eventBuffer += m_events.readAll();
-    qsizetype start = 0;
-    for (qsizetype nl; (nl = m_eventBuffer.indexOf('\n', start)) >= 0; start = nl + 1) {
-        const auto ev = hypr::parseEventLine(QByteArrayView(m_eventBuffer).sliced(start, nl - start));
-        if (!ev)
-            continue;
-        if (ev->name == QLatin1String("focusedmon"))
-            setFocusedMonitor(ev->data.section(QLatin1Char(','), 0, 0));
-        if (hypr::affectsWorkspaces(ev->name))
-            m_refresh.start();
-        emit event(ev->name, ev->data);
-    }
-    m_eventBuffer.remove(0, start);
+void Hyprland::onEvent(const QString& name, const QString& data) {
+    if (name == QLatin1String("focusedmon"))
+        setFocusedMonitor(data.section(QLatin1Char(','), 0, 0));
+    if (hypr::affectsWorkspaces(name))
+        m_refresh.start();
+    emit event(name, data);
 }
 
 void Hyprland::request(const QByteArray& command, Reply reply) {
     if (!available())
         return;
-    auto* socket = new QLocalSocket(this);
-    auto buffer = std::make_shared<QByteArray>();
-    connect(socket, &QLocalSocket::connected, socket, [socket, command] { socket->write(command); });
-    connect(socket, &QLocalSocket::readyRead, socket,
-            [socket, buffer] { *buffer += socket->readAll(); });
-    connect(socket, &QLocalSocket::disconnected, socket, [socket, buffer, reply] {
-        *buffer += socket->readAll();
-        if (reply)
-            reply(*buffer);
-        socket->deleteLater();
-    });
-    connect(socket, &QLocalSocket::errorOccurred, socket, [socket](QLocalSocket::LocalSocketError e) {
-        if (e != QLocalSocket::PeerClosedError) {
-            qCWarning(lcHypr) << "request failed:" << socket->errorString();
-            socket->deleteLater();
-        }
-    });
-    socket->connectToServer(m_socketDir + QLatin1String("/.socket.sock"));
+    const quint64 id = m_nextRequest++;
+    if (reply)
+        m_pending.insert(id, std::move(reply));
+    QMetaObject::invokeMethod(m_ipc, "request", Qt::QueuedConnection, Q_ARG(quint64, id),
+                              Q_ARG(QByteArray, command));
+}
+
+void Hyprland::onReply(quint64 id, const QByteArray& data) {
+    const auto reply = m_pending.take(id);
+    if (reply)
+        reply(data);
 }
 
 void Hyprland::dispatch(const QString& args) {

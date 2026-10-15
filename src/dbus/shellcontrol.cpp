@@ -79,6 +79,10 @@ void ShellControl::ShowPower() {
     emit powerRequested();
 }
 
+void ShellControl::ShowQuickSettings() {
+    emit quickSettingsRequested();
+}
+
 QStringList ShellControl::ListActivities() {
     QStringList names;
     for (const auto* a : ActivityRegistry::instance()->activities())

@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QLoggingCategory>
+#include <QProcess>
 
 #include <pipewire/extensions/metadata.h>
 #include <pipewire/pipewire.h>
@@ -233,6 +234,9 @@ Audio* Audio::create(QQmlEngine*, QJSEngine*) {
 
 Audio::Audio(QObject* parent) : QObject(parent), d(std::make_unique<Private>()) {
     d->q = this;
+    m_volumeThrottle.setSingleShot(true);
+    m_volumeThrottle.setInterval(40);
+    connect(&m_volumeThrottle, &QTimer::timeout, this, &Audio::flushVolume);
     pw_init(nullptr, nullptr);
     d->loop = pw_loop_new(nullptr);
     if (!d->loop)
@@ -276,6 +280,27 @@ Audio::~Audio() {
             pw_loop_leave(d->loop);
         pw_loop_destroy(d->loop);
     }
+}
+
+void Audio::setVolume(qreal volume) {
+    m_pendingVolume = std::clamp(volume, 0.0, 1.5);
+    if (!m_volumeThrottle.isActive())
+        m_volumeThrottle.start();
+}
+
+void Audio::flushVolume() {
+    if (m_pendingVolume < 0)
+        return;
+    QProcess::startDetached(QStringLiteral("wpctl"),
+                            {QStringLiteral("set-volume"), QStringLiteral("@DEFAULT_AUDIO_SINK@"),
+                             QString::number(m_pendingVolume, 'f', 3)});
+    m_pendingVolume = -1;
+}
+
+void Audio::setMuted(bool muted) {
+    QProcess::startDetached(QStringLiteral("wpctl"),
+                            {QStringLiteral("set-mute"), QStringLiteral("@DEFAULT_AUDIO_SINK@"),
+                             muted ? QStringLiteral("1") : QStringLiteral("0")});
 }
 
 bool Audio::available() const { return d->connected; }

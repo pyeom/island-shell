@@ -12,13 +12,7 @@ Activity {
     }
 
     compactTrailing: Component {
-        Text {
-            text: Qt.formatTime(Clock.now, Config.clockFormat)
-            color: Theme.foreground
-            font.pixelSize: 14
-            font.weight: Font.DemiBold
-            font.features: { "tnum": 1 }
-        }
+        ClockText {}
     }
 
     expanded: Component {

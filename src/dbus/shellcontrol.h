@@ -45,6 +45,7 @@ public slots:
     void Reload();
     void SetDnd(bool enabled);
     void ShowPower();
+    void ShowQuickSettings();
     QStringList ListActivities();
 
 signals:
@@ -52,6 +53,7 @@ signals:
     void expandRequested(const QString& activity);
     void collapseRequested();
     void powerRequested();
+    void quickSettingsRequested();
     void reloadRequested();
     void dndChanged();
 

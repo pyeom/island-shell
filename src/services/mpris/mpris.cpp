@@ -1,5 +1,7 @@
 #include "mpris.h"
 
+#include "dbusutil.h"
+
 #include <QCoreApplication>
 #include <QDBusArgument>
 #include <QDBusConnection>
@@ -20,25 +22,9 @@ constexpr auto kRoot = "org.mpris.MediaPlayer2";
 constexpr auto kPlayer = "org.mpris.MediaPlayer2.Player";
 constexpr auto kProps = "org.freedesktop.DBus.Properties";
 
-QVariant unwrap(const QVariant& v) {
-    if (v.canConvert<QDBusVariant>())
-        return v.value<QDBusVariant>().variant();
-    return v;
-}
-
-QVariantMap toMap(const QVariant& v) {
-    const auto inner = unwrap(v);
-    if (inner.canConvert<QDBusArgument>())
-        return qdbus_cast<QVariantMap>(inner.value<QDBusArgument>());
-    return inner.toMap();
-}
-
-QStringList toStringList(const QVariant& v) {
-    const auto inner = unwrap(v);
-    if (inner.canConvert<QDBusArgument>())
-        return qdbus_cast<QStringList>(inner.value<QDBusArgument>());
-    return inner.toStringList();
-}
+using dbus::toMap;
+using dbus::toStringList;
+using dbus::unwrap;
 
 } // namespace
 

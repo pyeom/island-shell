@@ -49,11 +49,19 @@ Activity {
         }
     }
 
-    compactLeading: Component { Art {} }
-
-    compactTrailing: Component {
-        Bars { playing: root.playing }
+    // Art and bars on the left so the clock stays visible while music plays.
+    compactLeading: Component {
+        Row {
+            spacing: 8
+            Art { anchors.verticalCenter: parent.verticalCenter }
+            Bars {
+                anchors.verticalCenter: parent.verticalCenter
+                playing: root.playing
+            }
+        }
     }
+
+    compactTrailing: Component { ClockText {} }
 
     minimal: Component { Art { size: 20 } }
 

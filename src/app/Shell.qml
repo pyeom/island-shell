@@ -18,7 +18,10 @@ QtObject {
         VolumeOsd {},
         Media {},
         Launcher {},
-        PowerMenu {}
+        PowerMenu {},
+        QuickSettings {},
+        PrivacyIndicator {},
+        EventSoon {}
     ]
 
     // One activity per live activity pushed over D-Bus / islandctl.

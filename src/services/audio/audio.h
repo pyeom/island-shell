@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QSocketNotifier>
+#include <QTimer>
 #include <QtQml/qqmlregistration.h>
 
 #include <memory>
@@ -35,6 +36,11 @@ public:
 
     bool available() const;
     qreal volume() const;
+
+    // Default sink, through wpctl (WirePlumber keeps device routes in sync,
+    // which writing node props directly would not). Coalesced while dragging.
+    Q_INVOKABLE void setVolume(qreal volume);
+    Q_INVOKABLE void setMuted(bool muted);
     bool muted() const;
     QString sinkDescription() const;
 
@@ -49,8 +55,12 @@ signals:
 private:
     explicit Audio(QObject* parent = nullptr);
 
+    void flushVolume();
+
     std::unique_ptr<Private> d;
     QSocketNotifier* m_notifier = nullptr;
+    QTimer m_volumeThrottle;
+    qreal m_pendingVolume = -1;
 };
 
 } // namespace island

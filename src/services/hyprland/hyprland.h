@@ -1,7 +1,8 @@
 #pragma once
 
-#include <QLocalSocket>
+#include <QHash>
 #include <QObject>
+#include <QThread>
 #include <QTimer>
 #include <QVariantList>
 #include <QtQml/qqmlregistration.h>
@@ -13,8 +14,11 @@ class QJSEngine;
 
 namespace island {
 
-// Hyprland IPC: requests over .socket.sock, events over .socket2.sock.
-// Monitors and workspaces are re-read (debounced) after relevant events.
+class HyprlandIpc;
+
+// Hyprland IPC: requests over .socket.sock, events over .socket2.sock, both
+// handled on a separate thread (see HyprlandIpc). Monitors and workspaces are
+// re-read (debounced) after relevant events.
 class Hyprland : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -30,6 +34,7 @@ class Hyprland : public QObject {
 public:
     static Hyprland* instance();
     static Hyprland* create(QQmlEngine*, QJSEngine*);
+    ~Hyprland() override;
 
     bool available() const { return !m_socketDir.isEmpty(); }
     QString focusedMonitor() const { return m_focusedMonitor; }
@@ -52,16 +57,17 @@ signals:
 
 private:
     explicit Hyprland(QObject* parent = nullptr);
-    void connectEvents();
-    void onEventData();
+    void onEvent(const QString& name, const QString& data);
+    void onReply(quint64 id, const QByteArray& data);
     void refresh();
     void setFocusedMonitor(const QString& name);
 
     QString m_socketDir;
-    QLocalSocket m_events;
-    QByteArray m_eventBuffer;
+    QThread m_thread;
+    HyprlandIpc* m_ipc = nullptr;
+    QHash<quint64, Reply> m_pending;
+    quint64 m_nextRequest = 1;
     QTimer m_refresh;
-    QTimer m_reconnect;
     QString m_focusedMonitor;
     QVariantList m_monitors;
     QVariantList m_workspaces;
