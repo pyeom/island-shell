@@ -4,6 +4,7 @@ import IslandShell
 // Resting state: workspaces and clock. Always active, lowest priority.
 Activity {
     name: "idle"
+    ambient: true
     priority: 0
     scope: Activity.AllScreens
 

@@ -26,7 +26,7 @@ bool affectsWorkspaces(const QString& eventName) {
         u"moveworkspacev2"_s,  u"renameworkspace"_s,    u"monitoradded"_s,
         u"monitoraddedv2"_s,   u"monitorremoved"_s,     u"monitorremovedv2"_s,
         u"openwindow"_s,       u"closewindow"_s,        u"movewindow"_s,
-        u"movewindowv2"_s,
+        u"movewindowv2"_s,     u"fullscreen"_s,
     };
     return names.contains(eventName);
 }
@@ -72,6 +72,7 @@ QVariantList parseWorkspaces(QByteArrayView json) {
             {u"name"_s, w[u"name"].toString()},
             {u"monitor"_s, w[u"monitor"].toString()},
             {u"windows"_s, w[u"windows"].toInt()},
+            {u"hasFullscreen"_s, w[u"hasfullscreen"].toBool()},
         });
     }
     sortById(out);

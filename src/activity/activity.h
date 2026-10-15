@@ -36,6 +36,9 @@ class Activity : public QObject, public QQmlParserStatus {
     // Modal activities (launcher, power menu) open expanded, grab the
     // keyboard and stay until they turn inactive.
     Q_PROPERTY(bool modal READ modal WRITE setModal NOTIFY modalChanged)
+    // Ambient activities (clock, media, privacy) are background information:
+    // the island hides them while a window is fullscreen.
+    Q_PROPERTY(bool ambient READ ambient WRITE setAmbient NOTIFY ambientChanged)
     Q_PROPERTY(QQmlComponent* compactLeading READ compactLeading WRITE setCompactLeading NOTIFY
                    presentationsChanged)
     Q_PROPERTY(QQmlComponent* compactTrailing READ compactTrailing WRITE setCompactTrailing NOTIFY
@@ -65,6 +68,8 @@ public:
     void setScope(Scope scope);
     bool modal() const { return m_modal; }
     void setModal(bool modal);
+    bool ambient() const { return m_ambient; }
+    void setAmbient(bool ambient);
 
     QQmlComponent* compactLeading() const { return m_compactLeading; }
     void setCompactLeading(QQmlComponent* c);
@@ -94,6 +99,7 @@ signals:
     void activeChanged();
     void scopeChanged();
     void modalChanged();
+    void ambientChanged();
     void presentationsChanged();
     void alertRequested(int durationMs);
     void dismissRequested();
@@ -106,6 +112,7 @@ private:
     bool m_active = true;
     Scope m_scope = FocusedScreen;
     bool m_modal = false;
+    bool m_ambient = false;
     QPointer<QQmlComponent> m_compactLeading;
     QPointer<QQmlComponent> m_compactTrailing;
     QPointer<QQmlComponent> m_minimal;

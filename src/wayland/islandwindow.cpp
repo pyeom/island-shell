@@ -4,6 +4,9 @@
 #include <QGuiApplication>
 #include <QRegion>
 #include <QScreen>
+#include <qpa/qplatformnativeinterface.h>
+
+#include <wayland-client.h>
 
 #include <algorithm>
 
@@ -94,16 +97,44 @@ void IslandWindow::componentComplete() {
     show();
 }
 
+bool IslandWindow::setEmptyInputRegion() {
+    auto* app = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+    auto* native = QGuiApplication::platformNativeInterface();
+    if (!app || !native || !app->compositor())
+        return false;
+    auto* surface = static_cast<wl_surface*>(native->nativeResourceForWindow("surface", this));
+    if (!surface)
+        return false;
+    wl_region* region = wl_compositor_create_region(app->compositor());
+    wl_surface_set_input_region(surface, region);
+    wl_region_destroy(region);
+    update(); // the input region is double-buffered: apply on the next commit
+    return true;
+}
+
 void IslandWindow::applyMask() {
     if (!m_complete)
         return;
-    // An empty QRegion means "no mask" (the whole surface takes input), which
-    // would block the windows below. Keep at least one pixel.
     QRegion region;
     for (const auto& r : std::as_const(m_inputRects))
         region += r.toAlignedRect();
-    if (region.isEmpty())
-        region = QRect(0, 0, 1, 1);
+
+    if (region.isEmpty()) {
+        // QWindow::setMask(QRegion()) means "no mask": the whole surface
+        // would take input and block what is below (a fullscreen game while
+        // the island is hidden). Set a truly empty region on the surface.
+        if (setEmptyInputRegion()) {
+            m_inputEmpty = true;
+            return;
+        }
+        region = QRect(width() - 1, height() - 1, 1, 1); // not on Wayland
+    }
+    if (m_inputEmpty) {
+        // Qt skips setMask() when the region equals the last one it applied;
+        // reset it so the region replaces our empty one.
+        setMask(QRegion());
+        m_inputEmpty = false;
+    }
     setMask(region);
 }
 

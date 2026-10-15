@@ -8,6 +8,8 @@ Item {
 
     property bool demo: false
     property bool focused: false
+    // A fullscreen window on this monitor (game, video). See [island] fullscreen.
+    property bool fullscreen: false
 
     // compact | peek | expanded
     property string mode: "compact"
@@ -24,7 +26,20 @@ Item {
                                       : expanded ? IslandWindow.OnDemand
                                       : IslandWindow.NoKeyboard
 
-    readonly property list<rect> inputRects: bubble.shown ? [pillRect, bubbleRect] : [pillRect]
+    readonly property bool critical: !!primary && primary.name === "notification"
+                                     && Notifications.current.urgency >= 2
+    // Out of the way over fullscreen windows: background information
+    // ("minimal") or everything ("hide") except what was asked for.
+    readonly property bool hidden: {
+        if (!fullscreen || modal || Config.fullscreen === "show")
+            return false
+        if (Config.fullscreen === "hide")
+            return !critical && !(expanded && expandTarget !== null)
+        return !expanded && (!primary || primary.ambient)
+    }
+
+    readonly property list<rect> inputRects: hidden ? []
+                                           : bubble.shown ? [pillRect, bubbleRect] : [pillRect]
     readonly property rect pillRect: Qt.rect(pill.x, pill.y, pill.width, pill.height)
     readonly property rect bubbleRect: Qt.rect(bubble.x, bubble.y, bubble.width, bubble.height)
 
@@ -138,8 +153,13 @@ Item {
         color: Theme.background
         clip: true
         antialiasing: true
+        opacity: root.hidden ? 0 : 1
+        scale: root.hidden && !root.reduced ? 0.6 : 1
+        visible: opacity > 0
 
         Behavior on color { ColorAnimation { duration: 300 } }
+        Behavior on opacity { NumberAnimation { duration: root.animate ? 180 : 0 } }
+        Behavior on scale { NumberAnimation { duration: root.animate ? 220 : 0; easing.type: Easing.OutCubic } }
 
         // Compact and peek: leading and trailing presentations.
         Item {
@@ -212,6 +232,8 @@ Item {
         id: bubble
 
         readonly property bool shown: !!root.secondary && !root.expanded
+                                      && !(root.fullscreen && Config.fullscreen !== "show"
+                                           && (root.secondary.ambient || root.hidden))
         property Activity activity: null
 
         width: Config.compactHeight
@@ -284,7 +306,10 @@ Item {
     Connections {
         target: ActivityRegistry
         function onAlertRequested(activity: Activity, durationMs: int) {
-            if (arbiter.eligible(activity) && root.expand(activity))
+            // "hide" mode: only critical notifications interrupt fullscreen.
+            const quiet = root.fullscreen && Config.fullscreen === "hide"
+                          && !(activity.name === "notification" && Notifications.current.urgency >= 2)
+            if (!quiet && arbiter.eligible(activity) && root.expand(activity))
                 root.hold(durationMs)
         }
     }

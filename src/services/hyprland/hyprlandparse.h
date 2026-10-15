@@ -23,7 +23,7 @@ bool affectsWorkspaces(const QString& eventName);
 // Sets `focused` to the focused monitor's name.
 QVariantList parseMonitors(QByteArrayView json, QString* focused);
 
-// `j/workspaces` → [{ id, name, monitor, windows }], regular workspaces only
+// `j/workspaces` → [{ id, name, monitor, windows, hasFullscreen }], regular workspaces only
 // (special workspaces have negative ids), sorted by id.
 QVariantList parseWorkspaces(QByteArrayView json);
 

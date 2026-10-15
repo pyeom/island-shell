@@ -45,6 +45,13 @@ void Activity::setModal(bool modal) {
     emit modalChanged();
 }
 
+void Activity::setAmbient(bool ambient) {
+    if (m_ambient == ambient)
+        return;
+    m_ambient = ambient;
+    emit ambientChanged();
+}
+
 void Activity::setComponent(QPointer<QQmlComponent>& slot, QQmlComponent* c) {
     if (slot == c)
         return;

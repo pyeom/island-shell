@@ -23,6 +23,13 @@ exclusive_zone = 44
 # resizes, so it must fit the largest state (raised automatically if not).
 surface_width = 600
 surface_height = 420
+# With a fullscreen window (games, videos) on the monitor:
+#   "minimal": hide the clock, media and privacy; notifications, OSD and
+#              other alerts still show
+#   "hide":    hide everything except critical notifications and what you
+#              open yourself (launcher, power menu, islandctl expand)
+#   "show":    no change
+fullscreen = "minimal"
 
 [animations]
 # "full" (springs), "reduced" (no bounce) or "off".

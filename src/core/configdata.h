@@ -22,6 +22,10 @@ struct IslandConfig {
     int exclusiveZone = 44;
     int surfaceWidth = 600;
     int surfaceHeight = 420;
+    // With a fullscreen window: "minimal" hides ambient activities, "hide"
+    // hides everything but modals and critical notifications, "show" changes
+    // nothing.
+    std::string fullscreen = "minimal";
 };
 
 struct ThemeConfig {

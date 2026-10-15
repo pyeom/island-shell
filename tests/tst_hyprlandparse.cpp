@@ -29,6 +29,7 @@ private slots:
     void workspaceEventsTriggerRefresh() {
         QVERIFY(affectsWorkspaces(QStringLiteral("workspacev2")));
         QVERIFY(affectsWorkspaces(QStringLiteral("focusedmon")));
+        QVERIFY(affectsWorkspaces(QStringLiteral("fullscreen")));
         QVERIFY(!affectsWorkspaces(QStringLiteral("activewindow")));
     }
 
@@ -48,13 +49,15 @@ private slots:
 
     void workspacesSkipSpecialAndSort() {
         const auto list = parseWorkspaces(R"([
-            {"id": 3, "name": "3", "monitor": "HDMI-A-1", "windows": 2},
+            {"id": 3, "name": "3", "monitor": "HDMI-A-1", "windows": 2, "hasfullscreen": true},
             {"id": -98, "name": "special:scratch", "monitor": "DP-2", "windows": 1},
             {"id": 1, "name": "1", "monitor": "DP-2", "windows": 1}
         ])");
         QCOMPARE(list.size(), 2);
         QCOMPARE(list[0].toMap()[QStringLiteral("id")].toInt(), 1);
         QCOMPARE(list[1].toMap()[QStringLiteral("monitor")].toString(), QStringLiteral("HDMI-A-1"));
+        QVERIFY(list[1].toMap()[QStringLiteral("hasFullscreen")].toBool());
+        QVERIFY(!list[0].toMap()[QStringLiteral("hasFullscreen")].toBool());
     }
 
     void invalidJson() {

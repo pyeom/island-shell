@@ -107,4 +107,6 @@ target_link_libraries(islandshell PUBLIC
     Qt6::Quick
     Qt6::DBus
     LayerShellQt::Interface
+    Qt6::GuiPrivate
+    PkgConfig::WAYLAND_CLIENT
     PkgConfig::PIPEWIRE)

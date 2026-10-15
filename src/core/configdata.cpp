@@ -79,6 +79,7 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
         readInt(*t, "island", "exclusive_zone", i.exclusiveZone, 0, 400, errors);
         readInt(*t, "island", "surface_width", i.surfaceWidth, 100, 4000, errors);
         readInt(*t, "island", "surface_height", i.surfaceHeight, 50, 4000, errors);
+        readString(*t, "island", "fullscreen", i.fullscreen, {"minimal", "hide", "show"}, errors);
     }
 
     // The surface never resizes, so it must fit the largest island state.

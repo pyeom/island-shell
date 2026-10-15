@@ -39,6 +39,12 @@ QtObject {
             required property var modelData
 
             screenName: modelData.name
+            // The active workspace on this monitor has a fullscreen window.
+            readonly property bool fullscreen: {
+                const monitor = Hyprland.monitors.find(m => m.name === screenName)
+                const ws = monitor ? Hyprland.workspaces.find(w => w.id === monitor.activeWorkspace) : null
+                return !!ws && ws.hasFullscreen
+            }
             // Without Hyprland every island acts as focused.
             focused: !Hyprland.available || Hyprland.focusedMonitor === screenName
             width: Config.surfaceWidth
@@ -65,6 +71,7 @@ QtObject {
                 anchors.fill: parent
                 demo: shell.demo
                 focused: window.focused
+                fullscreen: window.fullscreen
             }
         }
     }

@@ -13,13 +13,33 @@ Activity {
     readonly property color screenColor: "#bf5af2"
 
     name: "privacy"
+    ambient: true
     priority: 60
     scope: Activity.AllScreens
     active: Privacy.any
 
-    // Alert once when something new starts using a device.
-    readonly property string signature: [Privacy.microphone, Privacy.camera, Privacy.screen].join()
-    onSignatureChanged: if (Privacy.any) alert(2500)
+    // Alert when a device starts being used, at most once a minute per
+    // device, so a voice call that keeps toggling capture does not keep
+    // expanding the island.
+    property var _lastAlert: ({})
+    property var _wasOn: ({})
+    function _maybeAlert(device: string, on: bool) {
+        const turnedOn = on && !_wasOn[device]
+        _wasOn[device] = on
+        const now = Date.now()
+        if (!turnedOn || now - (_lastAlert[device] ?? 0) < 60000)
+            return
+        _lastAlert[device] = now
+        alert(2500)
+    }
+    property Connections _privacy: Connections {
+        target: Privacy
+        function onChanged() {
+            root._maybeAlert("microphone", Privacy.microphone)
+            root._maybeAlert("camera", Privacy.camera)
+            root._maybeAlert("screen", Privacy.screen)
+        }
+    }
 
     component Indicators: Row {
         id: indicators

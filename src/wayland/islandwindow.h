@@ -73,6 +73,7 @@ signals:
 
 private:
     void applyMask();
+    bool setEmptyInputRegion();
 
     LayerShellQt::Window* m_layer = nullptr;
     QString m_screenName;
@@ -81,6 +82,7 @@ private:
     KeyboardMode m_keyboardMode = NoKeyboard;
     int m_exclusiveZone = 44;
     bool m_complete = false;
+    bool m_inputEmpty = false;
 };
 
 } // namespace island

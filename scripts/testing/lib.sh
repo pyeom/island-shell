@@ -1,13 +1,20 @@
 # shellcheck shell=bash
 # Source from bash or zsh: talk to the nested island-shell and take screenshots.
 #   source scripts/testing/lib.sh && $CTL activities
+# Scripts: `source scripts/testing/lib.sh || exit 1`.
 if [ -n "${BASH_SOURCE[0]:-}" ]; then
     _ish_self="${BASH_SOURCE[0]}"
 else
     _ish_self="${(%):-%x}" # zsh: path of the sourced file
 fi
 _ish_dir="$(cd "$(dirname "$_ish_self")" && pwd)"
-eval "$("$_ish_dir/env.sh")"
+# Refuse to continue without a nested session: every command below would
+# otherwise hit the real one (its bus, its Hyprland).
+if ! _ish_env="$("$_ish_dir/env.sh")"; then
+    echo "lib.sh: not connected; start scripts/testing/run-nested.sh first" >&2
+    return 1 2>/dev/null || exit 1
+fi
+eval "$_ish_env"
 CTL="$(cd "$_ish_dir/../.." && pwd)/build/dev/tools/islandctl/islandctl"
 mkdir -p /tmp/ish-shots
 

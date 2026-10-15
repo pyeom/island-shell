@@ -41,6 +41,8 @@ class Config : public QObject {
     Q_PROPERTY(QString animations READ animations NOTIFY changed)
     Q_PROPERTY(QString clockFormat READ clockFormat NOTIFY changed)
     Q_PROPERTY(int powerHoldMs READ powerHoldMs NOTIFY changed)
+    // "minimal" | "hide" | "show"
+    Q_PROPERTY(QString fullscreen READ fullscreen NOTIFY changed)
 
 public:
     static Config* instance();
@@ -64,6 +66,7 @@ public:
     QString animations() const;
     QString clockFormat() const { return QString::fromStdString(m_data.clock.format); }
     int powerHoldMs() const { return m_data.power.holdMs; }
+    QString fullscreen() const { return QString::fromStdString(m_data.island.fullscreen); }
 
     // Any value by dotted path, for activity settings:
     //   Config.get("activities.weather.city", "Santiago")

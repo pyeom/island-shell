@@ -9,6 +9,9 @@
 #include <QHash>
 #include <QJSEngine>
 #include <QSet>
+#include <QTimer>
+
+#include <chrono>
 
 #include <pipewire/pipewire.h>
 
@@ -56,6 +59,16 @@ struct Privacy::Private {
         q->setMicrophoneApps(apps);
     }
 
+    void scheduleRecheck(uint32_t id) {
+        QTimer::singleShot(std::chrono::seconds(5), q, [this, id] {
+            Capture* c = captures.value(id);
+            if (c && c->counted && !(c->running && !c->monitor)) {
+                c->counted = false;
+                publish();
+            }
+        });
+    }
+
     void drop(uint32_t id) {
         Capture* c = captures.take(id);
         if (!c)
@@ -96,9 +109,13 @@ void onNodeInfo(void* data, const pw_node_info* info) {
     if (info->change_mask & PW_NODE_CHANGE_MASK_STATE)
         c->running = info->state == PW_NODE_STATE_RUNNING;
     const bool counted = c->running && !c->monitor;
-    if (counted != c->counted || counted) {
-        c->counted = counted;
+    if (counted) {
+        c->counted = true;
         c->d->publish();
+    } else if (c->counted) {
+        // Voice chat suspends and resumes capture with voice activity; keep
+        // the indicator steady and only drop it after a few quiet seconds.
+        c->d->scheduleRecheck(c->id);
     }
 }
 

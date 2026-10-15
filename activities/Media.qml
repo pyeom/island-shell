@@ -12,6 +12,7 @@ Activity {
     property bool recentlyPaused: false
 
     name: "media"
+    ambient: true
     priority: 40
     active: !!player && (playing || recentlyPaused)
 
