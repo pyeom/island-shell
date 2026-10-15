@@ -20,6 +20,7 @@ depends=(
 )
 makedepends=(git cmake ninja qt6-tools qt6-shadertools tomlplusplus)
 optdepends=(
+    'pipewire: volume OSD and microphone indicator'
     'wireplumber: volume slider in quick settings (wpctl)'
     'networkmanager: network status in quick settings'
     'bluez: Bluetooth in quick settings'
