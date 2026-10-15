@@ -30,7 +30,9 @@ optdepends=(
 )
 provides=("$_name")
 conflicts=("$_name")
-source=("$_name::git+${ISLAND_SHELL_SOURCE:-$url.git}")
+_source=${ISLAND_SHELL_SOURCE:-$url.git}
+[[ $_source == /* ]] && _source="file://$_source" # local checkout
+source=("$_name::git+$_source")
 sha256sums=(SKIP)
 
 pkgver() {
