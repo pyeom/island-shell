@@ -158,6 +158,11 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
     if (const auto* t = cfg.raw["launcher"].as_table()) {
         readString(*t, "launcher", "terminal", cfg.launcher.terminal, {}, errors);
         readString(*t, "launcher", "launch_prefix", cfg.launcher.launchPrefix, {}, errors);
+        readString(*t, "launcher", "search_url", cfg.launcher.searchUrl, {}, errors);
+        if (cfg.launcher.searchUrl.find("%s") == std::string::npos) {
+            errors.emplace_back("launcher.search_url: must contain %s");
+            cfg.launcher.searchUrl = "https://duckduckgo.com/?q=%s";
+        }
     }
 
     if (const auto* t = cfg.raw["calendar"].as_table()) {

@@ -51,14 +51,57 @@
 <context>
     <name>LauncherPanel</name>
     <message>
-        <location filename="../activities/LauncherPanel.qml" line="117"/>
-        <source>Search apps</source>
-        <translation>Buscar apps</translation>
+        <location filename="../activities/LauncherPanel.qml" line="122"/>
+        <source>Search apps and windows</source>
+        <translation>Buscar apps y ventanas</translation>
     </message>
     <message>
-        <location filename="../activities/LauncherPanel.qml" line="129"/>
+        <location filename="../activities/LauncherPanel.qml" line="135"/>
+        <source>= calculate   &gt; command   ? web   : emoji</source>
+        <translation>= calcular   &gt; comando   ? web   : emoji</translation>
+    </message>
+    <message>
+        <location filename="../activities/LauncherPanel.qml" line="146"/>
         <source>No results</source>
         <translation>Sin resultados</translation>
+    </message>
+</context>
+<context>
+    <name>LauncherSearch</name>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="39"/>
+        <source>Calculator</source>
+        <translation>Calculadora</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="45"/>
+        <source>Enter copies the result</source>
+        <translation>Enter copia el resultado</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="105"/>
+        <source>Window · %1 · workspace %2</source>
+        <translation>Ventana · %1 · workspace %2</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="148"/>
+        <source>Type a command</source>
+        <translation>Escribe un comando</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="149"/>
+        <source>Enter runs it, Shift+Enter in a terminal</source>
+        <translation>Enter lo ejecuta, Shift+Enter en una terminal</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="152"/>
+        <source>Run command · Shift+Enter: in a terminal</source>
+        <translation>Ejecutar comando · Shift+Enter: en una terminal</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="158"/>
+        <source>Search the web for “%1”</source>
+        <translation>Buscar “%1” en la web</translation>
     </message>
 </context>
 <context>
@@ -159,72 +202,72 @@
 <context>
     <name>QuickSettingsPanel</name>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="148"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="149"/>
         <source>Wi-Fi</source>
         <translation>Wi-Fi</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="148"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="149"/>
         <source>VPN</source>
         <translation>VPN</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="148"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="149"/>
         <source>Network</source>
         <translation>Red</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="149"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="166"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="150"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="167"/>
         <source>Unavailable</source>
         <translation>No disponible</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="150"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="167"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="178"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="151"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="168"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="179"/>
         <source>Off</source>
         <translation>Desactivado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="152"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="153"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="165"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="166"/>
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="169"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="178"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="170"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="179"/>
         <source>On</source>
         <translation>Activado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="177"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="178"/>
         <source>Do not disturb</source>
         <translation>No molestar</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="188"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="211"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="189"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="212"/>
         <source>Mute</source>
         <translation>Silencio</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="263"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="265"/>
         <source>Power saver</source>
         <translation>Ahorro de energía</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="264"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="266"/>
         <source>Performance</source>
         <translation>Rendimiento</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="265"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="267"/>
         <source>Balanced</source>
         <translation>Equilibrado</translation>
     </message>

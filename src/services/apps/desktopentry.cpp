@@ -124,6 +124,7 @@ std::optional<DesktopEntry> parseDesktopEntry(const QString& text, const QString
     e.exec = unescape(g.value(QStringLiteral("Exec")));
     e.tryExec = unescape(g.value(QStringLiteral("TryExec")));
     e.icon = unescape(g.value(QStringLiteral("Icon")));
+    e.startupWmClass = g.value(QStringLiteral("StartupWMClass"));
     e.terminal = isTrue(g.value(QStringLiteral("Terminal")));
     e.noDisplay = isTrue(g.value(QStringLiteral("NoDisplay")));
     e.hidden = isTrue(g.value(QStringLiteral("Hidden")));
@@ -194,9 +195,23 @@ int fuzzyScore(QStringView query, QStringView text) {
         if (!found)
             return -1;
     }
+    // A literal match beats scattered letters ("fire" in "fire", not in
+    // "flag: Ireland"); more so at the start of a word.
+    const auto at = text.indexOf(query, 0, Qt::CaseInsensitive);
+    if (at >= 0) {
+        score += 30;
+        if (at == 0 || !text[at - 1].isLetterOrNumber())
+            score += 15;
+    }
     // Shorter names win among equal matches.
     score -= static_cast<int>(std::min<qsizetype>(text.size(), 40) / 4);
     return std::max(score, 1);
+}
+
+QString shellQuote(const QString& arg) {
+    QString out = arg;
+    out.replace(u'\'', QStringLiteral("'\\''"));
+    return u'\'' + out + u'\'';
 }
 
 int rankEntry(const DesktopEntry& entry, QStringView query, int launches) {

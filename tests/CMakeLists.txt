@@ -13,3 +13,10 @@ island_test(notificationrules)
 island_test(desktopentry)
 island_test(calendarparse)
 island_test(nesteddetect)
+island_test(calc)
+
+# Integration test against the QML module's services (needs a QGuiApplication).
+qt_add_executable(tst_launchersearch tst_launchersearch.cpp)
+target_link_libraries(tst_launchersearch PRIVATE islandshell Qt6::Test)
+add_test(NAME launchersearch COMMAND tst_launchersearch)
+set_tests_properties(launchersearch PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")

@@ -36,6 +36,7 @@ Activity {
     active: running         // only competes for the island while true
     scope: Activity.FocusedScreen   // or Activity.AllScreens
     modal: false            // see "Modal activities"
+    ambient: false          // background info, hidden over fullscreen windows
 
     compactLeading:  Component { ... }  // left side of the pill
     compactTrailing: Component { ... }  // right side of the pill
@@ -117,11 +118,12 @@ Activity {
 | `ActivityRegistry` | `activities`, `find(name)`. |
 | `Spring` | Spring animation: `Spring { id: s; target: x }` then use `s.value`. |
 | `Notifications` | `current` popup, `history` model, `invokeAction(id, key)`, `reply(id, text)`, `dismiss(id)`, `clearHistory()`. |
-| `Audio` | Default sink `volume` (1.0 = 100%), `muted`, `changed` signal. |
+| `Audio` | Output `volume` (1.0 = 100%), `muted`, `sinks`; microphone `micVolume`, `micMuted`, `sources`; `setDefault(id)`, `setVolume`, `setMicMuted`...; `changed` / `micMuteChanged` signals. |
 | `Brightness` | Backlight `level` 0..1, `available`, `changed` signal. |
 | `Mpris` | `players`, `current` (title, artist, artUrl, position, length, playPause(), next(), previous(), seekTo(s)). |
 | `LiveActivities` | Model of pushed live activities; `invoke(id, key)`. |
-| `Apps` | `search(query)`, `launch(id, action)`, `run(command)`. |
+| `Apps` | `search(query)`, `launch(id, action)`, `run(command)`, `runInTerminal`, `openUrl`, `copyText`, `iconForClass(windowClass)`. |
+| `LauncherSearch` | `query(text)` over apps, windows, calculator, commands, web and emoji; `activate(item, action)`. |
 | `Power` | `run("shutdown" \| "reboot" \| "suspend" \| "logout" \| "lock")`. |
 | `Icons` | `Icons.source(nameOrPath, fallback)` → an `Image` source from the icon theme. |
 | `Network` | `connected`, `primaryType`, `ssid`, `strength`, `iconName`, `wifiEnabled`, `setWifiEnabled(b)`. |

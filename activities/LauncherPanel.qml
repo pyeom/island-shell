@@ -3,36 +3,41 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import IslandShell
 
-// Search field and results. Keys: Up/Down (or Tab) to move, Left/Right to
-// pick a desktop action, Enter to launch, Esc to close.
+// Search field and results (apps, windows, calculator, commands, web,
+// emoji; see LauncherSearch). Keys: Up/Down or Tab to move, Left/Right to
+// pick an app's desktop action, Enter to activate (Shift+Enter runs a
+// command in a terminal), Esc to close.
 Item {
     id: panel
 
     signal close()
 
-    property var results: Apps.search(search.text, 30)
+    // LauncherSearch.revision: re-query when the window list arrives.
+    property var results: LauncherSearch.revision >= 0 ? LauncherSearch.query(search.text, 30) : []
     property int selected: 0
-    // -1: the app itself, otherwise an index into its actions.
+    // -1: the item itself, otherwise an index into an app's actions.
     property int selectedAction: -1
 
     readonly property int rowHeight: 48
     readonly property int visibleRows: 6
+    readonly property bool showHelp: search.text.length === 0
 
     implicitWidth: 560
-    implicitHeight: 64 + (results.length > 0 ? Math.min(results.length, visibleRows) * rowHeight + 12
-                                             : 40)
+    implicitHeight: 64 + (results.length > 0 ? Math.min(results.length, visibleRows) * rowHeight + 12 : 40)
+                    + (showHelp ? 28 : 0)
+
+    Component.onCompleted: LauncherSearch.refresh()
 
     onResultsChanged: {
         selected = 0
         selectedAction = -1
     }
 
-    function launchSelected() {
-        const app = results[selected]
-        if (!app)
+    function activateSelected(alternate: bool) {
+        const item = results[selected]
+        if (!item || item.kind === "error")
             return
-        const action = selectedAction >= 0 ? app.actions[selectedAction].id : ""
-        Apps.launch(app.id, action)
+        LauncherSearch.activate(item, alternate ? 1 : selectedAction)
         panel.close()
     }
 
@@ -90,10 +95,10 @@ Item {
                     panel.move(-1)
                     break
                 case Qt.Key_Right: {
-                    const app = panel.results[panel.selected]
-                    if (!app || cursorPosition < text.length)
+                    const item = panel.results[panel.selected]
+                    if (!item || !item.actions || cursorPosition < text.length)
                         return
-                    panel.selectedAction = Math.min(panel.selectedAction + 1, app.actions.length - 1)
+                    panel.selectedAction = Math.min(panel.selectedAction + 1, item.actions.length - 1)
                     break
                 }
                 case Qt.Key_Left:
@@ -103,7 +108,7 @@ Item {
                     break
                 case Qt.Key_Return:
                 case Qt.Key_Enter:
-                    panel.launchSelected()
+                    panel.activateSelected(event.modifiers & Qt.ShiftModifier)
                     break
                 default:
                     return
@@ -114,7 +119,7 @@ Item {
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 visible: !search.text
-                text: qsTr("Search apps")
+                text: qsTr("Search apps and windows")
                 color: Theme.secondaryForeground
                 font: search.font
             }
@@ -122,10 +127,22 @@ Item {
     }
 
     Text {
+        id: help
+        anchors.top: field.bottom
+        anchors.topMargin: 8
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible: panel.showHelp
+        text: qsTr("= calculate   > command   ? web   : emoji")
+        color: Theme.secondaryForeground
+        font.pixelSize: 11
+        font.family: "monospace"
+    }
+
+    Text {
         anchors.top: field.bottom
         anchors.topMargin: 12
         anchors.horizontalCenter: parent.horizontalCenter
-        visible: panel.results.length === 0
+        visible: panel.results.length === 0 && !panel.showHelp
         text: qsTr("No results")
         color: Theme.secondaryForeground
         font.pixelSize: 13
@@ -133,7 +150,7 @@ Item {
 
     ListView {
         id: list
-        anchors.top: field.bottom
+        anchors.top: panel.showHelp ? help.bottom : field.bottom
         anchors.topMargin: 8
         anchors.left: parent.left
         anchors.right: parent.right
@@ -149,6 +166,7 @@ Item {
             required property var modelData
             required property int index
             readonly property bool current: index === panel.selected
+            readonly property var actions: modelData.actions ?? []
 
             width: list.width
             height: panel.rowHeight
@@ -160,57 +178,71 @@ Item {
                 id: area
                 anchors.fill: parent
                 hoverEnabled: true
-                onClicked: {
+                onClicked: mouse => {
                     panel.selected = row.index
                     panel.selectedAction = -1
-                    panel.launchSelected()
+                    panel.activateSelected(mouse.modifiers & Qt.ShiftModifier)
                 }
             }
 
-            IconImage {
-                id: appIcon
+            Item {
+                id: glyph
                 anchors.left: parent.left
                 anchors.leftMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
-                source: row.modelData.icon
-                size: 30
+                width: 30
+                height: 30
+
+                IconImage {
+                    anchors.centerIn: parent
+                    visible: row.modelData.kind !== "emoji"
+                    source: row.modelData.icon || ""
+                    size: 30
+                }
+                Text {
+                    anchors.centerIn: parent
+                    visible: row.modelData.kind === "emoji"
+                    text: row.modelData.glyph ?? ""
+                    font.pixelSize: 24
+                }
             }
 
             Column {
-                anchors.left: appIcon.right
+                anchors.left: glyph.right
                 anchors.leftMargin: 12
                 anchors.right: actionsRow.left
                 anchors.rightMargin: 8
                 anchors.verticalCenter: parent.verticalCenter
                 Text {
                     width: parent.width
-                    text: row.modelData.name
+                    text: row.modelData.title
                     elide: Text.ElideRight
-                    color: Theme.foreground
-                    font.pixelSize: 14
+                    color: row.modelData.kind === "error" ? Theme.secondaryForeground : Theme.foreground
+                    font.pixelSize: row.modelData.kind === "calc" ? 18 : 14
                     font.weight: Font.Medium
+                    font.features: { "tnum": 1 }
                 }
                 Text {
                     width: parent.width
                     visible: text !== ""
-                    text: row.modelData.genericName || row.modelData.comment
+                    text: row.modelData.subtitle
                     elide: Text.ElideRight
                     color: Theme.secondaryForeground
                     font.pixelSize: 11
                 }
             }
 
-            // Desktop actions of the selected row.
+            // Desktop actions of the selected app.
             Row {
                 id: actionsRow
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 6
-                visible: row.current && row.modelData.actions.length > 0
+                visible: row.current && row.actions.length > 0
 
                 Repeater {
-                    model: row.current ? row.modelData.actions.slice(0, 3) : []
+                    model: row.current ? row.actions.slice(0, 3) : []
                     delegate: IconButton {
                         required property var modelData
                         required property int index
@@ -219,7 +251,7 @@ Item {
                         highlighted: index === panel.selectedAction
                         onClicked: {
                             panel.selectedAction = index
-                            panel.launchSelected()
+                            panel.activateSelected(false)
                         }
                     }
                 }

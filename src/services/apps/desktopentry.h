@@ -24,6 +24,7 @@ struct DesktopEntry {
     QString exec;
     QString tryExec;
     QString icon;
+    QString startupWmClass; // matches Wayland app_id / X11 class
     bool terminal = false;
     bool noDisplay = false;
     bool hidden = false;
@@ -42,6 +43,9 @@ std::optional<DesktopEntry> parseDesktopEntry(const QString& text, const QString
 
 // Removes field codes (%f %F %u %U %i %c %k ...) and unescapes %%.
 QString stripFieldCodes(const QString& exec);
+
+// Quotes one argument for sh: it's -> 'it'\''s'.
+QString shellQuote(const QString& arg);
 
 // Fuzzy subsequence score of `query` in `text`; -1 when not all characters
 // match in order. Rewards prefix, word-start and consecutive matches.

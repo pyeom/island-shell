@@ -60,6 +60,21 @@ private slots:
         QVERIFY(!list[0].toMap()[QStringLiteral("hasFullscreen")].toBool());
     }
 
+    void clients() {
+        const auto list = parseClients(R"([
+            {"address": "0x1", "class": "firefox", "title": "Twitch", "mapped": true, "hidden": false,
+             "workspace": {"id": 2, "name": "2"}, "monitor": 1},
+            {"address": "0x2", "class": "kitty", "title": "x", "mapped": false, "hidden": false,
+             "workspace": {"id": 1, "name": "1"}, "monitor": 0},
+            {"address": "0x3", "class": "", "title": "", "mapped": true, "hidden": false,
+             "workspace": {"id": 1, "name": "1"}, "monitor": 0}
+        ])");
+        QCOMPARE(list.size(), 1);
+        const auto c = list[0].toMap();
+        QCOMPARE(c[QStringLiteral("class")].toString(), QStringLiteral("firefox"));
+        QCOMPARE(c[QStringLiteral("workspace")].toString(), QStringLiteral("2"));
+    }
+
     void invalidJson() {
         QVERIFY(parseWorkspaces("not json").isEmpty());
         QVERIFY(parseMonitors("", nullptr).isEmpty());

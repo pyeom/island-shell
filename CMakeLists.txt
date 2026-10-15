@@ -12,6 +12,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(ISLAND_BUILD_TESTS "Build unit tests" ON)
 
+# The empty input region (src/wayland) uses one QPA header; rebuild after Qt
+# minor upgrades, as with other Qt-based shells.
+set(QT_NO_PRIVATE_MODULE_WARNING ON)
+
 find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui GuiPrivate Quick DBus LinguistTools)
 find_package(tomlplusplus REQUIRED)
 find_package(PkgConfig REQUIRED)

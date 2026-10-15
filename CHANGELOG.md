@@ -3,6 +3,27 @@
 The QML API (`import IslandShell`) is unstable until 1.0; breaking changes are
 listed here.
 
+## Unreleased
+
+### Added
+- Hide over fullscreen windows (`[island] fullscreen`), with an empty input
+  region so the island never blocks the fullscreen window;
+  `Activity.ambient`.
+- Audio output and input device picker; microphone level and mute in quick
+  settings; microphone mute OSD.
+- Launcher modes: open windows, calculator (`=`, or automatic for math),
+  commands (`>`), web search (`?`, `[launcher] search_url`), emoji (`:`).
+- `LauncherSearch` in the public module.
+
+### Fixed
+- Privacy indicator no longer flickers and re-alerts while a voice chat
+  toggles capture.
+- Fuzzy search ranks literal matches first (`fire` → 🔥, not 🇮🇪).
+
+### Notes
+- The empty input region uses a Qt QPA header: rebuild after Qt minor
+  upgrades.
+
 ## 0.1.0 — 2026-10-15
 
 First release.

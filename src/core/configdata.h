@@ -56,6 +56,7 @@ struct NotificationsConfig {
 struct LauncherConfig {
     std::string terminal;      // empty: $TERMINAL, then kitty, alacritty, foot
     std::string launchPrefix;  // e.g. "uwsm app --"
+    std::string searchUrl = "https://duckduckgo.com/?q=%s"; // ?query in the launcher
 };
 
 struct CalendarConfig {

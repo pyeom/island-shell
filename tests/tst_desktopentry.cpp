@@ -76,11 +76,28 @@ private slots:
         QCOMPARE(stripFieldCodes(QStringLiteral("echo 100%%")), QStringLiteral("echo 100%"));
     }
 
+    void quoting() {
+        QCOMPARE(shellQuote(QStringLiteral("a b")), QStringLiteral("'a b'"));
+        QCOMPARE(shellQuote(QStringLiteral("it's")), QStringLiteral("'it'\\''s'"));
+        QCOMPARE(shellQuote(QStringLiteral("$(rm -rf ~)")), QStringLiteral("'$(rm -rf ~)'"));
+    }
+
+    void wmClass() {
+        const auto e = parseDesktopEntry(QStringLiteral("[Desktop Entry]\nType=Application\nName=Code\n"
+                                                        "Exec=code\nStartupWMClass=Code\n"),
+                                         {});
+        QVERIFY(e);
+        QCOMPARE(e->startupWmClass, QStringLiteral("Code"));
+    }
+
     void fuzzy() {
         QVERIFY(fuzzyScore(u"ff", u"Firefox") > 0);
         QCOMPARE(fuzzyScore(u"xyz", u"Firefox"), -1);
         // Prefix beats a match in the middle.
         QVERIFY(fuzzyScore(u"fi", u"Firefox") > fuzzyScore(u"fi", u"Profile Manager"));
+        // Literal words beat scattered letters.
+        QVERIFY(fuzzyScore(u"fire", u"fire") > fuzzyScore(u"fire", u"flag: Ireland"));
+        QVERIFY(fuzzyScore(u"term", u"Konsole terminal") > fuzzyScore(u"term", u"Tetris Emulator"));
         // Word starts count: "vsc" in "Visual Studio Code".
         QVERIFY(fuzzyScore(u"vsc", u"Visual Studio Code") > fuzzyScore(u"vsc", u"Avisucer"));
     }

@@ -3,6 +3,7 @@
 set(src ${PROJECT_SOURCE_DIR}/src)
 
 set_source_files_properties(Clock.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
+set_source_files_properties(${PROJECT_SOURCE_DIR}/data/emoji.tsv PROPERTIES QT_RESOURCE_ALIAS emoji.tsv)
 
 qt_add_dbus_adaptor(dbus_adaptor
     ${PROJECT_SOURCE_DIR}/data/dbus/org.islandshell.Control.xml
@@ -68,6 +69,7 @@ qt_add_qml_module(islandshell
         ${src}/services/powerprofiles/powerprofiles.h ${src}/services/powerprofiles/powerprofiles.cpp
         ${src}/services/privacy/privacy.h ${src}/services/privacy/privacy.cpp
         ${src}/services/calendar/calendar.h ${src}/services/calendar/calendar.cpp
+        ${src}/services/launcher/launchersearch.h ${src}/services/launcher/launchersearch.cpp
         ${src}/dbus/dbusutil.h
         ${src}/dbus/dbusproperties.h ${src}/dbus/dbusproperties.cpp
         ${src}/core/icons.h ${src}/core/icons.cpp
@@ -79,6 +81,8 @@ qt_add_qml_module(islandshell
         IconButton.qml
         ProgressRing.qml
         IslandSlider.qml
+    RESOURCES
+        ${PROJECT_SOURCE_DIR}/data/emoji.tsv
 )
 
 target_include_directories(islandshell PUBLIC
@@ -100,6 +104,7 @@ target_include_directories(islandshell PUBLIC
     ${src}/services/powerprofiles
     ${src}/services/privacy
     ${src}/services/calendar
+    ${src}/services/launcher
     ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(islandshell PUBLIC

@@ -137,10 +137,31 @@ Then `vdirsyncer discover && vdirsyncer sync` (and a timer for periodic
 syncs). `~/.calendars` is in the default `[calendar] paths`. For Google
 Calendar use vdirsyncer's `google_calendar` storage.
 
+## Launcher
+
+`islandctl launcher toggle` (bind it to SUPER+R). Type to search apps and
+open windows; a query that looks like math (`2*(3+4)`, `sqrt(2)`) shows the
+result. Prefixes:
+
+| Prefix | Does |
+|---|---|
+| `=` | calculator; Enter copies the result |
+| `>` | run a shell command; Shift+Enter runs it in a terminal |
+| `?` | search the web (`[launcher] search_url`) |
+| `:` | emoji; Enter copies it |
+
 ## Quick settings
 
 Right click on the island, or `islandctl quick`: network, Bluetooth,
-do-not-disturb, volume, brightness (laptops) and power profile.
+do-not-disturb, output volume and device, microphone level, mute and
+device, brightness (laptops) and power profile.
+
+## Fullscreen
+
+Over a fullscreen window (games, videos) the island hides the clock, media
+and privacy indicators and stops taking input; notifications and the OSD
+still show. `[island] fullscreen = "hide"` keeps only critical notifications;
+`"show"` disables this.
 
 ## License
 

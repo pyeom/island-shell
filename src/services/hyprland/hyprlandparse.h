@@ -27,4 +27,8 @@ QVariantList parseMonitors(QByteArrayView json, QString* focused);
 // (special workspaces have negative ids), sorted by id.
 QVariantList parseWorkspaces(QByteArrayView json);
 
+// `j/clients` → [{ address, class, title, workspace, monitor }]: mapped,
+// visible windows only.
+QVariantList parseClients(QByteArrayView json);
+
 } // namespace island::hypr

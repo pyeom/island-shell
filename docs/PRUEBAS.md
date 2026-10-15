@@ -79,6 +79,9 @@ Al terminar: `scripts/testing/close-nested.sh` (nunca cierra tu sesión real).
 | 20 | Live activity: `$CTL push --id build --progress 0.3 --action "Cancelar=notify-send hola" "Compilando"`, luego `$CTL update --id build --progress 0.9`, `--state success`, `$CTL end build` | Anillo de progreso, porcentaje, check verde al terminar. Clic en "Cancelar" ejecuta el comando |
 | 21 | Espera a que llegue el evento del calendario de prueba (~8 min) | Aparece "Standup del equipo · en N min", luego "ahora" |
 | 22 | Edita `/tmp/ish-test/config.toml`: `[island] compact_width = 260` y guarda | La píldora cambia sin reiniciar. Pon `compact_width = 1`: aparece "1 error" en la isla |
+| 23a | Con una terminal enfocada en el anidado: `source scripts/testing/lib.sh && hyprctl dispatch fullscreen 0` (repítelo para salir) | En pantalla completa desaparece la píldora del reloj y un clic arriba llega a la terminal; una notificación igual aparece; al salir vuelve la píldora |
+| 23b | Launcher: escribe `2*(3+4)`, `=sqrt(2)`, `:fuego`/`:fire`, `?algo`, `>notify-send hola`, y el nombre de una ventana abierta | Resultado de la cuenta (Enter copia), emojis (Enter copia), búsqueda web, comando, y "Ventana · …" que al Enter enfoca la ventana |
+| 23c | Quick settings: flecha junto al volumen y junto al micrófono | Lista de salidas/entradas; clic cambia la salida **real**. Icono del micrófono silencia el micrófono **real** (cuidado si estás en una llamada) y la isla muestra "Micrófono silenciado" |
 | 23 | Copia `examples/activities/Pomodoro.qml` editado con un error de sintaxis a `/tmp/ish-test/activities/` | La isla muestra el error; al corregir y guardar desaparece |
 
 Si algo falla: anota el número, qué hiciste y lo que viste, y adjunta

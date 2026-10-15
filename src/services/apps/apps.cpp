@@ -9,6 +9,8 @@
 #include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
+#include <QClipboard>
+#include <QGuiApplication>
 #include <QJSEngine>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -199,6 +201,44 @@ void Apps::run(const QString& command) {
     p.setUnixProcessParameters(QProcess::UnixProcessFlag::CreateNewSession |
                                QProcess::UnixProcessFlag::CloseFileDescriptors);
     p.startDetached();
+}
+
+void Apps::runInTerminal(const QString& command) {
+    run(terminal() + QLatin1String(" -e sh -c ") +
+        shellQuote(command + QLatin1String("; echo; read -n1 -rsp 'Press a key to close'")));
+}
+
+void Apps::openUrl(const QString& url) {
+    run(QLatin1String("xdg-open ") + shellQuote(url));
+}
+
+void Apps::copyText(const QString& text) {
+    if (!QStandardPaths::findExecutable(QStringLiteral("wl-copy")).isEmpty()) {
+        auto* p = new QProcess(this);
+        connect(p, &QProcess::finished, p, &QObject::deleteLater);
+        p->start(QStringLiteral("wl-copy"), {});
+        p->write(text.toUtf8());
+        p->closeWriteChannel();
+        return;
+    }
+    QGuiApplication::clipboard()->setText(text);
+}
+
+QString Apps::iconForClass(const QString& windowClass) const {
+    if (windowClass.isEmpty())
+        return Icons::source({}, QStringLiteral("application-x-executable"));
+    const auto lower = windowClass.toLower();
+    const DesktopEntry* match = nullptr;
+    for (const auto& e : m_entries) {
+        if (e.startupWmClass.compare(windowClass, Qt::CaseInsensitive) == 0) {
+            match = &e;
+            break;
+        }
+        const auto id = e.id.toLower().chopped(8); // ".desktop"
+        if (!match && (id == lower || id.endsWith(u'.' + lower)))
+            match = &e;
+    }
+    return Icons::source(match ? match->icon : windowClass, QStringLiteral("application-x-executable"));
 }
 
 void Apps::loadUsage() {

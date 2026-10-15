@@ -37,6 +37,14 @@ public:
     Q_INVOKABLE bool launch(const QString& id, const QString& action = {});
     // Runs a shell command the same way apps are launched.
     Q_INVOKABLE void run(const QString& command);
+    // Runs a shell command in the configured terminal.
+    Q_INVOKABLE void runInTerminal(const QString& command);
+    Q_INVOKABLE void openUrl(const QString& url);
+    // Through wl-copy (survives the launcher closing), else QClipboard.
+    Q_INVOKABLE void copyText(const QString& text);
+    // Icon for a window's app_id/class: StartupWMClass, then desktop file
+    // name, then the class itself as an icon name.
+    Q_INVOKABLE QString iconForClass(const QString& windowClass) const;
 
 signals:
     void changed();

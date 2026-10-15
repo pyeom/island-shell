@@ -79,4 +79,24 @@ QVariantList parseWorkspaces(QByteArrayView json) {
     return out;
 }
 
+QVariantList parseClients(QByteArrayView json) {
+    QVariantList out;
+    for (const auto& value : parseArray(json)) {
+        const auto c = value.toObject();
+        if (!c[u"mapped"].toBool(true) || c[u"hidden"].toBool(false))
+            continue;
+        const auto cls = c[u"class"].toString();
+        if (cls.isEmpty() && c[u"title"].toString().isEmpty())
+            continue;
+        out.append(QVariantMap{
+            {u"address"_s, c[u"address"].toString()},
+            {u"class"_s, cls},
+            {u"title"_s, c[u"title"].toString()},
+            {u"workspace"_s, c[u"workspace"].toObject()[u"name"].toString()},
+            {u"monitor"_s, c[u"monitor"].toInt()},
+        });
+    }
+    return out;
+}
+
 } // namespace island::hypr

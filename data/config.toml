@@ -76,6 +76,8 @@ rules = [
 terminal = ""
 # Prepended to every launch command, e.g. "uwsm app --" for uwsm sessions.
 launch_prefix = ""
+# Web search for "?words" in the launcher; %s is replaced by the query.
+search_url = "https://duckduckgo.com/?q=%s"
 
 [calendar]
 # vdir collections (what vdirsyncer writes) or any folders of .ics files,
