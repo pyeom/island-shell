@@ -16,7 +16,7 @@ jobs:
             qt6-base qt6-declarative qt6-wayland qt6-svg qt6-shadertools qt6-tools \
             layer-shell-qt tomlplusplus libpipewire libical
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Configure
         run: cmake --preset ci
