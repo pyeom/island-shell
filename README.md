@@ -9,7 +9,18 @@ zone. It expands and collapses inside that surface, and only the Wayland input
 region follows the pill, so windows are never re-laid out and clicks outside
 the pill reach the windows below.
 
-> Early development. See [docs/PLAN.md](docs/PLAN.md) for the design and roadmap.
+Version 0.1. See [docs/PLAN.md](docs/PLAN.md) for the design and roadmap.
+
+## Installing (Arch Linux)
+
+```sh
+git clone https://github.com/pyeom/island-shell.git
+cd island-shell/packaging/arch
+makepkg -si
+```
+
+Then follow [docs/migration.md](docs/migration.md) to start it from Hyprland
+and move notifications, launcher and keybinds over.
 
 ## Building
 
@@ -17,7 +28,7 @@ Dependencies (Arch Linux):
 
 ```sh
 sudo pacman -S --needed cmake ninja qt6-base qt6-declarative qt6-wayland \
-    qt6-svg qt6-shadertools layer-shell-qt tomlplusplus libpipewire libical
+    qt6-svg qt6-shadertools qt6-tools layer-shell-qt tomlplusplus libpipewire libical
 ```
 
 Build and test:
@@ -49,6 +60,13 @@ ISLAND_SHELL_CONFIG=/tmp/test/config.toml \
 ISLAND_SHELL_ACTIVITIES=/tmp/test/activities \
 scripts/dev-nested.sh
 ```
+
+`scripts/test-pkg.sh` builds and installs the package in a clean Arch
+container (docker or podman) from the committed HEAD.
+
+Translations live in `i18n/`. After changing user-visible strings:
+`cmake --build --preset dev --target update_translations`, then translate the
+new entries in `i18n/island-shell_es.ts` (Qt Linguist or a text editor).
 
 ## Configuration and activities
 

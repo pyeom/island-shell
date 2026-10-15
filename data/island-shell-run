@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# island-shell-run: start island-shell and restart it if it crashes.
+#
+# For sessions without systemd user units (e.g. Hyprland started directly by a
+# display manager): put `island-shell-run` in your autostart instead of
+# `island-shell`. Arguments are passed through.
+#
+# Stops when the shell exits normally, is already running, or is stopped with
+# SIGTERM/SIGINT. Gives up after 5 crashes within a minute.
+
+set -u
+
+max_crashes=5
+window=60
+crashes=()
+
+log() {
+    if command -v systemd-cat >/dev/null; then
+        printf '%s\n' "$*" | systemd-cat -t island-shell-run
+    fi
+    printf 'island-shell-run: %s\n' "$*" >&2
+}
+
+trap 'kill -TERM "$child" 2>/dev/null; wait "$child"; exit 0' TERM INT
+
+while true; do
+    island-shell "$@" &
+    child=$!
+    wait "$child"
+    status=$?
+
+    case $status in
+    0) exit 0 ;;                # quit on purpose
+    3) log "already running"; exit 0 ;;
+    130 | 143) exit 0 ;;        # SIGINT / SIGTERM
+    esac
+
+    now=$(date +%s)
+    recent=()
+    for t in "${crashes[@]}"; do
+        ((now - t < window)) && recent+=("$t")
+    done
+    recent+=("$now")
+    crashes=("${recent[@]}")
+
+    if ((${#crashes[@]} >= max_crashes)); then
+        log "crashed ${#crashes[@]} times in ${window}s, giving up (last status $status)"
+        exit 1
+    fi
+    log "exited with status $status, restarting"
+    sleep $((${#crashes[@]}))
+done

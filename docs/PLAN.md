@@ -102,7 +102,7 @@ Batería: el indicador solo aparece si UPower detecta una.
 ### Desarrollo
 
 - **Hyprland anidado** (`scripts/dev-nested.sh`): Hyprland como ventana dentro de la sesión, con `dbus-run-session` para tener un bus propio y no chocar con swaync o hyprpanel. Multi-monitor con `hyprctl output create headless`.
-- **Validación de paquete**: `scripts/test-pkg-nspawn.sh` instala el PKGBUILD en un Arch limpio con systemd-nspawn.
+- **Validación de paquete**: `scripts/test-pkg.sh` instala el PKGBUILD en un contenedor Arch limpio (docker o podman, sin root).
 - **Tests**: Qt Test para la lógica pura (springs, árbitro, parser de config, reglas de notificaciones, ranking del launcher).
 - **CI**: GitHub Actions en `archlinux:latest`, compila y corre tests en cada push.
 - **Arranque**: `hl.exec_cmd("island-shell")` en el autostart, con un watchdog que lo relanza si cae. Unidad systemd `--user` opcional para quien use uwsm.
@@ -125,6 +125,10 @@ Al llegar al MVP, la isla reemplaza a waybar, hyprpanel, swaync, rofi (SUPER+R),
 - Calendario: libical expande RRULE/EXDATE/RECURRENCE-ID en una ventana de fechas; lee `displayname` y `color` de cada colección vdir.
 - Con media, privacidad o un evento próximo, el reloj sigue visible a la derecha de la píldora.
 - Herramientas de prueba en `scripts/testing/` (fixtures en `/tmp/ish-test`, emisor de notificaciones, player MPRIS falso).
+- Validación del paquete en contenedor Arch (docker/podman) en vez de systemd-nspawn: no necesita root.
+- `island-shell-run` (watchdog en bash): reinicia tras crashes con espera creciente, se rinde tras 5 en un minuto; el exit 3 ("ya hay otra instancia") no reinicia.
+- Hyprland no pasa todo su entorno a `exec-once`: `dev-nested.sh` pasa explícitamente `ISLAND_SHELL_*`, `XDG_STATE_HOME`, `XDG_CACHE_HOME` y `QT_LOGGING_RULES`.
+- La migración de la sesión real queda documentada en `docs/migration.md` y en la guía de pruebas; no se toca la config de Hyprland automáticamente.
 - El entorno anidado usa un bus D-Bus sin directorios de servicio, para que nada se active por D-Bus y le quite `org.freedesktop.Notifications` a la isla.
 
 ## Layout del repo
@@ -147,7 +151,7 @@ island-shell/
 ├── data/              # config.toml por defecto, XML D-Bus
 ├── i18n/              # island-shell_es.ts
 ├── packaging/arch/PKGBUILD
-├── scripts/           # dev-nested.sh, test-pkg-nspawn.sh
+├── scripts/           # dev-nested.sh, test-pkg.sh, testing/
 ├── tests/
 └── docs/
 ```
@@ -160,7 +164,7 @@ island-shell/
 | **F1 Framework** ✅ | `Activity` y árbitro, módulo `IslandShell 0.1`, Loader aislado, config TOML con recarga, tema y pywal, D-Bus `Control` e `islandctl`, servicio Hyprland, actividad de workspaces | Una actividad de usuario en `~/.config/island-shell/activities/` aparece y se recarga en caliente |
 | **F2 Núcleo MVP** ✅ | Notificaciones, OSD de audio, Media, Live Activities, Launcher, Power menu | En el entorno anidado se puede prescindir de waybar, hyprpanel, swaync y rofi |
 | **F3 Sistema** ✅ | Quick settings, privacidad, calendario (requiere `libical`) | MVP completo |
-| **F4 Release v0.1** | Traducción `es`, docs, PKGBUILD, prueba en nspawn, migración de la sesión real con 3 monitores | `makepkg -si` en un Arch limpio funciona; la sesión diaria usa la isla |
+| **F4 Release v0.1** ✅ | Traducción `es`, docs, PKGBUILD, prueba en nspawn, migración de la sesión real con 3 monitores | `makepkg -si` en un Arch limpio funciona; la sesión diaria usa la isla |
 | **Después** | Calculadora, emojis y portapapeles en el launcher, timer/pomodoro, clima, indicador de grabación, API 1.0 | — |
 
 ## Dependencias

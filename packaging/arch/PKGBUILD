@@ -1,0 +1,58 @@
+# Maintainer: pyeom <felipe.rojass@sansano.usm.cl>
+#
+# Builds from git. To build a local checkout instead of the published repo:
+#   ISLAND_SHELL_SOURCE=/path/to/island-shell makepkg -si
+
+pkgname=island-shell-git
+_name=island-shell
+pkgver=0.1.0.r0.g0000000
+pkgrel=1
+pkgdesc="Dynamic Island style shell for Hyprland: notifications, launcher, media, calendar"
+arch=(x86_64 aarch64)
+url="https://github.com/pyeom/island-shell"
+license=(GPL-3.0-or-later)
+depends=(
+    glibc gcc-libs
+    qt6-base qt6-declarative qt6-wayland qt6-svg
+    layer-shell-qt
+    libpipewire libical
+    hyprland
+)
+makedepends=(git cmake ninja qt6-tools qt6-shadertools tomlplusplus)
+optdepends=(
+    'wireplumber: volume slider in quick settings (wpctl)'
+    'networkmanager: network status in quick settings'
+    'bluez: Bluetooth in quick settings'
+    'power-profiles-daemon: power profile selector'
+    'vdirsyncer: sync Google/CalDAV calendars to local files'
+    'hyprlock: default lock command'
+    'python-pywal: theme colors from the wallpaper'
+)
+provides=("$_name")
+conflicts=("$_name")
+source=("$_name::git+${ISLAND_SHELL_SOURCE:-$url.git}")
+sha256sums=(SKIP)
+
+pkgver() {
+    cd "$_name"
+    local version
+    version=$(sed -n 's/^ *VERSION \([0-9.]*\)$/\1/p' CMakeLists.txt | head -1)
+    printf '%s.r%s.g%s' "$version" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+build() {
+    cmake -S "$_name" -B build -G Ninja \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DISLAND_BUILD_TESTS=ON
+    cmake --build build
+}
+
+check() {
+    QT_QPA_PLATFORM=offscreen ctest --test-dir build --output-on-failure
+}
+
+package() {
+    DESTDIR="$pkgdir" cmake --install build
+    install -Dm644 "$_name/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

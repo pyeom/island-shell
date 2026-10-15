@@ -3,7 +3,18 @@
 The QML API (`import IslandShell`) is unstable until 1.0; breaking changes are
 listed here.
 
-## Unreleased
+## 0.1.0 — 2026-10-15
+
+First release.
+
+### Release
+- Spanish translation, picked from the system locale.
+- `island-shell-run` restarts the shell after crashes; optional systemd user
+  unit for sessions with `graphical-session.target`.
+- Arch package (`packaging/arch/PKGBUILD`, `island-shell-git`) and
+  `scripts/test-pkg.sh` to build and install it in a clean container.
+- `docs/migration.md`: replacing a bar, notification daemon, launcher and
+  power menu.
 
 ### Fixed
 - Startup could stall for ~10 s (and freeze the compositor) when Hyprland IPC

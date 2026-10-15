@@ -5,6 +5,7 @@
 #   scripts/dev-nested.sh            # build (dev preset) and launch
 #   scripts/dev-nested.sh --demo     # extra args are passed to island-shell
 #   NESTED_SIZE=1600x900 scripts/dev-nested.sh
+#   ISLAND_SHELL_DRY_RUN=1 scripts/dev-nested.sh   # power menu only logs
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -24,7 +25,13 @@ runtime="${XDG_RUNTIME_DIR:-/tmp}/island-shell-nested"
 mkdir -p "$runtime"
 conf="$runtime/hyprland.conf"
 
-island_cmd="$build/src/island-shell"
+# Hyprland does not hand its whole environment to exec-once, so pass the
+# variables island-shell reads explicitly.
+island_cmd="env"
+while IFS='=' read -r name value; do
+    island_cmd+=" $name=$(printf '%q' "$value")"
+done < <(env | grep -E '^(ISLAND_SHELL_[A-Z_]*|XDG_STATE_HOME|XDG_CACHE_HOME|QT_LOGGING_RULES)=' || true)
+island_cmd+=" $build/src/island-shell"
 for arg in "$@"; do island_cmd+=" $(printf '%q' "$arg")"; done
 
 sed -e "s|@ISLAND_CMD@|$island_cmd|" \

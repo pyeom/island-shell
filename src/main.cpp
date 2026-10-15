@@ -6,6 +6,8 @@
 #include "useractivities.h"
 
 #include <QCommandLineParser>
+#include <QLocale>
+#include <QTranslator>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml/qqmlextensionplugin.h>
@@ -20,6 +22,12 @@ int main(int argc, char* argv[]) {
     QGuiApplication::setApplicationVersion(QStringLiteral(ISLAND_VERSION));
     QGuiApplication::setDesktopFileName(QStringLiteral("island-shell"));
 
+    // Embedded translations (":/i18n/island-shell_es.qm"); English otherwise.
+    QTranslator translator;
+    if (translator.load(QLocale(), QStringLiteral("island-shell"), QStringLiteral("_"),
+                        QStringLiteral(":/i18n")))
+        QCoreApplication::installTranslator(&translator);
+
     QCommandLineParser parser;
     parser.setApplicationDescription(QStringLiteral("Dynamic Island style shell for Hyprland"));
     parser.addHelpOption();
@@ -32,7 +40,7 @@ int main(int argc, char* argv[]) {
     switch (island::ShellControl::instance()->registerOnBus()) {
     case island::ShellControl::Registration::AlreadyRunning:
         qCritical("island-shell: another instance owns %s", island::ShellControl::kService);
-        return 1;
+        return 3; // island-shell-run and the systemd unit treat 3 as "do not restart"
     case island::ShellControl::Registration::NoBus:
         qWarning("island-shell: no D-Bus session bus; islandctl will not work");
         break;
