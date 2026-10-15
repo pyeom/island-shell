@@ -1,0 +1,54 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}"
+    },
+    {
+      "name": "dev",
+      "inherits": "base",
+      "displayName": "Debug",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "release",
+      "inherits": "base",
+      "displayName": "Release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "ISLAND_BUILD_TESTS": "OFF"
+      }
+    },
+    {
+      "name": "ci",
+      "inherits": "base",
+      "displayName": "CI",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_COMPILE_WARNING_AS_ERROR": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "dev", "configurePreset": "dev" },
+    { "name": "release", "configurePreset": "release" },
+    { "name": "ci", "configurePreset": "ci" }
+  ],
+  "testPresets": [
+    {
+      "name": "dev",
+      "configurePreset": "dev",
+      "output": { "outputOnFailure": true },
+      "environment": { "QT_QPA_PLATFORM": "offscreen" }
+    },
+    {
+      "name": "ci",
+      "configurePreset": "ci",
+      "output": { "outputOnFailure": true },
+      "environment": { "QT_QPA_PLATFORM": "offscreen" }
+    }
+  ]
+}

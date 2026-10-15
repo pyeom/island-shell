@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm --needed \
+            base-devel cmake ninja git \
+            qt6-base qt6-declarative qt6-wayland qt6-svg qt6-shadertools \
+            layer-shell-qt
+
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake --preset ci
+
+      - name: Build
+        run: cmake --build --preset ci
+
+      - name: Test
+        run: ctest --preset ci
+
+      - name: Smoke test (offscreen)
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          set +e
+          timeout 3 ./build/ci/src/island-shell
+          status=$?
+          # 124 = still running when timeout fired, which is what we want.
+          test "$status" -eq 124

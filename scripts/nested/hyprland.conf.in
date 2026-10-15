@@ -1,0 +1,36 @@
+# Minimal config for the nested development compositor.
+# Generated into $XDG_RUNTIME_DIR/island-shell-nested by scripts/dev-nested.sh.
+
+monitor = , @SIZE@, auto, 1
+
+exec-once = @ISLAND_CMD@
+exec-once = @TERMINAL@
+
+general {
+    gaps_in = 5
+    gaps_out = 10
+    border_size = 2
+}
+
+decoration {
+    rounding = 10
+}
+
+misc {
+    disable_hyprland_logo = true
+    disable_splash_rendering = true
+}
+
+input {
+    kb_layout = latam
+}
+
+# Blur behind the island when the theme asks for it.
+layerrule = blur on, match:namespace island-shell
+layerrule = ignore_alpha 0.01, match:namespace island-shell
+
+$mod = SUPER
+bind = $mod, Return, exec, @TERMINAL@
+bind = $mod, Q, killactive
+bind = $mod, R, exec, pkill -x island-shell; @ISLAND_CMD@
+bind = $mod SHIFT, E, exit
