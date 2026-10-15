@@ -1,3 +1,7 @@
+#include "config.h"
+#include "icons.h"
+#include "liveactivities.h"
+#include "notifications.h"
 #include "shellcontrol.h"
 #include "useractivities.h"
 
@@ -33,10 +37,16 @@ int main(int argc, char* argv[]) {
         qWarning("island-shell: no D-Bus session bus; islandctl will not work");
         break;
     case island::ShellControl::Registration::Ok:
+        island::Notifications::instance()->registerOnBus();
+        island::LiveActivities::instance()->registerOnBus();
         break;
     }
 
+    island::Icons::setupTheme(
+        QString::fromStdString(island::Config::instance()->data().iconTheme));
+
     QQmlApplicationEngine engine;
+    engine.addImageProvider(QStringLiteral("icon"), new island::IconProvider);
     engine.setInitialProperties({{QStringLiteral("demo"), parser.isSet(demoOption)}});
     engine.loadFromModule("IslandShell.App", "Shell");
     if (engine.rootObjects().isEmpty())

@@ -13,8 +13,19 @@ QtObject {
 
     property list<QtObject> builtins: [
         Idle {},
-        ShellErrors {}
+        ShellErrors {},
+        Notification {},
+        VolumeOsd {},
+        Media {},
+        Launcher {},
+        PowerMenu {}
     ]
+
+    // One activity per live activity pushed over D-Bus / islandctl.
+    property Instantiator liveActivities: Instantiator {
+        model: LiveActivities
+        delegate: LiveActivity {}
+    }
 
     property Instantiator islands: Instantiator {
         model: Qt.application.screens
@@ -31,6 +42,20 @@ QtObject {
             height: Config.surfaceHeight
             exclusiveZone: Config.exclusiveZone
             inputRects: island.inputRects
+            keyboardMode: island.keyboardMode
+
+            // Catches clicks outside the island while a modal is open.
+            property ScrimWindow scrim: ScrimWindow {
+                screenName: window.screenName
+                visible: island.modal
+                width: 1
+                height: 1
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: island.collapse()
+                }
+            }
 
             Island {
                 id: island

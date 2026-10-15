@@ -17,7 +17,7 @@ Dependencies (Arch Linux):
 
 ```sh
 sudo pacman -S --needed cmake ninja qt6-base qt6-declarative qt6-wayland \
-    qt6-svg qt6-shadertools layer-shell-qt tomlplusplus
+    qt6-svg qt6-shadertools layer-shell-qt tomlplusplus libpipewire
 ```
 
 Build and test:
@@ -57,6 +57,34 @@ scripts/dev-nested.sh
 - Activities: see [docs/activities.md](docs/activities.md) and
   [`examples/activities/`](examples/activities/).
 - Control from scripts or Hyprland binds with `islandctl` (`islandctl --help`).
+
+## Keybinds
+
+Example for a Lua Hyprland config (`hl.bind`):
+
+```lua
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("islandctl launcher toggle"))
+hl.bind("ALT + TAB",       hl.dsp.exec_cmd("islandctl power"))
+hl.bind("ALT + p",         hl.dsp.exec_cmd("islandctl expand media"))
+```
+
+or `hyprland.conf`:
+
+```
+bind = SUPER, R, exec, islandctl launcher toggle
+bind = ALT, TAB, exec, islandctl power
+bind = ALT, P, exec, islandctl expand media
+```
+
+Volume keys need no change: the OSD follows PipeWire, whatever changed the
+volume.
+
+## Notifications
+
+island-shell is a notification server. Only one program can own
+`org.freedesktop.Notifications`, so stop swaync, mako, dunst or hyprpanel
+first; if another one holds the name, the island shows an error and leaves it
+alone.
 
 ## License
 

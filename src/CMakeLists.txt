@@ -3,13 +3,17 @@ add_library(islandlogic STATIC
     core/configdata.h core/configdata.cpp
     core/pywal.h core/pywal.cpp
     services/hyprland/hyprlandparse.h services/hyprland/hyprlandparse.cpp
+    services/notifications/notificationrules.h services/notifications/notificationrules.cpp
+    services/apps/desktopentry.h services/apps/desktopentry.cpp
     activity/selection.h
 )
 target_include_directories(islandlogic PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/core
     ${CMAKE_CURRENT_SOURCE_DIR}/activity
-    ${CMAKE_CURRENT_SOURCE_DIR}/services/hyprland)
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/hyprland
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/notifications
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/apps)
 target_link_libraries(islandlogic PUBLIC Qt6::Core Qt6::Gui tomlplusplus::tomlplusplus)
 
 # Internal module: the shell root and the island itself.

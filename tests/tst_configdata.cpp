@@ -85,6 +85,26 @@ surface_width = 600
         QCOMPARE(cfg.island.surfaceWidth, 800);
     }
 
+    void notificationRules() {
+        std::vector<std::string> errors;
+        const auto cfg = parseConfig(R"(
+[notifications]
+timeout = 8000
+rules = [
+  { app = "discord", mute = true },
+  { app = "*spotify*", no_popup = true, urgency = "low" },
+  { mute = true },
+]
+)",
+                                     errors);
+        QCOMPARE(errors.size(), size_t(1)); // the rule without "app"
+        QCOMPARE(cfg.notifications.timeout, 8000);
+        QCOMPARE(cfg.notifications.rules.size(), size_t(2));
+        QVERIFY(cfg.notifications.rules[0].mute);
+        QVERIFY(cfg.notifications.rules[1].noPopup);
+        QCOMPARE(cfg.notifications.rules[1].urgency, 0);
+    }
+
     void rawKeepsUnknownSections() {
         std::vector<std::string> errors;
         const auto cfg = parseConfig("[activities.weather]\ncity = \"Santiago\"\n", errors);

@@ -31,10 +31,19 @@ class IslandWindow : public QQuickWindow, public QQmlParserStatus {
                    inputRectsChanged)
     // Whether this is the monitor with focus. Set from QML (Hyprland state).
     Q_PROPERTY(bool focused READ focused WRITE setFocused NOTIFY focusedChanged)
+    Q_PROPERTY(KeyboardMode keyboardMode READ keyboardMode WRITE setKeyboardMode NOTIFY
+                   keyboardModeChanged)
     Q_PROPERTY(int exclusiveZone READ exclusiveZone WRITE setExclusiveZone NOTIFY
                    exclusiveZoneChanged)
 
 public:
+    enum KeyboardMode {
+        NoKeyboard, // never takes keyboard focus (resting state)
+        OnDemand,   // focus when clicked (expanded: reply fields, buttons)
+        Exclusive,  // grabs the keyboard (launcher, power menu)
+    };
+    Q_ENUM(KeyboardMode)
+
     explicit IslandWindow(QWindow* parent = nullptr);
 
     QString screenName() const { return m_screenName; }
@@ -46,6 +55,9 @@ public:
     bool focused() const { return m_focused; }
     void setFocused(bool focused);
 
+    KeyboardMode keyboardMode() const { return m_keyboardMode; }
+    void setKeyboardMode(KeyboardMode mode);
+
     int exclusiveZone() const { return m_exclusiveZone; }
     void setExclusiveZone(int zone);
 
@@ -56,6 +68,7 @@ signals:
     void screenNameChanged();
     void inputRectsChanged();
     void focusedChanged();
+    void keyboardModeChanged();
     void exclusiveZoneChanged();
 
 private:
@@ -65,6 +78,7 @@ private:
     QString m_screenName;
     QList<QRectF> m_inputRects;
     bool m_focused = false;
+    KeyboardMode m_keyboardMode = NoKeyboard;
     int m_exclusiveZone = 44;
     bool m_complete = false;
 };

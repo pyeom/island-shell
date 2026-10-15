@@ -71,6 +71,23 @@ void IslandWindow::setExclusiveZone(int zone) {
     emit exclusiveZoneChanged();
 }
 
+void IslandWindow::setKeyboardMode(KeyboardMode mode) {
+    if (m_keyboardMode == mode)
+        return;
+    m_keyboardMode = mode;
+    if (m_layer) {
+        m_layer->setKeyboardInteractivity(
+            mode == Exclusive  ? LayerShellQt::Window::KeyboardInteractivityExclusive
+            : mode == OnDemand ? LayerShellQt::Window::KeyboardInteractivityOnDemand
+                               : LayerShellQt::Window::KeyboardInteractivityNone);
+        // The new interactivity applies on the next commit.
+        update();
+    }
+    if (mode == Exclusive)
+        requestActivate();
+    emit keyboardModeChanged();
+}
+
 void IslandWindow::componentComplete() {
     m_complete = true;
     applyMask();

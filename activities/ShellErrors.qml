@@ -14,6 +14,9 @@ Activity {
 
     readonly property var items: Config.errors.map(m => ({ file: "config.toml", message: m }))
                                  .concat(UserActivities.errors)
+                                 .concat(Notifications.available || !Notifications.unavailableReason ? []
+                                         : [{ file: qsTr("notifications"),
+                                              message: Notifications.unavailableReason }])
     readonly property int count: items.length
 
     component Badge: Rectangle {

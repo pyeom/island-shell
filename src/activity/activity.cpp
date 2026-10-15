@@ -38,6 +38,13 @@ void Activity::setScope(Scope scope) {
     emit scopeChanged();
 }
 
+void Activity::setModal(bool modal) {
+    if (m_modal == modal)
+        return;
+    m_modal = modal;
+    emit modalChanged();
+}
+
 void Activity::setComponent(QPointer<QQmlComponent>& slot, QQmlComponent* c) {
     if (slot == c)
         return;
@@ -69,6 +76,10 @@ QQmlListProperty<QObject> Activity::data() {
 
 void Activity::alert(int durationMs) {
     emit alertRequested(durationMs);
+}
+
+void Activity::dismiss() {
+    emit dismissRequested();
 }
 
 void Activity::componentComplete() {

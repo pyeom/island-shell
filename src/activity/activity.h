@@ -33,6 +33,9 @@ class Activity : public QObject, public QQmlParserStatus {
     Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged)
     Q_PROPERTY(Scope scope READ scope WRITE setScope NOTIFY scopeChanged)
+    // Modal activities (launcher, power menu) open expanded, grab the
+    // keyboard and stay until they turn inactive.
+    Q_PROPERTY(bool modal READ modal WRITE setModal NOTIFY modalChanged)
     Q_PROPERTY(QQmlComponent* compactLeading READ compactLeading WRITE setCompactLeading NOTIFY
                    presentationsChanged)
     Q_PROPERTY(QQmlComponent* compactTrailing READ compactTrailing WRITE setCompactTrailing NOTIFY
@@ -60,6 +63,8 @@ public:
     void setActive(bool active);
     Scope scope() const { return m_scope; }
     void setScope(Scope scope);
+    bool modal() const { return m_modal; }
+    void setModal(bool modal);
 
     QQmlComponent* compactLeading() const { return m_compactLeading; }
     void setCompactLeading(QQmlComponent* c);
@@ -76,6 +81,10 @@ public:
     // Ignored on monitors where the activity is not eligible.
     Q_INVOKABLE void alert(int durationMs = 4000);
 
+    // The island asks a modal activity to close (click outside, islandctl
+    // collapse). Handle with `onDismissRequested: open = false`.
+    Q_INVOKABLE void dismiss();
+
     void classBegin() override {}
     void componentComplete() override;
 
@@ -84,8 +93,10 @@ signals:
     void priorityChanged();
     void activeChanged();
     void scopeChanged();
+    void modalChanged();
     void presentationsChanged();
     void alertRequested(int durationMs);
+    void dismissRequested();
 
 private:
     void setComponent(QPointer<QQmlComponent>& slot, QQmlComponent* c);
@@ -94,6 +105,7 @@ private:
     int m_priority = 0;
     bool m_active = true;
     Scope m_scope = FocusedScreen;
+    bool m_modal = false;
     QPointer<QQmlComponent> m_compactLeading;
     QPointer<QQmlComponent> m_compactTrailing;
     QPointer<QQmlComponent> m_minimal;

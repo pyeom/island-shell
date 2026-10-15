@@ -117,6 +117,53 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
     if (const auto* t = cfg.raw["clock"].as_table())
         readString(*t, "clock", "format", cfg.clock.format, {}, errors);
 
+    if (const auto* t = cfg.raw["theme"].as_table())
+        readString(*t, "theme", "icon_theme", cfg.iconTheme, {}, errors);
+
+    if (const auto* t = cfg.raw["notifications"].as_table()) {
+        auto& n = cfg.notifications;
+        readInt(*t, "notifications", "timeout", n.timeout, 500, 600000, errors);
+        readInt(*t, "notifications", "history_limit", n.historyLimit, 0, 10000, errors);
+        if (const auto* node = t->get("rules")) {
+            const auto* rules = node->as_array();
+            if (!rules)
+                errors.emplace_back("notifications.rules: expected an array of tables");
+            for (size_t i = 0; rules && i < rules->size(); ++i) {
+                const auto* rt = rules->get(i)->as_table();
+                const auto where = std::format("notifications.rules[{}]", i);
+                if (!rt) {
+                    errors.push_back(where + ": expected a table");
+                    continue;
+                }
+                NotificationRule rule;
+                readString(*rt, where, "app", rule.app, {}, errors);
+                if (rule.app.empty()) {
+                    errors.push_back(where + ": missing \"app\"");
+                    continue;
+                }
+                if (const auto v = (*rt)["mute"].value<bool>())
+                    rule.mute = *v;
+                if (const auto v = (*rt)["no_popup"].value<bool>())
+                    rule.noPopup = *v;
+                std::string urgency;
+                readString(*rt, where, "urgency", urgency, {"low", "normal", "critical"}, errors);
+                if (!urgency.empty())
+                    rule.urgency = urgency == "low" ? 0 : urgency == "normal" ? 1 : 2;
+                n.rules.push_back(std::move(rule));
+            }
+        }
+    }
+
+    if (const auto* t = cfg.raw["launcher"].as_table()) {
+        readString(*t, "launcher", "terminal", cfg.launcher.terminal, {}, errors);
+        readString(*t, "launcher", "launch_prefix", cfg.launcher.launchPrefix, {}, errors);
+    }
+
+    if (const auto* t = cfg.raw["power"].as_table()) {
+        readString(*t, "power", "lock_command", cfg.power.lockCommand, {}, errors);
+        readInt(*t, "power", "hold_ms", cfg.power.holdMs, 0, 5000, errors);
+    }
+
     return cfg;
 }
 

@@ -1,8 +1,8 @@
 # Writing activities
 
-Everything the island shows is an **activity**: the clock, the error badge, and
-(from F2) notifications, media and the launcher. The built-in ones use the same
-API described here.
+Everything the island shows is an **activity**: the clock, notifications, media,
+the volume OSD, live activities, the launcher and the power menu. The built-in
+ones (in [`activities/`](../activities/)) use the same API described here.
 
 > The API is `import IslandShell 0.x` and may change between minor versions
 > until 1.0. Breaking changes are listed in `CHANGELOG.md`.
@@ -32,6 +32,7 @@ Activity {
     priority: 40            // higher wins the pill
     active: running         // only competes for the island while true
     scope: Activity.FocusedScreen   // or Activity.AllScreens
+    modal: false            // see "Modal activities"
 
     compactLeading:  Component { ... }  // left side of the pill
     compactTrailing: Component { ... }  // right side of the pill
@@ -60,10 +61,14 @@ Built-in priorities:
 
 | Activity | Priority |
 |---|---|
+| `launcher`, `power` (modal) | 1000 |
+| `notification` (critical) | 100 |
 | `errors` | 90 |
-| `idle` (workspaces + clock) | 0 |
-
-Planned in F2: urgent notification > OSD > privacy > live activities > media.
+| `osd` (volume, brightness) | 80 |
+| `notification` | 70 |
+| `live:<id>` | 50 |
+| `media` | 40 |
+| `idle` (workspaces, clock, notification history) | 0 |
 
 ### Sizes
 
@@ -76,6 +81,22 @@ size and revealed by the pill as it grows, so give them a fixed implicit size.
 
 `alert(ms)` briefly expands the island to show this activity, for example when a
 timer ends. It collapses after `ms` unless the pointer is over it.
+
+### Modal activities
+
+`modal: true` activities open expanded as soon as they become active, take the
+keyboard, and stay until they turn inactive. Clicking outside the island or
+`islandctl collapse` calls their `dismissRequested` signal:
+
+```qml
+Activity {
+    name: "picker"; priority: 1000; modal: true
+    property bool open: false
+    active: open
+    onDismissRequested: open = false
+    expanded: Component { MyPicker { onDone: root.open = false } }
+}
+```
 
 ## Available API
 
@@ -90,15 +111,45 @@ timer ends. It collapses after `ms` unless the pointer is over it.
 | `ShellControl` | `dnd` and the requests coming from `islandctl`. |
 | `ActivityRegistry` | `activities`, `find(name)`. |
 | `Spring` | Spring animation: `Spring { id: s; target: x }` then use `s.value`. |
+| `Notifications` | `current` popup, `history` model, `invokeAction(id, key)`, `reply(id, text)`, `dismiss(id)`, `clearHistory()`. |
+| `Audio` | Default sink `volume` (1.0 = 100%), `muted`, `changed` signal. |
+| `Brightness` | Backlight `level` 0..1, `available`, `changed` signal. |
+| `Mpris` | `players`, `current` (title, artist, artUrl, position, length, playPause(), next(), previous(), seekTo(s)). |
+| `LiveActivities` | Model of pushed live activities; `invoke(id, key)`. |
+| `Apps` | `search(query)`, `launch(id, action)`, `run(command)`. |
+| `Power` | `run("shutdown" \| "reboot" \| "suspend" \| "logout" \| "lock")`. |
+| `Icons` | `Icons.source(nameOrPath, fallback)` → an `Image` source from the icon theme. |
+| `IconImage`, `IconButton`, `ProgressRing` | Small components used by the built-in activities. |
 
 ## islandctl
 
 ```
 islandctl expand [activity]   expand (the current activity if omitted)
 islandctl collapse
+islandctl launcher toggle
+islandctl power
 islandctl activities          list names
 islandctl reload              reload config, theme and activities
 islandctl dnd on|off|toggle
+islandctl notifications [list|clear|dismiss ID]
+islandctl push --id ID [--progress 0.4] [--state running|success|error] \
+               [--subtitle S] [--icon I] [--ttl SEC] [--action "Label=cmd"] TITLE
+islandctl update --id ID [same options]
+islandctl end ID
+islandctl live
+```
+
+## Live activities from other programs
+
+Anything on the session bus can push live activities without `islandctl`; see
+[`data/dbus/org.islandshell.LiveActivities.xml`](../data/dbus/org.islandshell.LiveActivities.xml).
+They end when the caller disconnects unless pushed with `persist = true`, and
+action clicks come back as the `ActionInvoked(id, key)` signal.
+
+```sh
+busctl --user call org.islandshell.Shell /org/islandshell/LiveActivities \
+    org.islandshell.LiveActivities Push 'sa{sv}' upload 2 \
+    title s "Uploading" progress d 0.25
 ```
 
 ## Blur

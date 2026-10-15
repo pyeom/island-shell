@@ -43,18 +43,7 @@ QString ShellControl::version() const {
     return QCoreApplication::applicationVersion();
 }
 
-void ShellControl::notImplemented(const char* what) {
-    if (calledFromDBus())
-        sendErrorReply(QStringLiteral("org.islandshell.Error.NotImplemented"),
-                       QStringLiteral("%1 is not available yet").arg(QLatin1String(what)));
-}
-
 void ShellControl::ToggleLauncher() {
-    // F2: the launcher activity connects to launcherToggleRequested.
-    if (!isSignalConnected(QMetaMethod::fromSignal(&ShellControl::launcherToggleRequested))) {
-        notImplemented("The launcher");
-        return;
-    }
     emit launcherToggleRequested();
 }
 
@@ -87,10 +76,6 @@ void ShellControl::SetDnd(bool enabled) {
 }
 
 void ShellControl::ShowPower() {
-    if (!isSignalConnected(QMetaMethod::fromSignal(&ShellControl::powerRequested))) {
-        notImplemented("The power menu");
-        return;
-    }
     emit powerRequested();
 }
 

@@ -11,6 +11,31 @@ qt_add_dbus_adaptor(dbus_adaptor
     controladaptor
     ControlAdaptor)
 
+qt_add_dbus_adaptor(dbus_adaptor
+    ${PROJECT_SOURCE_DIR}/data/dbus/org.freedesktop.Notifications.xml
+    notifications.h
+    island::Notifications
+    notificationsadaptor
+    NotificationsAdaptor)
+
+qt_add_dbus_adaptor(dbus_adaptor
+    ${PROJECT_SOURCE_DIR}/data/dbus/org.islandshell.Notifications.xml
+    notifications.h
+    island::Notifications
+    historyadaptor
+    HistoryAdaptor)
+
+qt_add_dbus_adaptor(dbus_adaptor
+    ${PROJECT_SOURCE_DIR}/data/dbus/org.islandshell.LiveActivities.xml
+    liveactivities.h
+    island::LiveActivities
+    liveactivitiesadaptor
+    LiveActivitiesAdaptor)
+
+# PipeWire's C headers are not -Wpedantic clean.
+set_source_files_properties(${src}/services/audio/audio.cpp PROPERTIES
+    COMPILE_OPTIONS "-Wno-pedantic;-Wno-missing-field-initializers")
+
 qt_add_qml_module(islandshell
     URI IslandShell
     VERSION 0.1
@@ -30,9 +55,21 @@ qt_add_qml_module(islandshell
         ${src}/activity/useractivities.h ${src}/activity/useractivities.cpp
         ${src}/dbus/shellcontrol.h ${src}/dbus/shellcontrol.cpp
         ${src}/services/hyprland/hyprland.h ${src}/services/hyprland/hyprland.cpp
+        ${src}/services/notifications/notifications.h ${src}/services/notifications/notifications.cpp
+        ${src}/services/audio/audio.h ${src}/services/audio/audio.cpp
+        ${src}/services/mpris/mpris.h ${src}/services/mpris/mpris.cpp
+        ${src}/services/live/liveactivities.h ${src}/services/live/liveactivities.cpp
+        ${src}/services/apps/apps.h ${src}/services/apps/apps.cpp
+        ${src}/services/power/power.h ${src}/services/power/power.cpp
+        ${src}/services/brightness/brightness.h ${src}/services/brightness/brightness.cpp
+        ${src}/core/icons.h ${src}/core/icons.cpp
+        ${src}/wayland/scrimwindow.h ${src}/wayland/scrimwindow.cpp
         ${dbus_adaptor}
     QML_FILES
         Clock.qml
+        IconImage.qml
+        IconButton.qml
+        ProgressRing.qml
 )
 
 target_include_directories(islandshell PUBLIC
@@ -42,10 +79,18 @@ target_include_directories(islandshell PUBLIC
     ${src}/activity
     ${src}/dbus
     ${src}/services/hyprland
+    ${src}/services/notifications
+    ${src}/services/audio
+    ${src}/services/mpris
+    ${src}/services/live
+    ${src}/services/apps
+    ${src}/services/power
+    ${src}/services/brightness
     ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(islandshell PUBLIC
     islandlogic
     Qt6::Quick
     Qt6::DBus
-    LayerShellQt::Interface)
+    LayerShellQt::Interface
+    PkgConfig::PIPEWIRE)

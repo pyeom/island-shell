@@ -18,6 +18,11 @@ Item {
     readonly property Activity secondary: arbiter.secondary
     readonly property Activity expandedActivity: expandTarget ?? primary
     readonly property bool expanded: mode === "expanded"
+    // Launcher, power menu: open expanded, own the keyboard, close themselves.
+    readonly property bool modal: !!primary && primary.modal
+    readonly property int keyboardMode: modal ? IslandWindow.Exclusive
+                                      : expanded ? IslandWindow.OnDemand
+                                      : IslandWindow.NoKeyboard
 
     readonly property list<rect> inputRects: bubble.shown ? [pillRect, bubbleRect] : [pillRect]
     readonly property rect pillRect: Qt.rect(pill.x, pill.y, pill.width, pill.height)
@@ -48,6 +53,8 @@ Item {
     }
 
     function expand(activity: Activity): bool {
+        if (root.modal)
+            return false
         const target = activity ?? root.primary
         if (!target || !target.expanded)
             return false
@@ -57,8 +64,32 @@ Item {
     }
 
     function collapse() {
+        if (root.modal) {
+            root.primary.dismiss()
+            return
+        }
         root.mode = "compact"
         holdTimer.stop()
+    }
+
+    onModalChanged: {
+        holdTimer.stop()
+        if (modal) {
+            expandTarget = null
+            mode = "expanded"
+        } else {
+            mode = "compact"
+        }
+    }
+
+    // An expanded activity that ends (popup timed out, launcher closed)
+    // takes the expansion with it.
+    Connections {
+        target: root.expanded ? root.expandedActivity : null
+        function onActiveChanged() {
+            if (root.expandedActivity && !root.expandedActivity.active)
+                root.collapse()
+        }
     }
 
     Arbiter {
@@ -218,7 +249,7 @@ Item {
         id: collapseTimer
         interval: root.expanded ? 700 : 150
         onTriggered: {
-            if (!hover.hovered && !holdTimer.running && !root.demo)
+            if (!hover.hovered && !holdTimer.running && !root.demo && !root.modal)
                 root.collapse()
         }
     }
@@ -233,7 +264,12 @@ Item {
         }
     }
 
+    // ms <= 0: stay until the activity ends.
     function hold(ms: int) {
+        if (ms <= 0) {
+            holdTimer.stop()
+            return
+        }
         holdTimer.interval = ms
         holdTimer.restart()
     }

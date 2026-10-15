@@ -12,6 +12,18 @@ qt_add_qml_module(islandactivities
         IdleExpanded.qml
         WorkspaceDots.qml
         ShellErrors.qml
+        Notification.qml
+        NotificationCard.qml
+        NotificationHistory.qml
+        VolumeOsd.qml
+        Bars.qml
+        Media.qml
+        MediaPanel.qml
+        LiveActivity.qml
+        Launcher.qml
+        LauncherPanel.qml
+        PowerMenu.qml
+        PowerPanel.qml
 )
 
 target_link_libraries(islandactivities PUBLIC islandshell)

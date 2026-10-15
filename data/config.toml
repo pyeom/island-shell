@@ -40,10 +40,40 @@ accent = "#0a84ff"
 pywal_accent = "color4"
 # With style = "blur": fill opacity of the pill.
 blur_opacity = 0.6
+# Icon theme name; empty uses the Qt platform theme, then kdeglobals, then GTK.
+icon_theme = ""
 
 [clock]
 # Qt time format: "HH:mm" (24h), "h:mm AP" (12h), "HH:mm:ss", ...
 format = "HH:mm"
+
+[notifications]
+# How long a popup stays (ms) when the app does not say. Critical
+# notifications stay until dismissed.
+timeout = 5000
+# Notifications kept in history (shown in the expanded idle view).
+history_limit = 100
+# Per-app rules, first match wins. `app` matches the app name or its desktop
+# entry, case-insensitive, with * wildcards.
+#   mute     = true                 drop it entirely
+#   no_popup = true                 history only
+#   urgency  = "low" | "normal" | "critical"
+# With do-not-disturb (islandctl dnd on) only critical ones pop up.
+rules = [
+  # { app = "discord", no_popup = true },
+  # { app = "*spotify*", mute = true },
+]
+
+[launcher]
+# Terminal for Terminal=true apps; empty tries $TERMINAL, kitty, alacritty, foot.
+terminal = ""
+# Prepended to every launch command, e.g. "uwsm app --" for uwsm sessions.
+launch_prefix = ""
+
+[power]
+lock_command = "hyprlock"
+# Press-and-hold time for shut down and restart (ms).
+hold_ms = 800
 
 # Settings for activities live under [activities.<name>] and are read with
 # Config.get("activities.<name>.<key>", default).

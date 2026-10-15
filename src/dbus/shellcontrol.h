@@ -57,8 +57,6 @@ signals:
 
 private:
     explicit ShellControl(QObject* parent = nullptr);
-    void notImplemented(const char* what);
-
     bool m_dnd = false;
 };
 

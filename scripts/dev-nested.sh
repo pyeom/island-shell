@@ -33,4 +33,4 @@ sed -e "s|@ISLAND_CMD@|$island_cmd|" \
     "$root/scripts/nested/hyprland.conf.in" >"$conf"
 
 echo "dev-nested: config $conf"
-exec dbus-run-session -- Hyprland --config "$conf"
+exec dbus-run-session --config-file="$root/scripts/nested/session.conf" -- Hyprland --config "$conf"

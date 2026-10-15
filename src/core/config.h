@@ -40,6 +40,7 @@ class Config : public QObject {
     // "full" | "reduced" | "off"
     Q_PROPERTY(QString animations READ animations NOTIFY changed)
     Q_PROPERTY(QString clockFormat READ clockFormat NOTIFY changed)
+    Q_PROPERTY(int powerHoldMs READ powerHoldMs NOTIFY changed)
 
 public:
     static Config* instance();
@@ -62,6 +63,7 @@ public:
     int surfaceHeight() const { return m_data.island.surfaceHeight; }
     QString animations() const;
     QString clockFormat() const { return QString::fromStdString(m_data.clock.format); }
+    int powerHoldMs() const { return m_data.power.holdMs; }
 
     // Any value by dotted path, for activity settings:
     //   Config.get("activities.weather.city", "Santiago")

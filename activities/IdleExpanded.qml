@@ -3,10 +3,14 @@ import IslandShell
 
 Item {
     implicitWidth: Config.expandedWidth
-    implicitHeight: Config.expandedHeight
+    implicitHeight: Math.max(Config.expandedHeight, column.implicitHeight + 40)
 
     Column {
-        anchors.centerIn: parent
+        id: column
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: history.visible ? 18 : (parent.height - implicitHeight) / 2
+        width: parent.width - 36
         spacing: 4
 
         Text {
@@ -31,6 +35,14 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             interactive: true
             dotSize: 10
+        }
+
+        Item { width: 1; height: history.visible ? 12 : 0 }
+
+        NotificationHistory {
+            id: history
+            width: parent.width
+            maxHeight: Config.surfaceHeight - Config.topMargin - 220
         }
     }
 }

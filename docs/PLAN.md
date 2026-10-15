@@ -116,7 +116,11 @@ Al llegar al MVP, la isla reemplaza a waybar, hyprpanel, swaync, rofi (SUPER+R),
 - `Activity.name` en vez de `id` (`id` está reservado en QML). Las presentaciones son `Component` porque cada isla (una por monitor) crea su propia instancia.
 - Módulos QML: `IslandShell` (API pública: tipos C++, `Clock`), `IslandShell.Activities` (incluidas), `IslandShell.App` (Shell e Island, internos). Separados para evitar imports circulares.
 - Los errores de `config.toml` y de actividades de usuario se muestran en la isla (actividad `errors`, prioridad 90).
-- Variables de entorno para desarrollo: `ISLAND_SHELL_CONFIG`, `ISLAND_SHELL_ACTIVITIES`.
+- Variables de entorno para desarrollo: `ISLAND_SHELL_CONFIG`, `ISLAND_SHELL_ACTIVITIES`, `ISLAND_SHELL_DRY_RUN` (el power menu solo registra), `ISLAND_SHELL_BACKLIGHT` (directorio de backlight falso).
+- Launcher y power menu son actividades `modal`: abren expandidas, toman el teclado (layer-shell exclusive) y una capa transparente a pantalla completa (scrim) las cierra al hacer clic fuera.
+- uwsm: en vez de autodetectarlo, `launcher.launch_prefix = "uwsm app --"` en el TOML. Más simple y explícito.
+- Brillo: lee `/sys/class/backlight` por polling (sysfs no notifica). Solo portátiles; monitores externos por DDC quedan fuera.
+- El entorno anidado usa un bus D-Bus sin directorios de servicio, para que nada se active por D-Bus y le quite `org.freedesktop.Notifications` a la isla.
 
 ## Layout del repo
 
@@ -149,7 +153,7 @@ island-shell/
 |---|---|---|
 | **F0 Fundación** ✅ | CMake y presets, CI, `dev-nested.sh`, superficie layer-shell por monitor, exclusive zone, input mask, springs, píldora con reloj | La isla se expande y contrae con hover y clic sin mover ninguna ventana, y los clics fuera de la píldora pasan |
 | **F1 Framework** ✅ | `Activity` y árbitro, módulo `IslandShell 0.1`, Loader aislado, config TOML con recarga, tema y pywal, D-Bus `Control` e `islandctl`, servicio Hyprland, actividad de workspaces | Una actividad de usuario en `~/.config/island-shell/activities/` aparece y se recarga en caliente |
-| **F2 Núcleo MVP** | Notificaciones, OSD de audio, Media, Live Activities, Launcher, Power menu | En el entorno anidado se puede prescindir de waybar, hyprpanel, swaync y rofi |
+| **F2 Núcleo MVP** ✅ | Notificaciones, OSD de audio, Media, Live Activities, Launcher, Power menu | En el entorno anidado se puede prescindir de waybar, hyprpanel, swaync y rofi |
 | **F3 Sistema** | Quick settings, privacidad, calendario (requiere `libical`) | MVP completo |
 | **F4 Release v0.1** | Traducción `es`, docs, PKGBUILD, prueba en nspawn, migración de la sesión real con 3 monitores | `makepkg -si` en un Arch limpio funciona; la sesión diaria usa la isla |
 | **Después** | Calculadora, emojis y portapapeles en el launcher, timer/pomodoro, clima, indicador de grabación, API 1.0 | — |

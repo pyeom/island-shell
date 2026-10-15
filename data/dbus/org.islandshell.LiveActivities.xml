@@ -1,0 +1,42 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+  "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<!--
+  Bus name: org.islandshell.Shell
+  Object:   /org/islandshell/LiveActivities
+
+  Props (all optional):
+    title (s), subtitle (s), icon (s: theme name or path),
+    progress (d: 0..1, negative for none), state (s: running|success|error),
+    ttl (i: seconds until it ends on its own, 0 for none),
+    actions (as: "key=Label", shown as buttons),
+    commands (a{ss}: key -> shell command run when the action is clicked),
+    persist (b: keep after the caller disconnects).
+
+  Activities end when their caller leaves the bus unless persist is true.
+-->
+<node>
+  <interface name="org.islandshell.LiveActivities">
+    <!-- Creates the activity, or replaces all props of an existing one. -->
+    <method name="Push">
+      <arg name="id" type="s" direction="in"/>
+      <arg name="props" type="a{sv}" direction="in"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QVariantMap"/>
+    </method>
+    <!-- Merges props into an existing activity. -->
+    <method name="Update">
+      <arg name="id" type="s" direction="in"/>
+      <arg name="props" type="a{sv}" direction="in"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QVariantMap"/>
+    </method>
+    <method name="End">
+      <arg name="id" type="s" direction="in"/>
+    </method>
+    <method name="List">
+      <arg name="ids" type="as" direction="out"/>
+    </method>
+    <signal name="ActionInvoked">
+      <arg name="id" type="s"/>
+      <arg name="action" type="s"/>
+    </signal>
+  </interface>
+</node>

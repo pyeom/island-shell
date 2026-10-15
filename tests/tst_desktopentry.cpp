@@ -1,0 +1,98 @@
+#include "services/apps/desktopentry.h"
+
+#include <QTest>
+
+using namespace island;
+
+namespace {
+const QString kFirefox = QStringLiteral(
+    "[Desktop Entry]\n"
+    "Type=Application\n"
+    "Name=Firefox\n"
+    "Name[es]=Navegador Firefox\n"
+    "GenericName=Web Browser\n"
+    "Keywords=Internet;WWW;Browser\\;Web;\n"
+    "Exec=/usr/lib/firefox/firefox %u\n"
+    "Icon=firefox\n"
+    "Actions=new-window;private;\n"
+    "\n"
+    "[Desktop Action new-window]\n"
+    "Name=New Window\n"
+    "Name[es]=Nueva ventana\n"
+    "Exec=/usr/lib/firefox/firefox --new-window %u\n"
+    "\n"
+    "[Desktop Action private]\n"
+    "Name=New Private Window\n"
+    "Exec=/usr/lib/firefox/firefox --private-window %u\n");
+} // namespace
+
+class TestDesktopEntry : public QObject {
+    Q_OBJECT
+
+private slots:
+    void parsesEntry() {
+        const auto e = parseDesktopEntry(kFirefox, QStringLiteral("en_US"));
+        QVERIFY(e);
+        QCOMPARE(e->name, QStringLiteral("Firefox"));
+        QCOMPARE(e->genericName, QStringLiteral("Web Browser"));
+        QCOMPARE(e->keywords, QStringList({"Internet", "WWW", "Browser;Web"}));
+        QCOMPARE(e->icon, QStringLiteral("firefox"));
+        QCOMPARE(e->actions.size(), 2);
+        QCOMPARE(e->actions[1].id, QStringLiteral("private"));
+    }
+
+    void localizedKeys() {
+        const auto e = parseDesktopEntry(kFirefox, QStringLiteral("es_CL"));
+        QVERIFY(e);
+        QCOMPARE(e->name, QStringLiteral("Navegador Firefox"));
+        QCOMPARE(e->actions[0].name, QStringLiteral("Nueva ventana"));
+        QCOMPARE(e->actions[1].name, QStringLiteral("New Private Window"));
+    }
+
+    void rejectsNonApplications() {
+        QVERIFY(!parseDesktopEntry(QStringLiteral("[Desktop Entry]\nType=Link\nName=x\nURL=y\n"), {}));
+        QVERIFY(!parseDesktopEntry(QStringLiteral("[Desktop Entry]\nType=Application\nName=x\n"), {}));
+        QVERIFY(!parseDesktopEntry(QStringLiteral("garbage"), {}));
+    }
+
+    void visibility() {
+        auto e = *parseDesktopEntry(kFirefox, {});
+        const QStringList hypr = {QStringLiteral("Hyprland")};
+        QVERIFY(e.visibleIn(hypr));
+        e.onlyShowIn = {QStringLiteral("KDE")};
+        QVERIFY(!e.visibleIn(hypr));
+        e.onlyShowIn.clear();
+        e.notShowIn = {QStringLiteral("hyprland")};
+        QVERIFY(!e.visibleIn(hypr));
+        e.notShowIn.clear();
+        e.noDisplay = true;
+        QVERIFY(!e.visibleIn(hypr));
+    }
+
+    void fieldCodes() {
+        QCOMPARE(stripFieldCodes(QStringLiteral("firefox %u")), QStringLiteral("firefox"));
+        QCOMPARE(stripFieldCodes(QStringLiteral("app --x %F --name %c")),
+                 QStringLiteral("app --x --name"));
+        QCOMPARE(stripFieldCodes(QStringLiteral("echo 100%%")), QStringLiteral("echo 100%"));
+    }
+
+    void fuzzy() {
+        QVERIFY(fuzzyScore(u"ff", u"Firefox") > 0);
+        QCOMPARE(fuzzyScore(u"xyz", u"Firefox"), -1);
+        // Prefix beats a match in the middle.
+        QVERIFY(fuzzyScore(u"fi", u"Firefox") > fuzzyScore(u"fi", u"Profile Manager"));
+        // Word starts count: "vsc" in "Visual Studio Code".
+        QVERIFY(fuzzyScore(u"vsc", u"Visual Studio Code") > fuzzyScore(u"vsc", u"Avisucer"));
+    }
+
+    void ranking() {
+        const auto e = *parseDesktopEntry(kFirefox, {});
+        QVERIFY(rankEntry(e, u"web", 0) > 0);   // generic name
+        QVERIFY(rankEntry(e, u"www", 0) > 0);   // keyword
+        QCOMPARE(rankEntry(e, u"zzz", 0), -1);
+        QVERIFY(rankEntry(e, u"fire", 50) > rankEntry(e, u"fire", 0));
+    }
+};
+
+QTEST_APPLESS_MAIN(TestDesktopEntry)
+#include "tst_desktopentry.moc"

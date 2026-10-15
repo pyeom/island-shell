@@ -1,0 +1,19 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+  "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<!--
+  Bus name: org.islandshell.Shell
+  Object:   /org/islandshell/Notifications
+-->
+<node>
+  <interface name="org.islandshell.Notifications.History">
+    <!-- Newest first. Keys: id (u), app (s), summary (s), body (s), time (s, ISO 8601), urgency (i). -->
+    <method name="List">
+      <arg name="notifications" type="aa{sv}" direction="out"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QList&lt;QVariantMap&gt;"/>
+    </method>
+    <method name="Clear"/>
+    <method name="Dismiss">
+      <arg name="id" type="u" direction="in"/>
+    </method>
+  </interface>
+</node>
