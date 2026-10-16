@@ -47,6 +47,17 @@ void ActivityRegistry::add(Activity* activity) {
         connect(activity, sig, this, &ActivityRegistry::scheduleChanged);
     connect(activity, &Activity::alertRequested, this,
             [this, activity](int ms) { emit alertRequested(activity, ms); });
+    // One modal at a time: opening one closes the others. Otherwise a closed
+    // modal would uncover an older one, and that one's toggle (islandctl
+    // quick, ...) would close it instead of opening it.
+    connect(activity, &Activity::activeChanged, this, [this, activity] {
+        if (!activity->modal() || !activity->active())
+            return;
+        for (const auto& other : m_activities) {
+            if (other && other != activity && other->modal() && other->active())
+                other->dismiss();
+        }
+    });
     scheduleChanged();
 }
 

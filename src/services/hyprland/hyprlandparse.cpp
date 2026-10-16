@@ -60,19 +60,29 @@ QVariantList parseMonitors(QByteArrayView json, QString* focused) {
     return out;
 }
 
-QVariantList parseWorkspaces(QByteArrayView json) {
+QVariantList parseWorkspaces(QByteArrayView json, std::optional<QByteArrayView> clients) {
+    // Client "fullscreen" is a bit mask: 1 maximized, 2 fullscreen.
+    QSet<int> fullscreen;
+    if (clients) {
+        for (const auto& value : parseArray(*clients)) {
+            const auto c = value.toObject();
+            if (c[u"fullscreen"].toInt() & 2)
+                fullscreen.insert(c[u"workspace"].toObject()[u"id"].toInt());
+        }
+    }
     QVariantList out;
     for (const auto& value : parseArray(json)) {
         const auto w = value.toObject();
         const int id = w[u"id"].toInt();
         if (id <= 0)
             continue;
+        const bool hasFullscreen = w[u"hasfullscreen"].toBool() && (!clients || fullscreen.contains(id));
         out.append(QVariantMap{
             {u"id"_s, id},
             {u"name"_s, w[u"name"].toString()},
             {u"monitor"_s, w[u"monitor"].toString()},
             {u"windows"_s, w[u"windows"].toInt()},
-            {u"hasFullscreen"_s, w[u"hasfullscreen"].toBool()},
+            {u"hasFullscreen"_s, hasFullscreen},
         });
     }
     sortById(out);

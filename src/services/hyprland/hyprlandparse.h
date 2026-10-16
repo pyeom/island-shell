@@ -24,8 +24,10 @@ bool affectsWorkspaces(const QString& eventName);
 QVariantList parseMonitors(QByteArrayView json, QString* focused);
 
 // `j/workspaces` → [{ id, name, monitor, windows, hasFullscreen }], regular workspaces only
-// (special workspaces have negative ids), sorted by id.
-QVariantList parseWorkspaces(QByteArrayView json);
+// (special workspaces have negative ids), sorted by id. Hyprland's
+// "hasfullscreen" is also true for a maximized window; with `clients`
+// (`j/clients`), hasFullscreen is true only for a real fullscreen one.
+QVariantList parseWorkspaces(QByteArrayView json, std::optional<QByteArrayView> clients = std::nullopt);
 
 // `j/clients` → [{ address, class, title, workspace, monitor }]: mapped,
 // visible windows only.

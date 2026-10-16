@@ -60,6 +60,23 @@ private slots:
         QVERIFY(!list[0].toMap()[QStringLiteral("hasFullscreen")].toBool());
     }
 
+    void maximizedIsNotFullscreen() {
+        const QByteArray workspaces = R"([
+            {"id": 1, "name": "1", "monitor": "DP-2", "windows": 1, "hasfullscreen": true},
+            {"id": 2, "name": "2", "monitor": "DP-3", "windows": 1, "hasfullscreen": true},
+            {"id": 3, "name": "3", "monitor": "DP-3", "windows": 1, "hasfullscreen": true}
+        ])";
+        const QByteArray clients = R"([
+            {"address": "0x1", "workspace": {"id": 1, "name": "1"}, "fullscreen": 1},
+            {"address": "0x2", "workspace": {"id": 2, "name": "2"}, "fullscreen": 2},
+            {"address": "0x3", "workspace": {"id": 3, "name": "3"}, "fullscreen": 3}
+        ])";
+        const auto list = parseWorkspaces(workspaces, clients);
+        QVERIFY(!list[0].toMap()[QStringLiteral("hasFullscreen")].toBool());
+        QVERIFY(list[1].toMap()[QStringLiteral("hasFullscreen")].toBool());
+        QVERIFY(list[2].toMap()[QStringLiteral("hasFullscreen")].toBool());
+    }
+
     void clients() {
         const auto list = parseClients(R"([
             {"address": "0x1", "class": "firefox", "title": "Twitch", "mapped": true, "hidden": false,

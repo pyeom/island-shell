@@ -96,12 +96,15 @@ void Hyprland::refresh() {
         if (!focused.isEmpty())
             setFocusedMonitor(focused);
     });
+    // Clients tell a fullscreen window from a maximized one.
     request("j/workspaces", [this](const QByteArray& json) {
-        auto workspaces = hypr::parseWorkspaces(json);
-        if (workspaces != m_workspaces) {
-            m_workspaces = std::move(workspaces);
-            emit workspacesChanged();
-        }
+        request("j/clients", [this, json](const QByteArray& clients) {
+            auto workspaces = hypr::parseWorkspaces(json, clients);
+            if (workspaces != m_workspaces) {
+                m_workspaces = std::move(workspaces);
+                emit workspacesChanged();
+            }
+        });
     });
 }
 

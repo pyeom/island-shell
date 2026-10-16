@@ -45,6 +45,11 @@ listed here.
   have tall line heights (Noto Sans).
 - The settings window cut off "Screenshots & wallpaper" in its sidebar, and
   showed "&&" in that page's title.
+- Only one modal is open at a time. Opening the wallpaper picker over quick
+  settings and closing it uncovered quick settings again, so the next
+  `islandctl quick` closed it instead of opening it.
+- A maximized window counted as fullscreen and hid the island; only real
+  fullscreen windows do now.
 - The wallpaper picker only marked the current wallpaper when pywal had set
   it. It now asks the backend, so it follows awww, swww, hyprpaper, swaybg
   and changes made outside the island.

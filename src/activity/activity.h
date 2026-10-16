@@ -87,7 +87,8 @@ public:
     Q_INVOKABLE void alert(int durationMs = 4000);
 
     // The island asks a modal activity to close (click outside, islandctl
-    // collapse). Handle with `onDismissRequested: open = false`.
+    // collapse, another modal opening). Handle with
+    // `onDismissRequested: open = false`.
     Q_INVOKABLE void dismiss();
 
     void classBegin() override {}

@@ -91,8 +91,9 @@ timer ends. It collapses after `ms` unless the pointer is over it.
 ### Modal activities
 
 `modal: true` activities open expanded as soon as they become active, take the
-keyboard, and stay until they turn inactive. Clicking outside the island or
-`islandctl collapse` calls their `dismissRequested` signal:
+keyboard, and stay until they turn inactive. Only one is open at a time.
+Clicking outside the island, `islandctl collapse` or another modal opening
+calls their `dismissRequested` signal:
 
 ```qml
 Activity {
