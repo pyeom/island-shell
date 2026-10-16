@@ -16,7 +16,8 @@ namespace island {
 
 // Installed applications (.desktop files in $XDG_DATA_HOME and
 // $XDG_DATA_DIRS), searched and launched by the launcher. Usage counts live
-// in $XDG_STATE_HOME/island-shell/launcher.json.
+// in $XDG_STATE_HOME/island-shell/launcher.json: one per window the app opens
+// under Hyprland, however it was started; one per launch without Hyprland.
 class Apps : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -42,6 +43,9 @@ public:
     Q_INVOKABLE void openUrl(const QString& url);
     // Through wl-copy (survives the launcher closing), else QClipboard.
     Q_INVOKABLE void copyText(const QString& text);
+    // Types text into the focused window with wtype, once the launcher has
+    // given the keyboard back; does nothing without wtype.
+    Q_INVOKABLE void typeText(const QString& text);
     // Icon for a window's app_id/class: StartupWMClass, then desktop file
     // name, then the class itself as an icon name.
     Q_INVOKABLE QString iconForClass(const QString& windowClass) const;
@@ -54,6 +58,9 @@ private:
     void scan();
     void loadUsage();
     void saveUsage();
+    void countWindow(const QString& windowClass);
+    // StartupWMClass, then the desktop file name.
+    const DesktopEntry* entryForClass(const QString& windowClass) const;
     QString terminal() const;
 
     QList<DesktopEntry> m_entries;

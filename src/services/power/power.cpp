@@ -49,7 +49,7 @@ void Power::run(const QString& action) {
     else if (action == u"suspend")
         logind("Suspend");
     else if (action == u"logout")
-        Hyprland::instance()->dispatch(QStringLiteral("exit"));
+        Hyprland::instance()->exit();
     else if (action == u"lock")
         QProcess::startDetached(
             QStringLiteral("sh"),

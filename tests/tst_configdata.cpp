@@ -123,6 +123,30 @@ reminder_minutes = 5
         QCOMPARE(cfg.calendar.reminderMinutes, 5);
     }
 
+    void searchEngine() {
+        std::vector<std::string> errors;
+        auto cfg = parseConfig("", errors);
+        QCOMPARE(cfg.launcher.searchEngine, std::string("duckduckgo"));
+        QCOMPARE(cfg.launcher.searchUrl, std::string("https://duckduckgo.com/?q=%s"));
+
+        cfg = parseConfig("[launcher]\nsearch_engine = \"google\"\nsearch_url = \"\"\n", errors);
+        QVERIFY(errors.empty());
+        QCOMPARE(cfg.launcher.searchUrl, std::string("https://www.google.com/search?q=%s"));
+
+        cfg = parseConfig("[launcher]\nsearch_engine = \"custom\"\nsearch_url = \"https://s.example/?q=%s\"\n", errors);
+        QCOMPARE(cfg.launcher.searchUrl, std::string("https://s.example/?q=%s"));
+
+        // An older config with only its own search_url keeps it.
+        cfg = parseConfig("[launcher]\nsearch_url = \"https://s.example/?q=%s\"\n", errors);
+        QCOMPARE(cfg.launcher.searchEngine, std::string("custom"));
+        QCOMPARE(cfg.launcher.searchUrl, std::string("https://s.example/?q=%s"));
+        QVERIFY(errors.empty());
+
+        cfg = parseConfig("[launcher]\nsearch_engine = \"custom\"\nsearch_url = \"https://s.example/\"\n", errors);
+        QCOMPARE(errors.size(), size_t(1));
+        QCOMPARE(cfg.launcher.searchUrl, std::string("https://duckduckgo.com/?q=%s"));
+    }
+
     void wallpaper() {
         std::vector<std::string> errors;
         auto cfg = parseConfig("", errors);

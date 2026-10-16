@@ -52,7 +52,11 @@ Window {
         { title: qsTr("Launcher"), icon: "system-search-symbolic", options: [
             { key: "launcher.terminal", label: qsTr("Terminal"), kind: "text", def: "", hint: qsTr("empty: $TERMINAL, kitty, alacritty…") },
             { key: "launcher.launch_prefix", label: qsTr("Launch prefix"), kind: "text", def: "", hint: "uwsm app --" },
-            { key: "launcher.search_url", label: qsTr("Web search"), kind: "text", def: "https://duckduckgo.com/?q=%s", hint: "%s = query" },
+            { key: "launcher.search_engine", label: qsTr("Search engine"), kind: "choice", def: "duckduckgo",
+              choices: [["duckduckgo", "DuckDuckGo"], ["google", "Google"], ["bing", "Bing"], ["brave", "Brave Search"],
+                        ["startpage", "Startpage"], ["ecosia", "Ecosia"], ["kagi", "Kagi"], ["custom", qsTr("Custom URL")]] },
+            { key: "launcher.search_url", label: qsTr("Custom search URL"), kind: "text", def: "",
+              hint: qsTr("%s = query; with Custom URL") },
         ]},
         { title: qsTr("Calendar"), icon: "x-office-calendar-symbolic", options: [
             { key: "calendar.paths", label: qsTr("Calendar folders"), kind: "list", def: ["~/.calendars", "~/.local/share/calendars"] },

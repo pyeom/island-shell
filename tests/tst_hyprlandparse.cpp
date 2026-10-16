@@ -60,6 +60,32 @@ private slots:
         QVERIFY(!list[0].toMap()[QStringLiteral("hasFullscreen")].toBool());
     }
 
+    void dispatchSyntaxes() {
+        const auto e = execDispatch(QStringLiteral("$(pidof -q rofi) && pkill rofi || echo \"a]]b\""));
+        QCOMPARE(e.legacy, QStringLiteral("exec $(pidof -q rofi) && pkill rofi || echo \"a]]b\""));
+        QCOMPARE(e.lua, QStringLiteral("hl.dsp.exec_cmd([=[$(pidof -q rofi) && pkill rofi || echo \"a]]b\"]=])"));
+        QCOMPARE(workspaceDispatch(3).lua, QStringLiteral("hl.dsp.focus({ workspace = 3 })"));
+        QCOMPARE(workspaceDispatch(3).legacy, QStringLiteral("workspace 3"));
+        QCOMPARE(focusWindowDispatch(QStringLiteral("0x55")).lua,
+                 QStringLiteral("hl.dsp.focus({ window = [[address:0x55]] })"));
+        QCOMPARE(exitDispatch().lua, QStringLiteral("hl.dsp.exit()"));
+        QCOMPARE(luaString(u"x]=]y]]"), QStringLiteral("[==[x]=]y]]]==]"));
+        QCOMPARE(luaString(u"\nz"), QStringLiteral("[[\n\nz]]"));
+    }
+
+    void openWindowEvent() {
+        QCOMPARE(openWindowClass(u"55a1b2c3,1,firefox,YouTube, the video"), QStringLiteral("firefox"));
+        QCOMPARE(openWindowClass(u"55a1b2c3,1,,"), QString());
+        QCOMPARE(openWindowClass(u"garbage"), QString());
+    }
+
+    void luaSyntaxError() {
+        QVERIFY(isLuaSyntaxError("error: [string \"return hl.dispatch(exec true)\"]:1: ')' expected near 'true'\n\n"
+                                 " \xe2\x86\x92 Note: dispatch in lua is a shorthand for hl.dispatch(...)"));
+        QVERIFY(!isLuaSyntaxError("ok"));
+        QVERIFY(!isLuaSyntaxError("Invalid dispatcher"));
+    }
+
     void maximizedIsNotFullscreen() {
         const QByteArray workspaces = R"([
             {"id": 1, "name": "1", "monitor": "DP-2", "windows": 1, "hasfullscreen": true},

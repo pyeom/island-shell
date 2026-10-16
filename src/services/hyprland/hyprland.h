@@ -1,5 +1,7 @@
 #pragma once
 
+#include "hyprlandparse.h"
+
 #include <QHash>
 #include <QObject>
 #include <QThread>
@@ -41,8 +43,17 @@ public:
     QVariantList monitors() const { return m_monitors; }
     QVariantList workspaces() const { return m_workspaces; }
 
-    // hyprctl dispatch equivalent: Hyprland.dispatch("workspace 3")
+    // hyprctl dispatch equivalent, in the syntax of the user's config:
+    // Hyprland.dispatch("workspace 3") for hyprland.conf,
+    // Hyprland.dispatch("hl.dsp.focus({ workspace = 3 })") for hyprland.lua.
+    // Prefer the methods below, which work with both.
     Q_INVOKABLE void dispatch(const QString& args);
+    // Runs a shell command with the compositor's environment.
+    Q_INVOKABLE void exec(const QString& command);
+    Q_INVOKABLE void focusWorkspace(int id);
+    Q_INVOKABLE void focusWindow(const QString& address);
+    // Ends the Hyprland session.
+    void exit();
 
     using Reply = std::function<void(const QByteArray&)>;
     void request(const QByteArray& command, Reply reply = {});
@@ -57,6 +68,9 @@ signals:
 
 private:
     explicit Hyprland(QObject* parent = nullptr);
+    // Sends the dispatcher in the config's syntax, found out on first use:
+    // hyprland.conf syntax first, Lua when Hyprland rejects that.
+    void send(const hypr::Dispatch& dispatch);
     void onEvent(const QString& name, const QString& data);
     void onReply(quint64 id, const QByteArray& data);
     void refresh();
@@ -69,6 +83,7 @@ private:
     quint64 m_nextRequest = 1;
     QTimer m_refresh;
     QString m_focusedMonitor;
+    enum class Syntax { Unknown, Conf, Lua } m_syntax = Syntax::Unknown;
     QVariantList m_monitors;
     QVariantList m_workspaces;
 };

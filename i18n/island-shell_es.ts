@@ -594,172 +594,187 @@
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="55"/>
-        <source>Web search</source>
-        <translation>Búsqueda web</translation>
+        <source>Search engine</source>
+        <translation>Buscador</translation>
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="57"/>
+        <source>Custom URL</source>
+        <translation>URL propia</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="58"/>
+        <source>Custom search URL</source>
+        <translation>URL de búsqueda propia</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="59"/>
+        <source>%s = query; with Custom URL</source>
+        <translation>%s = búsqueda; con URL propia</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="61"/>
         <source>Calendar</source>
         <translation>Calendario</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="58"/>
+        <location filename="../src/app/Settings.qml" line="62"/>
         <source>Calendar folders</source>
         <translation>Carpetas de calendario</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="59"/>
+        <location filename="../src/app/Settings.qml" line="63"/>
         <source>New events go to</source>
         <translation>Los eventos nuevos van a</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="59"/>
+        <location filename="../src/app/Settings.qml" line="63"/>
         <source>empty: first calendar</source>
         <translation>vacío: el primer calendario</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="60"/>
+        <location filename="../src/app/Settings.qml" line="64"/>
         <source>Remind before (minutes)</source>
         <translation>Avisar antes (minutos)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="61"/>
+        <location filename="../src/app/Settings.qml" line="65"/>
         <source>Days ahead</source>
         <translation>Días hacia adelante</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="63"/>
+        <location filename="../src/app/Settings.qml" line="67"/>
         <source>Weather</source>
         <translation>Clima</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="64"/>
+        <location filename="../src/app/Settings.qml" line="68"/>
         <source>City</source>
         <translation>Ciudad</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="64"/>
+        <location filename="../src/app/Settings.qml" line="68"/>
         <source>empty: no weather</source>
         <translation>vacío: sin clima</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="65"/>
+        <location filename="../src/app/Settings.qml" line="69"/>
         <source>Units</source>
         <translation>Unidades</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="67"/>
+        <location filename="../src/app/Settings.qml" line="71"/>
         <source>Rain alert (%)</source>
         <translation>Aviso de lluvia (%)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="69"/>
+        <location filename="../src/app/Settings.qml" line="73"/>
         <source>System</source>
         <translation>Sistema</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="70"/>
+        <location filename="../src/app/Settings.qml" line="74"/>
         <source>CPU alert (°C)</source>
         <translation>Alerta CPU (°C)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="71"/>
+        <location filename="../src/app/Settings.qml" line="75"/>
         <source>GPU alert (°C)</source>
         <translation>Alerta GPU (°C)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="72"/>
+        <location filename="../src/app/Settings.qml" line="76"/>
         <source>SSD alert (°C)</source>
         <translation>Alerta SSD (°C)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="74"/>
+        <location filename="../src/app/Settings.qml" line="78"/>
         <source>Screenshots &amp;&amp; wallpaper</source>
         <translation>Capturas y fondo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="75"/>
+        <location filename="../src/app/Settings.qml" line="79"/>
         <source>Screenshot folder</source>
         <translation>Carpeta de capturas</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="76"/>
+        <location filename="../src/app/Settings.qml" line="80"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="77"/>
+        <location filename="../src/app/Settings.qml" line="81"/>
         <source>Wallpaper folder</source>
         <translation>Carpeta de fondos</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="78"/>
+        <location filename="../src/app/Settings.qml" line="82"/>
         <source>Wallpaper backend</source>
         <translation>Backend del fondo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="79"/>
+        <location filename="../src/app/Settings.qml" line="83"/>
         <source>In use: %1</source>
         <translation>En uso: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="80"/>
+        <location filename="../src/app/Settings.qml" line="84"/>
         <source>Automatic</source>
         <translation>Automático</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="81"/>
         <location filename="../src/app/Settings.qml" line="85"/>
+        <location filename="../src/app/Settings.qml" line="89"/>
         <source>Custom command</source>
         <translation>Comando propio</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="82"/>
+        <location filename="../src/app/Settings.qml" line="86"/>
         <source>Backend arguments</source>
         <translation>Argumentos del backend</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="84"/>
+        <location filename="../src/app/Settings.qml" line="88"/>
         <source>Run pywal after changing it</source>
         <translation>Ejecutar pywal al cambiarlo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="85"/>
+        <location filename="../src/app/Settings.qml" line="89"/>
         <source>%f = file</source>
         <translation>%f = archivo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="86"/>
+        <location filename="../src/app/Settings.qml" line="90"/>
         <source>Night light command</source>
         <translation>Comando de luz nocturna</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="86"/>
+        <location filename="../src/app/Settings.qml" line="90"/>
         <source>empty: reuse wlsunset&apos;s</source>
         <translation>vacío: reusar el de wlsunset</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="88"/>
+        <location filename="../src/app/Settings.qml" line="92"/>
         <source>Power</source>
         <translation>Energía</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="89"/>
+        <location filename="../src/app/Settings.qml" line="93"/>
         <source>Lock command</source>
         <translation>Comando de bloqueo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="90"/>
+        <location filename="../src/app/Settings.qml" line="94"/>
         <source>Hold to confirm (ms)</source>
         <translation>Mantener para confirmar (ms)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="266"/>
+        <location filename="../src/app/Settings.qml" line="274"/>
         <source>comma separated</source>
         <translation>separadas por comas</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="287"/>
+        <location filename="../src/app/Settings.qml" line="295"/>
         <source>Open config.toml</source>
         <translation>Abrir config.toml</translation>
     </message>
@@ -819,17 +834,17 @@
 <context>
     <name>WallpaperPicker</name>
     <message>
-        <location filename="../activities/WallpaperPicker.qml" line="54"/>
+        <location filename="../activities/WallpaperPicker.qml" line="56"/>
         <source>Wallpaper</source>
         <translation>Fondo de pantalla</translation>
     </message>
     <message>
-        <location filename="../activities/WallpaperPicker.qml" line="62"/>
+        <location filename="../activities/WallpaperPicker.qml" line="64"/>
         <source>Random</source>
         <translation>Aleatorio</translation>
     </message>
     <message>
-        <location filename="../activities/WallpaperPicker.qml" line="73"/>
+        <location filename="../activities/WallpaperPicker.qml" line="75"/>
         <source>No images in %1</source>
         <translation>No hay imágenes en %1</translation>
     </message>

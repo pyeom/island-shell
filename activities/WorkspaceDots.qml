@@ -38,7 +38,7 @@ Row {
             TapHandler {
                 enabled: root.interactive
                 margin: root.dotSize
-                onTapped: Hyprland.dispatch("workspace " + dot.modelData.id)
+                onTapped: Hyprland.focusWorkspace(dot.modelData.id)
             }
         }
     }

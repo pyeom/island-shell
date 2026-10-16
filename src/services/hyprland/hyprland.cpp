@@ -85,6 +85,40 @@ void Hyprland::dispatch(const QString& args) {
     });
 }
 
+void Hyprland::send(const hypr::Dispatch& d) {
+    if (m_syntax == Syntax::Lua) {
+        dispatch(d.lua);
+        return;
+    }
+    request("dispatch " + d.legacy.toUtf8(), [this, d](const QByteArray& reply) {
+        if (reply.trimmed() == "ok") {
+            m_syntax = Syntax::Conf;
+        } else if (hypr::isLuaSyntaxError(reply)) {
+            qCInfo(lcHypr) << "Lua config: using hl.dsp dispatchers";
+            m_syntax = Syntax::Lua;
+            dispatch(d.lua);
+        } else {
+            qCWarning(lcHypr).noquote() << "dispatch" << d.legacy << "->" << reply.trimmed();
+        }
+    });
+}
+
+void Hyprland::exec(const QString& command) {
+    send(hypr::execDispatch(command));
+}
+
+void Hyprland::focusWorkspace(int id) {
+    send(hypr::workspaceDispatch(id));
+}
+
+void Hyprland::focusWindow(const QString& address) {
+    send(hypr::focusWindowDispatch(address));
+}
+
+void Hyprland::exit() {
+    send(hypr::exitDispatch());
+}
+
 void Hyprland::refresh() {
     request("j/monitors", [this](const QByteArray& json) {
         QString focused;

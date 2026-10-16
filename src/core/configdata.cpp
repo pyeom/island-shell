@@ -68,6 +68,23 @@ void readDouble(const toml::table& t, std::string_view section, std::string_view
 
 } // namespace
 
+std::string searchEngineUrl(std::string_view engine) {
+    static constexpr std::pair<std::string_view, std::string_view> kEngines[] = {
+        {"duckduckgo", "https://duckduckgo.com/?q=%s"},
+        {"google", "https://www.google.com/search?q=%s"},
+        {"bing", "https://www.bing.com/search?q=%s"},
+        {"brave", "https://search.brave.com/search?q=%s"},
+        {"startpage", "https://www.startpage.com/do/search?q=%s"},
+        {"ecosia", "https://www.ecosia.org/search?q=%s"},
+        {"kagi", "https://kagi.com/search?q=%s"},
+    };
+    for (const auto& [name, url] : kEngines) {
+        if (name == engine)
+            return std::string(url);
+    }
+    return {};
+}
+
 ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) {
     ConfigData cfg;
     try {
@@ -169,10 +186,20 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
     if (const auto* t = cfg.raw["launcher"].as_table()) {
         readString(*t, "launcher", "terminal", cfg.launcher.terminal, {}, errors);
         readString(*t, "launcher", "launch_prefix", cfg.launcher.launchPrefix, {}, errors);
-        readString(*t, "launcher", "search_url", cfg.launcher.searchUrl, {}, errors);
-        if (cfg.launcher.searchUrl.find("%s") == std::string::npos) {
+        auto& l = cfg.launcher;
+        std::string custom;
+        readString(*t, "launcher", "search_url", custom, {}, errors);
+        // Older configs only had search_url: a URL of its own means custom.
+        if (!t->contains("search_engine") && !custom.empty() && custom != l.searchUrl)
+            l.searchEngine = "custom";
+        readString(*t, "launcher", "search_engine", l.searchEngine,
+                   {"duckduckgo", "google", "bing", "brave", "startpage", "ecosia", "kagi", "custom"}, errors);
+        if (l.searchEngine != "custom") {
+            l.searchUrl = searchEngineUrl(l.searchEngine);
+        } else if (custom.find("%s") != std::string::npos) {
+            l.searchUrl = custom;
+        } else {
             errors.emplace_back("launcher.search_url: must contain %s");
-            cfg.launcher.searchUrl = "https://duckduckgo.com/?q=%s";
         }
     }
 

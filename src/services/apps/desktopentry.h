@@ -52,7 +52,8 @@ QString shellQuote(const QString& arg);
 int fuzzyScore(QStringView query, QStringView text);
 
 // Overall launcher score for an entry, or -1 when it does not match.
-// `launches` (usage count) only breaks ties among matches.
+// `launches` (usage count) nudges matches up; with an empty query it is the
+// whole score, so the most used apps come first.
 int rankEntry(const DesktopEntry& entry, QStringView query, int launches);
 
 } // namespace island

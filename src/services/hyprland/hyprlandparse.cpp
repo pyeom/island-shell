@@ -109,4 +109,39 @@ QVariantList parseClients(QByteArrayView json) {
     return out;
 }
 
+QString openWindowClass(QStringView data) {
+    const auto parts = data.split(u',');
+    return parts.size() >= 3 ? parts[2].trimmed().toString() : QString();
+}
+
+QString luaString(QStringView text) {
+    QString level;
+    while (text.contains(u']' + level + u']'))
+        level += u'=';
+    // A newline right after the opening bracket would be dropped.
+    const auto lead = text.startsWith(u'\n') ? u"\n"_s : QString();
+    return u'[' + level + u'[' + lead + text.toString() + u']' + level + u']';
+}
+
+Dispatch execDispatch(const QString& command) {
+    return {u"exec "_s + command, u"hl.dsp.exec_cmd("_s + luaString(command) + u')'};
+}
+
+Dispatch workspaceDispatch(int id) {
+    return {u"workspace "_s + QString::number(id), u"hl.dsp.focus({ workspace = %1 })"_s.arg(id)};
+}
+
+Dispatch focusWindowDispatch(const QString& address) {
+    return {u"focuswindow address:"_s + address,
+            u"hl.dsp.focus({ window = "_s + luaString(u"address:"_s + address) + u" })"_s};
+}
+
+Dispatch exitDispatch() {
+    return {u"exit"_s, u"hl.dsp.exit()"_s};
+}
+
+bool isLuaSyntaxError(QByteArrayView reply) {
+    return reply.contains("hl.dispatch(") || reply.contains("dispatch in lua");
+}
+
 } // namespace island::hypr

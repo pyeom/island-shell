@@ -69,6 +69,18 @@ Apps::Apps(QObject* parent) : QObject(parent) {
             qOverload<>(&QTimer::start));
     loadUsage();
     scan();
+    connect(Hyprland::instance(), &Hyprland::event, this, [this](const QString& name, const QString& data) {
+        if (name == u"openwindow")
+            countWindow(hypr::openWindowClass(data));
+    });
+}
+
+void Apps::countWindow(const QString& windowClass) {
+    const auto* entry = entryForClass(windowClass);
+    if (!entry)
+        return;
+    m_usage[entry->id] += 1;
+    saveUsage();
 }
 
 void Apps::scan() {
@@ -178,8 +190,11 @@ bool Apps::launch(const QString& id, const QString& action) {
         command = terminal() + QLatin1String(" -e ") + command;
     run(command);
 
-    m_usage[id] += 1;
-    saveUsage();
+    // Under Hyprland the app's window counts, not the launch.
+    if (!Hyprland::instance()->available()) {
+        m_usage[id] += 1;
+        saveUsage();
+    }
     return true;
 }
 
@@ -192,7 +207,7 @@ void Apps::run(const QString& command) {
     // Through Hyprland so the app gets the compositor's environment and
     // window rules; otherwise detach it into its own session.
     if (Hyprland::instance()->available()) {
-        Hyprland::instance()->dispatch(QStringLiteral("exec ") + full);
+        Hyprland::instance()->exec(full);
         return;
     }
     QProcess p;
@@ -224,20 +239,29 @@ void Apps::copyText(const QString& text) {
     QGuiApplication::clipboard()->setText(text);
 }
 
-QString Apps::iconForClass(const QString& windowClass) const {
+const DesktopEntry* Apps::entryForClass(const QString& windowClass) const {
     if (windowClass.isEmpty())
-        return Icons::source({}, QStringLiteral("application-x-executable"));
+        return nullptr;
     const auto lower = windowClass.toLower();
     const DesktopEntry* match = nullptr;
     for (const auto& e : m_entries) {
-        if (e.startupWmClass.compare(windowClass, Qt::CaseInsensitive) == 0) {
-            match = &e;
-            break;
-        }
+        if (e.startupWmClass.compare(windowClass, Qt::CaseInsensitive) == 0)
+            return &e;
         const auto id = e.id.toLower().chopped(8); // ".desktop"
         if (!match && (id == lower || id.endsWith(u'.' + lower)))
             match = &e;
     }
+    return match;
+}
+
+void Apps::typeText(const QString& text) {
+    if (text.isEmpty() || QStandardPaths::findExecutable(QStringLiteral("wtype")).isEmpty())
+        return;
+    run(QLatin1String("sleep 0.25; wtype -- ") + shellQuote(text));
+}
+
+QString Apps::iconForClass(const QString& windowClass) const {
+    const auto* match = entryForClass(windowClass);
     return Icons::source(match ? match->icon : windowClass, QStringLiteral("application-x-executable"));
 }
 

@@ -33,4 +33,25 @@ QVariantList parseWorkspaces(QByteArrayView json, std::optional<QByteArrayView> 
 // visible windows only.
 QVariantList parseClients(QByteArrayView json);
 
+// The window class in an "openwindow" event: "ADDRESS,WORKSPACE,CLASS,TITLE".
+QString openWindowClass(QStringView data);
+
+// A dispatcher in both config syntaxes: hyprland.conf ("exec foot") and the
+// Lua config ("hl.dsp.exec_cmd(...)"), which rejects the former.
+struct Dispatch {
+    QString legacy;
+    QString lua;
+};
+Dispatch execDispatch(const QString& command);
+Dispatch workspaceDispatch(int id);
+Dispatch focusWindowDispatch(const QString& address);
+Dispatch exitDispatch();
+
+// `text` as a Lua long string literal ([[...]], [=[...]=], ...), so quotes,
+// backslashes and "$(...)" pass through unchanged.
+QString luaString(QStringView text);
+
+// The reply to a hyprland.conf-style dispatch sent to a Lua config.
+bool isLuaSyntaxError(QByteArrayView reply);
+
 } // namespace island::hypr

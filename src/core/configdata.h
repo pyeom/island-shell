@@ -56,8 +56,15 @@ struct NotificationsConfig {
 struct LauncherConfig {
     std::string terminal;      // empty: $TERMINAL, then kitty, alacritty, foot
     std::string launchPrefix;  // e.g. "uwsm app --"
-    std::string searchUrl = "https://duckduckgo.com/?q=%s"; // ?query in the launcher
+    // Web search for "?query": "duckduckgo", "google", "bing", "brave",
+    // "startpage", "ecosia", "kagi" or "custom" (search_url).
+    std::string searchEngine = "duckduckgo";
+    // The URL in use, after resolving searchEngine; %s is the query.
+    std::string searchUrl = "https://duckduckgo.com/?q=%s";
 };
+
+// Search URL of a named engine (%s is the query); empty for unknown names.
+std::string searchEngineUrl(std::string_view engine);
 
 struct CalendarConfig {
     // vdir collections (as written by vdirsyncer) or folders of .ics files.

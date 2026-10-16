@@ -225,9 +225,14 @@ void LauncherSearch::activate(const QVariantMap& it, int action) {
                                   : QString();
         apps->launch(value, actionId);
     } else if (kind == u"window") {
-        Hyprland::instance()->dispatch(QStringLiteral("focuswindow address:") + value);
-    } else if (kind == u"calc" || kind == u"emoji") {
+        Hyprland::instance()->focusWindow(value);
+    } else if (kind == u"calc") {
         apps->copyText(value);
+    } else if (kind == u"emoji") {
+        // Typed into the focused window, and kept on the clipboard in case
+        // that window has no text field (nobody else can tell).
+        apps->copyText(value);
+        apps->typeText(value);
     } else if (kind == u"command") {
         if (action == 1)
             apps->runInTerminal(value);

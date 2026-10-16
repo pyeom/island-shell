@@ -7,5 +7,7 @@ import json, sys
 for i in json.load(sys.stdin):
     if i['wl_socket'] != '$host':
         print(i['instance'])"); do
-    HYPRLAND_INSTANCE_SIGNATURE=$sig hyprctl dispatch exit >/dev/null
+    # hyprland.conf syntax, then the Lua config's.
+    HYPRLAND_INSTANCE_SIGNATURE=$sig hyprctl dispatch exit | grep -qx ok ||
+        HYPRLAND_INSTANCE_SIGNATURE=$sig hyprctl dispatch 'hl.dsp.exit()' >/dev/null
 done

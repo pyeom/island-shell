@@ -215,9 +215,11 @@ QString shellQuote(const QString& arg) {
 }
 
 int rankEntry(const DesktopEntry& entry, QStringView query, int launches) {
-    const int usage = static_cast<int>(std::log2(1.0 + launches) * 3.0);
+    // No query: most used first, by the plain count (a log would tie apps
+    // with similar counts).
     if (query.isEmpty())
-        return usage;
+        return launches;
+    const int usage = static_cast<int>(std::log2(1.0 + launches) * 3.0);
     int best = -1;
     auto consider = [&](QStringView text, int weight) {
         const int s = fuzzyScore(query, text);

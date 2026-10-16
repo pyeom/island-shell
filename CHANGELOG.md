@@ -30,6 +30,12 @@ listed here.
 - Wi-Fi network list and connection, Bluetooth device list, discovery and
   pairing, laptop and peripheral batteries with low-battery alerts.
 - `RoundedImage` in the public module: an Image clipped to rounded corners.
+- `[launcher] search_engine` (DuckDuckGo, Google, Bing, Brave, Startpage,
+  Ecosia, Kagi or a custom `search_url`), a selector in the settings window.
+- Emoji from the launcher are typed into the focused window (with `wtype`)
+  as well as copied.
+- `Hyprland.exec()`, `focusWorkspace()` and `focusWindow()`, which work with
+  both hyprland.conf and hyprland.lua.
 
 ### Fixed
 - Privacy indicator no longer flickers and re-alerts while a voice chat
@@ -45,6 +51,13 @@ listed here.
   have tall line heights (Noto Sans).
 - The settings window cut off "Screenshots & wallpaper" in its sidebar, and
   showed "&&" in that page's title.
+- With a Lua Hyprland config (hyprland.lua) nothing launched: apps, web
+  search, wallpapers, focusing windows and workspace dots used
+  hyprland.conf dispatch syntax, which Lua configs reject. island-shell now
+  falls back to `hl.dsp.*` when Hyprland asks for it.
+- The launcher ranks apps by how often you open their windows, from any
+  source, and with an empty query by the plain count (similar counts used
+  to tie and fall back to alphabetical order).
 - Only one modal is open at a time. Opening the wallpaper picker over quick
   settings and closing it uncovered quick settings again, so the next
   `islandctl quick` closed it instead of opening it.

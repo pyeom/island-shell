@@ -28,6 +28,8 @@ optdepends=(
     'vdirsyncer: sync Google/CalDAV calendars to local files'
     'hyprlock: default lock command'
     'python-pywal: theme colors from the wallpaper'
+    'wtype: type emoji from the launcher into the focused window'
+    'wl-clipboard: copy from the launcher and screenshots'
 )
 provides=("$_name")
 conflicts=("$_name")

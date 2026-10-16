@@ -19,7 +19,7 @@ namespace island {
 //                query looks like math: 2*(3+4), sqrt(2), 2pi)
 //   =expr        calculator
 //   >command     run a shell command (Shift+Enter: in a terminal)
-//   ?words       search the web ([launcher] search_url)
+//   ?words       search the web ([launcher] search_engine)
 //   :name        emoji
 //   +text        new calendar event ("+ mañana 15:00 dentista")
 //

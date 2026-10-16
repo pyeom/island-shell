@@ -108,6 +108,9 @@ private slots:
         QVERIFY(rankEntry(e, u"www", 0) > 0);   // keyword
         QCOMPARE(rankEntry(e, u"zzz", 0), -1);
         QVERIFY(rankEntry(e, u"fire", 50) > rankEntry(e, u"fire", 0));
+        // Empty query: the plain count, so 7 and 8 uses do not tie.
+        QVERIFY(rankEntry(e, u"", 8) > rankEntry(e, u"", 7));
+        QCOMPARE(rankEntry(e, u"", 0), 0);
     }
 };
 
