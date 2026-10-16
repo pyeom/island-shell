@@ -4,6 +4,8 @@
 
 A Dynamic Island style shell for Hyprland, written in C++23 on Qt6 Quick.
 
+<p align="center"><img src="docs/images/hero.gif" width="720" alt="The island expands over a terminal window and collapses again; the window does not move"></p>
+
 Expanding and collapsing the island never moves your windows. Each monitor
 gets one overlay layer surface whose size and exclusive zone never change.
 The pill animates inside that surface, and the Wayland input region follows
@@ -31,6 +33,59 @@ Version 0.1. The design notes and roadmap are in
 - A settings window that edits `config.toml` and keeps its comments.
 - Your own activities in QML, reloaded on save, and Live Activities over
   D-Bus from any script.
+
+## Screenshots
+
+<table>
+<tr>
+<td><img src="docs/images/notification.gif" alt="A message notification grows out of the pill, with an inline reply field"></td>
+<td><img src="docs/images/launcher.gif" alt="Launcher searching apps, a calculation, emoji, a new calendar event and a shell command"></td>
+</tr>
+<tr>
+<td align="center">Notifications with actions and inline reply</td>
+<td align="center">Launcher: apps, math, emoji, events, commands</td>
+</tr>
+<tr>
+<td><img src="docs/images/quick-settings.png" alt="Quick settings with Wi-Fi, Bluetooth, night light and do-not-disturb tiles and volume, microphone and brightness sliders"></td>
+<td><img src="docs/images/wifi-bluetooth.png" alt="Wi-Fi network list and Bluetooth device list"></td>
+</tr>
+<tr>
+<td align="center">Quick settings</td>
+<td align="center">Wi-Fi networks and Bluetooth devices</td>
+</tr>
+<tr>
+<td><img src="docs/images/live-activity.gif" alt="A download progress bar that fills and turns green when done"></td>
+<td><img src="docs/images/media.png" alt="Media controls with album art, progress and playback buttons"></td>
+</tr>
+<tr>
+<td align="center">Live Activity pushed with <code>islandctl push</code></td>
+<td align="center">Media controls</td>
+</tr>
+<tr>
+<td><img src="docs/images/screenshot.png" alt="Screenshot result with a preview and open, copy and delete buttons"></td>
+<td><img src="docs/images/event-form.png" alt="New calendar event form with date, time, duration and calendar"></td>
+</tr>
+<tr>
+<td align="center">Screenshot result</td>
+<td align="center">New calendar event</td>
+</tr>
+<tr>
+<td><img src="docs/images/wallpaper.gif" alt="Wallpaper picker; a random wallpaper replaces the current one"></td>
+<td><img src="docs/images/settings.png" alt="Settings window with sections in a sidebar"></td>
+</tr>
+<tr>
+<td align="center">Wallpaper picker</td>
+<td align="center">Settings window</td>
+</tr>
+</table>
+
+The expanded view: clock, weather, calendar, upcoming events and system
+gauges.
+
+<p align="center"><img src="docs/images/expanded.png" width="560" alt="Expanded island with clock, weather forecast, month calendar, upcoming events, CPU, GPU, RAM and SSD gauges and buttons for apps and quick settings"></p>
+
+The screenshots come from the nested session in `scripts/testing/`, with
+simulated NetworkManager, BlueZ and UPower.
 
 ## Installing (Arch Linux)
 
@@ -174,7 +229,7 @@ apps and open windows. A query that looks like math, such as `2*(3+4)` or
 | `>` | run a shell command; Shift+Enter runs it in a terminal |
 | `?` | search the web (`[launcher] search_url`) |
 | `:` | emoji; Enter copies it |
-| `+` | new calendar event: `+ mañana 15:00 dentista 1h`, `+ vie 9 reunión`, `+ 20/10 feriado` |
+| `+` | new calendar event, in English or Spanish: `+ tomorrow 3pm dentist 1h`, `+ fri 9 meeting`, `+ mañana 15:00 dentista` |
 
 ## Quick settings
 
