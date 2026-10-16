@@ -85,7 +85,10 @@ gauges.
 <p align="center"><img src="docs/images/expanded.png" width="560" alt="Expanded island with clock, weather forecast, month calendar, upcoming events, CPU, GPU, RAM and SSD gauges and buttons for apps and quick settings"></p>
 
 The screenshots come from the nested session in `scripts/testing/`, with
-simulated NetworkManager, BlueZ and UPower.
+simulated NetworkManager, BlueZ and UPower. The wallpapers in them are
+from KDE Plasma, under CC-BY-SA-4.0: Mountain by Andy Betts, Honeywave by
+Ken Vermette, Flow by Sandra Smukaste, and Nuvole, Next and Coast by
+Krystian Zajdel. The album art is cropped from Honeywave.
 
 ## Installing (Arch Linux)
 
