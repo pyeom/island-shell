@@ -5,7 +5,15 @@
 
 #include <QCoreApplication>
 #include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusObjectPath>
+#include <QDBusPendingCallWatcher>
+#include <QDBusPendingReply>
+#include <QDBusMetaType>
 #include <QJSEngine>
+
+using NmSettings = QMap<QString, QVariantMap>;
+Q_DECLARE_METATYPE(NmSettings)
 
 namespace island {
 
@@ -23,6 +31,10 @@ Network* Network::create(QQmlEngine*, QJSEngine*) {
 }
 
 Network::Network(QObject* parent) : QObject(parent) {
+    qDBusRegisterMetaType<NmSettings>();
+    m_networksDebounce.setSingleShot(true);
+    m_networksDebounce.setInterval(300);
+    connect(&m_networksDebounce, &QTimer::timeout, this, &Network::refreshNetworks);
     m_debounce.setSingleShot(true);
     m_debounce.setInterval(50);
     connect(&m_debounce, &QTimer::timeout, this, &Network::sync);
@@ -34,6 +46,16 @@ void Network::sync() {
     syncDevices();
     syncActive();
     emit changed();
+    if (m_hasWifi && m_watching)
+        m_networksDebounce.start();
+}
+
+void Network::setWatching(bool watching) {
+    m_watching = watching;
+    if (watching) {
+        refreshNetworks();
+        scan();
+    }
 }
 
 void Network::syncDevices() {
@@ -150,6 +172,154 @@ QString Network::iconName() const {
 
 void Network::setWifiEnabled(bool enabled) {
     m_root->set(QStringLiteral("WirelessEnabled"), enabled);
+}
+
+QString Network::wifiDevicePath() const {
+    for (auto it = m_devices.cbegin(); it != m_devices.cend(); ++it)
+        if (it.value()->value(QStringLiteral("DeviceType")).toUInt() == kDeviceTypeWifi)
+            return it.key();
+    return {};
+}
+
+namespace {
+
+QDBusMessage nmCall(const QString& path, const QString& iface, const QString& method,
+                    const QVariantList& args = {}) {
+    auto msg = QDBusMessage::createMethodCall(kService, path, iface, method);
+    msg.setArguments(args);
+    return msg;
+}
+
+// Properties of one object, synchronously but with a short timeout: used
+// only while building the network list, a handful of calls.
+QVariantMap getAll(const QString& path, const QString& iface) {
+    auto msg = QDBusMessage::createMethodCall(kService, path, QStringLiteral("org.freedesktop.DBus.Properties"),
+                                              QStringLiteral("GetAll"));
+    msg.setArguments({iface});
+    const auto reply = QDBusConnection::systemBus().call(msg, QDBus::Block, 1500);
+    return reply.type() == QDBusMessage::ReplyMessage ? dbus::toMap(reply.arguments().value(0)) : QVariantMap();
+}
+
+} // namespace
+
+void Network::refreshNetworks() {
+    const auto device = wifiDevicePath();
+    if (device.isEmpty())
+        return;
+    auto bus = QDBusConnection::systemBus();
+
+    // Saved Wi-Fi profiles by SSID.
+    m_knownBySsid.clear();
+    const auto list = bus.call(nmCall(QStringLiteral("/org/freedesktop/NetworkManager/Settings"),
+                                      kService + QLatin1String(".Settings"), QStringLiteral("ListConnections")),
+                               QDBus::Block, 1500);
+    for (const auto& path : dbus::cast<QList<QDBusObjectPath>>(list.arguments().value(0))) {
+        const auto reply = bus.call(nmCall(path.path(), kService + QLatin1String(".Settings.Connection"),
+                                           QStringLiteral("GetSettings")),
+                                    QDBus::Block, 1500);
+        const auto settings = dbus::cast<NmSettings>(reply.arguments().value(0));
+        const auto wifi = settings.value(QStringLiteral("802-11-wireless"));
+        const auto ssid = QString::fromUtf8(wifi.value(QStringLiteral("ssid")).toByteArray());
+        if (!ssid.isEmpty())
+            m_knownBySsid.insert(ssid, path.path());
+    }
+
+    // Visible access points, strongest per SSID.
+    const auto aps = bus.call(nmCall(device, kService + QLatin1String(".Device.Wireless"),
+                                     QStringLiteral("GetAllAccessPoints")),
+                              QDBus::Block, 1500);
+    struct Ap {
+        QString path;
+        int strength;
+        bool secured;
+    };
+    QHash<QString, Ap> best;
+    for (const auto& ap : dbus::cast<QList<QDBusObjectPath>>(aps.arguments().value(0))) {
+        const auto props = getAll(ap.path(), kService + QLatin1String(".AccessPoint"));
+        const auto ssid = QString::fromUtf8(props.value(QStringLiteral("Ssid")).toByteArray());
+        if (ssid.isEmpty())
+            continue; // hidden network
+        const int strength = static_cast<int>(props.value(QStringLiteral("Strength")).toUInt());
+        const bool secured = props.value(QStringLiteral("WpaFlags")).toUInt() != 0 ||
+                             props.value(QStringLiteral("RsnFlags")).toUInt() != 0 ||
+                             (props.value(QStringLiteral("Flags")).toUInt() & 0x1);
+        if (!best.contains(ssid) || best[ssid].strength < strength)
+            best.insert(ssid, {ap.path(), strength, secured});
+    }
+
+    m_apBySsid.clear();
+    QVariantList out;
+    for (auto it = best.cbegin(); it != best.cend(); ++it) {
+        m_apBySsid.insert(it.key(), it->path);
+        out.append(QVariantMap{
+            {QStringLiteral("ssid"), it.key()},
+            {QStringLiteral("strength"), it->strength},
+            {QStringLiteral("secured"), it->secured},
+            {QStringLiteral("known"), m_knownBySsid.contains(it.key())},
+            {QStringLiteral("active"), it.key() == m_ssid && connected()},
+        });
+    }
+    std::ranges::sort(out, [](const QVariant& a, const QVariant& b) {
+        const auto ma = a.toMap();
+        const auto mb = b.toMap();
+        if (ma.value(QStringLiteral("active")) != mb.value(QStringLiteral("active")))
+            return ma.value(QStringLiteral("active")).toBool();
+        return ma.value(QStringLiteral("strength")).toInt() > mb.value(QStringLiteral("strength")).toInt();
+    });
+    m_networks = out;
+    emit networksChanged();
+}
+
+void Network::scan() {
+    const auto device = wifiDevicePath();
+    if (device.isEmpty())
+        return;
+    QDBusConnection::systemBus().asyncCall(nmCall(device, kService + QLatin1String(".Device.Wireless"),
+                                                  QStringLiteral("RequestScan"), {QVariantMap()}));
+    // Results arrive as access points come and go; refresh after a moment.
+    QTimer::singleShot(3000, this, &Network::refreshNetworks);
+}
+
+void Network::connectTo(const QString& ssid, const QString& password) {
+    const auto device = wifiDevicePath();
+    if (device.isEmpty())
+        return;
+    QDBusMessage msg;
+    if (const auto known = m_knownBySsid.value(ssid); !known.isEmpty()) {
+        msg = nmCall(kRootPath, kService, QStringLiteral("ActivateConnection"),
+                     {QVariant::fromValue(QDBusObjectPath(known)), QVariant::fromValue(QDBusObjectPath(device)),
+                      QVariant::fromValue(QDBusObjectPath(QStringLiteral("/")))});
+    } else {
+        NmSettings settings;
+        settings[QStringLiteral("802-11-wireless")] = {{QStringLiteral("ssid"), ssid.toUtf8()}};
+        if (!password.isEmpty())
+            settings[QStringLiteral("802-11-wireless-security")] = {
+                {QStringLiteral("key-mgmt"), QStringLiteral("wpa-psk")},
+                {QStringLiteral("psk"), password}};
+        const auto ap = m_apBySsid.value(ssid, QStringLiteral("/"));
+        msg = nmCall(kRootPath, kService, QStringLiteral("AddAndActivateConnection"),
+                     {QVariant::fromValue(settings), QVariant::fromValue(QDBusObjectPath(device)),
+                      QVariant::fromValue(QDBusObjectPath(ap))});
+    }
+    m_connecting = true;
+    m_lastError.clear();
+    emit networksChanged();
+    auto* watcher = new QDBusPendingCallWatcher(QDBusConnection::systemBus().asyncCall(msg), this);
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher* w) {
+        w->deleteLater();
+        m_connecting = false;
+        if (w->isError())
+            m_lastError = w->error().message();
+        emit networksChanged();
+        m_networksDebounce.start();
+    });
+}
+
+void Network::disconnectWifi() {
+    const auto device = wifiDevicePath();
+    if (!device.isEmpty())
+        QDBusConnection::systemBus().asyncCall(
+            nmCall(device, kService + QLatin1String(".Device"), QStringLiteral("Disconnect")));
 }
 
 } // namespace island

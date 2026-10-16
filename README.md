@@ -157,8 +157,16 @@ result. Prefixes:
 ## Quick settings
 
 Right click on the island, or `islandctl quick`: network, Bluetooth,
-do-not-disturb, output volume and device, microphone level, mute and
-device, brightness (laptops) and power profile.
+night light, do-not-disturb, output volume and device, microphone level,
+mute and device, brightness (laptops) and power profile. The arrows on the
+Wi-Fi and Bluetooth tiles list networks and devices to connect to (secured
+networks ask for the password; Bluetooth devices that need a PIN are not
+supported yet). Laptop and peripheral batteries come from UPower; the
+laptop's shows next to the clock and anything under 15% raises an alert.
+
+> Wi-Fi, Bluetooth and battery support was tested against simulated
+> NetworkManager, BlueZ and UPower (`scripts/testing/fake-system.py`), not
+> real hardware.
 
 ## Fullscreen
 

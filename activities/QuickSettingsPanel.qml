@@ -24,8 +24,11 @@ Item {
         property string subtitle
         property bool on: false
         property bool available: true
+        // Shows a chevron that opens a detail list (Wi-Fi networks, devices).
+        property bool hasDetail: false
 
         signal clicked()
+        signal detailClicked()
 
         width: (column.width - 3 * 10) / 4
         height: 64
@@ -73,6 +76,19 @@ Item {
             enabled: tile.available
             cursorShape: Qt.PointingHandCursor
             onClicked: tile.clicked()
+        }
+
+        IconButton {
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.margins: 6
+            visible: tile.hasDetail && tile.available
+            width: 22
+            height: 22
+            icon: "go-next-symbolic"
+            iconSize: 10
+            color: "transparent"
+            onClicked: tile.detailClicked()
         }
     }
 
@@ -153,6 +169,8 @@ Item {
                         : qsTr("Disconnected")
                 on: Network.connected
                 available: Network.available
+                hasDetail: Network.hasWifi
+                onDetailClicked: panel.devicePicker = "wifi"
                 onClicked: {
                     if (Network.hasWifi)
                         Network.setWifiEnabled(!Network.wifiEnabled)
@@ -170,6 +188,8 @@ Item {
                         : qsTr("On")
                 on: Bluetooth.powered
                 available: Bluetooth.available
+                hasDetail: true
+                onDetailClicked: panel.devicePicker = "bluetooth"
                 onClicked: Bluetooth.setPowered(!Bluetooth.powered)
             }
 
@@ -192,7 +212,7 @@ Item {
         }
 
         SliderRow {
-            visible: Audio.available && panel.devicePicker !== "sources"
+            visible: Audio.available && (panel.devicePicker === "" || panel.devicePicker === "sinks")
             icon: Audio.muted ? "audio-volume-muted-symbolic" : "audio-volume-high-symbolic"
             value: Audio.muted ? 0 : Math.min(Audio.volume, 1)
             label: Audio.muted ? qsTr("Mute") : Math.round(Audio.volume * 100) + "%"
@@ -207,6 +227,39 @@ Item {
             }
         }
 
+        // Wi-Fi / Bluetooth detail views.
+        Row {
+            visible: panel.devicePicker === "wifi" || panel.devicePicker === "bluetooth"
+            width: column.width
+            spacing: 10
+            IconButton {
+                width: 28
+                height: 28
+                icon: "go-previous-symbolic"
+                iconSize: 12
+                onClicked: panel.devicePicker = ""
+            }
+            Text {
+                anchors.verticalCenter: parent.verticalCenter
+                text: panel.devicePicker === "wifi" ? qsTr("Wi-Fi") : qsTr("Bluetooth")
+                color: Theme.foreground
+                font.pixelSize: 14
+                font.weight: Font.DemiBold
+            }
+        }
+        Loader {
+            width: column.width
+            active: panel.devicePicker === "wifi"
+            visible: active
+            sourceComponent: WifiList {}
+        }
+        Loader {
+            width: column.width
+            active: panel.devicePicker === "bluetooth"
+            visible: active
+            sourceComponent: BluetoothList {}
+        }
+
         AudioDeviceList {
             visible: panel.devicePicker === "sinks"
             width: column.width
@@ -215,7 +268,7 @@ Item {
         }
 
         SliderRow {
-            visible: Audio.hasMicrophone && panel.devicePicker !== "sinks"
+            visible: Audio.hasMicrophone && (panel.devicePicker === "" || panel.devicePicker === "sources")
             icon: Audio.micMuted ? "microphone-sensitivity-muted-symbolic" : "audio-input-microphone-symbolic"
             value: Audio.micMuted ? 0 : Math.min(Audio.micVolume, 1)
             label: Audio.micMuted ? qsTr("Mute") : Math.round(Audio.micVolume * 100) + "%"

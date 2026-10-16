@@ -26,7 +26,8 @@ QtObject {
         RainAlert {},
         ScreenshotActivity {},
         WallpaperPicker {},
-        EventForm {}
+        EventForm {},
+        BatteryLow {}
     ]
 
     // Settings window, created on demand and destroyed when closed.

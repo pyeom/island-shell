@@ -29,3 +29,10 @@ qt_add_executable(tst_configset tst_configset.cpp)
 target_link_libraries(tst_configset PRIVATE islandshell Qt6::Test)
 add_test(NAME configset COMMAND tst_configset)
 set_tests_properties(configset PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+
+# Integration against fake NetworkManager/BlueZ/UPower (skips without python-dbus).
+qt_add_executable(tst_fakehardware tst_fakehardware.cpp)
+target_link_libraries(tst_fakehardware PRIVATE islandshell Qt6::Test)
+target_compile_definitions(tst_fakehardware PRIVATE SOURCE_DIR="${PROJECT_SOURCE_DIR}")
+add_test(NAME fakehardware COMMAND tst_fakehardware)
+set_tests_properties(fakehardware PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")

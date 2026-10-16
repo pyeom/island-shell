@@ -2,6 +2,50 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es" sourcelanguage="en">
 <context>
+    <name>Batteries</name>
+    <message>
+        <location filename="../src/services/batteries/batteries.cpp" line="150"/>
+        <source>Battery</source>
+        <translation>Batería</translation>
+    </message>
+</context>
+<context>
+    <name>BatteryLow</name>
+    <message>
+        <location filename="../activities/BatteryLow.qml" line="39"/>
+        <source>%1 · %2%</source>
+        <translation>%1 · %2%</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothList</name>
+    <message>
+        <location filename="../activities/BluetoothList.qml" line="16"/>
+        <source>Looking for devices…</source>
+        <translation>Buscando dispositivos…</translation>
+    </message>
+    <message>
+        <location filename="../activities/BluetoothList.qml" line="16"/>
+        <source>Bluetooth is off</source>
+        <translation>Bluetooth apagado</translation>
+    </message>
+    <message>
+        <location filename="../activities/BluetoothList.qml" line="59"/>
+        <source>Connected</source>
+        <translation>Conectado</translation>
+    </message>
+    <message>
+        <location filename="../activities/BluetoothList.qml" line="60"/>
+        <source>Paired</source>
+        <translation>Emparejado</translation>
+    </message>
+    <message>
+        <location filename="../activities/BluetoothList.qml" line="60"/>
+        <source>New</source>
+        <translation>Nuevo</translation>
+    </message>
+</context>
+<context>
     <name>EventForm</name>
     <message>
         <location filename="../activities/EventForm.qml" line="79"/>
@@ -251,79 +295,81 @@
 <context>
     <name>QuickSettingsPanel</name>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="149"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="165"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="244"/>
         <source>Wi-Fi</source>
         <translation>Wi-Fi</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="149"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="165"/>
         <source>VPN</source>
         <translation>VPN</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="149"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="165"/>
         <source>Network</source>
         <translation>Red</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="150"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="167"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="166"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="185"/>
         <source>Unavailable</source>
         <translation>No disponible</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="151"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="168"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="179"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="188"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="167"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="186"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="199"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="208"/>
         <source>Off</source>
         <translation>Desactivado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="153"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="169"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="166"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="184"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="244"/>
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="170"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="179"/>
         <location filename="../activities/QuickSettingsPanel.qml" line="188"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="199"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="208"/>
         <source>On</source>
         <translation>Activado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="178"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="198"/>
         <source>Night light</source>
         <translation>Luz nocturna</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="187"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="207"/>
         <source>Do not disturb</source>
         <translation>No molestar</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="198"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="221"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="218"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="274"/>
         <source>Mute</source>
         <translation>Silencio</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="274"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="327"/>
         <source>Power saver</source>
         <translation>Ahorro de energía</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="275"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="328"/>
         <source>Performance</source>
         <translation>Rendimiento</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="276"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="329"/>
         <source>Balanced</source>
         <translation>Equilibrado</translation>
     </message>
@@ -682,12 +728,12 @@
         <translation>Mantener para confirmar (ms)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="243"/>
+        <location filename="../src/app/Settings.qml" line="251"/>
         <source>comma separated</source>
         <translation>separadas por comas</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="264"/>
+        <location filename="../src/app/Settings.qml" line="272"/>
         <source>Open config.toml</source>
         <translation>Abrir config.toml</translation>
     </message>
@@ -808,6 +854,24 @@
         <location filename="../src/services/weather/weather.cpp" line="199"/>
         <source>Cloudy</source>
         <translation>Nublado</translation>
+    </message>
+</context>
+<context>
+    <name>WifiList</name>
+    <message>
+        <location filename="../activities/WifiList.qml" line="18"/>
+        <source>Looking for networks…</source>
+        <translation>Buscando redes…</translation>
+    </message>
+    <message>
+        <location filename="../activities/WifiList.qml" line="18"/>
+        <source>Wi-Fi is off</source>
+        <translation>Wi-Fi apagado</translation>
+    </message>
+    <message>
+        <location filename="../activities/WifiList.qml" line="127"/>
+        <source>Password for %1</source>
+        <translation>Contraseña de %1</translation>
     </message>
 </context>
 </TS>

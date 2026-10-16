@@ -35,6 +35,10 @@ qt_add_qml_module(islandactivities
         ScreenshotActivity.qml
         WallpaperPicker.qml
         EventForm.qml
+        WifiList.qml
+        BluetoothList.qml
+        BatteryLow.qml
+        BatteryText.qml
         PrivacyIndicator.qml
         CalendarMonth.qml
         EventList.qml
