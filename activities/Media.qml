@@ -34,8 +34,9 @@ Activity {
         radius: size / 4
         color: Qt.rgba(1, 1, 1, 0.1)
         clip: true
-        Image {
+        RoundedImage {
             anchors.fill: parent
+            radius: parent.radius
             visible: status === Image.Ready
             source: root.player?.artUrl ?? ""
             sourceSize: Qt.size(parent.size * 2, parent.size * 2)

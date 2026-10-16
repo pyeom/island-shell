@@ -29,8 +29,9 @@ Item {
             color: Qt.rgba(1, 1, 1, 0.08)
             clip: true
 
-            Image {
+            RoundedImage {
                 id: art
+                radius: parent.radius
                 anchors.fill: parent
                 source: panel.player?.artUrl ?? ""
                 sourceSize: Qt.size(192, 192)

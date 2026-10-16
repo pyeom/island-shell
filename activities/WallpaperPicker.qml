@@ -103,8 +103,9 @@ Activity {
                         color: Qt.rgba(1, 1, 1, 0.08)
                         clip: true
 
-                        Image {
+                        RoundedImage {
                             anchors.fill: parent
+                            radius: parent.radius
                             source: "file://" + tile.modelData
                             sourceSize: Qt.size(panel.cell * 2, panel.cell * 9 / 8)
                             fillMode: Image.PreserveAspectCrop

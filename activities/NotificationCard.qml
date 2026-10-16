@@ -51,8 +51,9 @@ Item {
                 radius: 12
                 color: Qt.rgba(1, 1, 1, 0.08)
                 clip: true
-                Image {
+                RoundedImage {
                     anchors.fill: parent
+                    radius: parent.radius
                     visible: !!card.n.image
                     source: card.n.image || ""
                     fillMode: Image.PreserveAspectCrop

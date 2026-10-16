@@ -87,6 +87,7 @@ qt_add_qml_module(islandshell
         IconButton.qml
         ProgressRing.qml
         IslandSlider.qml
+        RoundedImage.qml
     RESOURCES
         ${PROJECT_SOURCE_DIR}/data/emoji.tsv
 )

@@ -36,8 +36,9 @@ Activity {
         radius: 5
         color: Qt.rgba(1, 1, 1, 0.1)
         clip: true
-        Image {
+        RoundedImage {
             anchors.fill: parent
+            radius: parent.radius
             source: root.source
             sourceSize: Qt.size(parent.width * 2, parent.height * 2)
             fillMode: Image.PreserveAspectCrop
@@ -80,8 +81,9 @@ Activity {
                     radius: 14
                     color: Qt.rgba(1, 1, 1, 0.06)
                     clip: true
-                    Image {
+                    RoundedImage {
                         id: preview
+                        radius: parent.radius
                         anchors.fill: parent
                         source: root.source
                         sourceSize.width: 800

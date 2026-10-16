@@ -11,7 +11,7 @@ import IslandShell
 Window {
     id: win
 
-    width: 860
+    width: 900
     height: 620
     minimumWidth: 700
     minimumHeight: 460
@@ -97,7 +97,7 @@ Window {
         // Sections.
         Rectangle {
             Layout.fillHeight: true
-            Layout.preferredWidth: 230
+            Layout.preferredWidth: 260
             color: "#0e0e0e"
 
             ListView {

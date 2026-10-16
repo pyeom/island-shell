@@ -31,7 +31,9 @@ Item {
         signal detailClicked()
 
         width: (column.width - 3 * 10) / 4
-        height: 64
+        // From the content: fonts with tall line heights must not push the
+        // title into the icon.
+        height: 12 + tileIcon.height + 6 + texts.implicitHeight + 10
         radius: 18
         color: !available ? Qt.rgba(1, 1, 1, 0.05)
              : on ? Theme.accent
@@ -48,10 +50,13 @@ Item {
             size: 18
         }
         Column {
+            id: texts
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            anchors.margins: 12
+            anchors.leftMargin: 12
+            anchors.rightMargin: 12
+            anchors.bottomMargin: 10
             Text {
                 width: parent.width
                 text: tile.title

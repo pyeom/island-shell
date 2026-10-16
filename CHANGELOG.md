@@ -26,6 +26,7 @@ listed here.
   keeping comments.
 - Wi-Fi network list and connection, Bluetooth device list, discovery and
   pairing, laptop and peripheral batteries with low-battery alerts.
+- `RoundedImage` in the public module: an Image clipped to rounded corners.
 
 ### Fixed
 - Privacy indicator no longer flickers and re-alerts while a voice chat
@@ -33,6 +34,13 @@ listed here.
 - Fuzzy search ranks literal matches first (`fire` → 🔥, not 🇮🇪).
 - Bluetooth devices added after startup were never seen (the
   InterfacesAdded slot did not connect).
+- Album art, screenshot and wallpaper thumbnails and notification images
+  had square corners inside their rounded frames.
+- An app's desktop actions in the launcher could squeeze its name to a few
+  letters; only the actions that fit are shown now.
+- Quick settings tiles overlapped the icon and the title with fonts that
+  have tall line heights (Noto Sans).
+- The settings window cut off "Screenshots & wallpaper" in its sidebar.
 
 ### Changed
 - Default `[island] surface_height` is 560 so the richer expanded view fits.

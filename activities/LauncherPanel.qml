@@ -17,6 +17,8 @@ Item {
     property int selected: 0
     // -1: the item itself, otherwise an index into an app's actions.
     property int selectedAction: -1
+    // Desktop actions of the selected row that fit next to its name.
+    property int shownActions: 0
 
     readonly property int rowHeight: 48
     readonly property int visibleRows: 6
@@ -98,7 +100,7 @@ Item {
                     const item = panel.results[panel.selected]
                     if (!item || !item.actions || cursorPosition < text.length)
                         return
-                    panel.selectedAction = Math.min(panel.selectedAction + 1, item.actions.length - 1)
+                    panel.selectedAction = Math.min(panel.selectedAction + 1, panel.shownActions - 1)
                     break
                 }
                 case Qt.Key_Left:
@@ -166,6 +168,7 @@ Item {
             required property var modelData
             required property int index
             readonly property bool current: index === panel.selected
+            onCurrentChanged: if (current) panel.shownActions = actionsRow.shown
             readonly property var actions: modelData.actions ?? []
 
             width: list.width
@@ -232,20 +235,39 @@ Item {
                 }
             }
 
-            // Desktop actions of the selected app.
+            // Desktop actions of the selected app, as many as fit while the
+            // name keeps 45% of the row.
             Row {
                 id: actionsRow
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 6
-                visible: row.current && row.actions.length > 0
+                visible: row.current && shown > 0
+
+                readonly property int shown: {
+                    let used = 0
+                    let n = 0
+                    for (let i = 0; i < actionsRepeater.count; ++i) {
+                        const button = actionsRepeater.itemAt(i)
+                        if (!button)
+                            break
+                        used += button.implicitWidth + (n > 0 ? spacing : 0)
+                        if (used > row.width * 0.55 - 52)
+                            break
+                        ++n
+                    }
+                    return n
+                }
+                onShownChanged: if (row.current) panel.shownActions = shown
 
                 Repeater {
+                    id: actionsRepeater
                     model: row.current ? row.actions.slice(0, 3) : []
                     delegate: IconButton {
                         required property var modelData
                         required property int index
+                        visible: index < actionsRow.shown
                         height: 26
                         text: modelData.name
                         highlighted: index === panel.selectedAction

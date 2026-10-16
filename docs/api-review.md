@@ -14,7 +14,7 @@ QML module, 0.1:
 | Kind | Names |
 |---|---|
 | Types | `Activity`, `Spring`, `IslandScreen` (attached), `Arbiter`, `IslandWindow`, `ScrimWindow` |
-| Components | `Clock`, `IconImage`, `IconButton`, `IslandSlider`, `ProgressRing` |
+| Components | `Clock`, `IconImage`, `IconButton`, `IslandSlider`, `ProgressRing`, `RoundedImage` |
 | Singletons (28) | `Config`, `Theme`, `Icons`, `ActivityRegistry`, `UserActivities`, `ShellControl`, `Hyprland`, `Notifications`, `Audio`, `Brightness`, `Mpris`, `LiveActivities`, `Apps`, `LauncherSearch`, `Power`, `Network`, `Bluetooth`, `PowerProfiles`, `Privacy`, `Calendar`, `SystemStats`, `Weather`, `NightLight`, `Screenshots`, `Wallpapers`, `Batteries` |
 
 D-Bus: `org.islandshell.Control`, `org.islandshell.LiveActivities`,
