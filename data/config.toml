@@ -109,6 +109,13 @@ rain_alert = 60
 # wlsunset was running (with your coordinates) and reuses that.
 command = ""
 
+[screenshots]
+# Where `islandctl screenshot` saves (they are also copied to the clipboard).
+directory = "~/Pictures/Screenshots"
+# Editor command for the Edit button, given the file; empty: satty or swappy
+# if installed, else no Edit button.
+editor = ""
+
 [power]
 lock_command = "hyprlock"
 # Press-and-hold time for shut down and restart (ms).

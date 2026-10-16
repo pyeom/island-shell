@@ -3,6 +3,7 @@
 #include "activity.h"
 #include "activityregistry.h"
 #include "config.h"
+#include "screenshots.h"
 #include "controladaptor.h"
 #include "theme.h"
 #include "useractivities.h"
@@ -81,6 +82,13 @@ void ShellControl::ShowPower() {
 
 void ShellControl::ShowQuickSettings() {
     emit quickSettingsRequested();
+}
+
+void ShellControl::Screenshot(const QString& mode) {
+    if (!Screenshots::instance()->take(mode) && calledFromDBus())
+        sendErrorReply(QStringLiteral("org.islandshell.Error.InvalidArgs"),
+                       QStringLiteral("mode must be region, window, output or active "
+                                      "(or a screenshot is already in progress)"));
 }
 
 QStringList ShellControl::ListActivities() {

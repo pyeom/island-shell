@@ -85,6 +85,11 @@ struct NightLightConfig {
     std::string command;
 };
 
+struct ScreenshotsConfig {
+    std::string directory; // empty: ~/Pictures/Screenshots
+    std::string editor;    // command taking the file; empty: satty or swappy if installed
+};
+
 struct PowerConfig {
     std::string lockCommand = "hyprlock";
     int holdMs = 800; // press-and-hold time for shutdown and reboot
@@ -102,6 +107,7 @@ struct ConfigData {
     SystemConfig system;
     WeatherConfig weather;
     NightLightConfig nightLight;
+    ScreenshotsConfig screenshots;
     std::string iconTheme; // empty: platform default
     toml::table raw; // the whole document, for activity-specific settings
 };

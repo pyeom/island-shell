@@ -36,6 +36,7 @@ commands:
   collapse                collapse the island
   power                   open the power menu
   quick                   open quick settings
+  screenshot MODE         region | window | output | active
   dnd on|off|toggle       set do-not-disturb
   dnd                     print do-not-disturb state
   activities              list registered activities
@@ -234,6 +235,8 @@ int main(int argc, char* argv[]) {
         return check(shell.ShowPower());
     if (cmd == u"quick")
         return check(shell.ShowQuickSettings());
+    if (cmd == u"screenshot")
+        return args.isEmpty() ? usage(2) : check(shell.Screenshot(args.first()));
     if (cmd == u"reload")
         return check(shell.Reload());
     if (cmd == u"activities") {

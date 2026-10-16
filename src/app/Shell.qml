@@ -23,7 +23,8 @@ QtObject {
         PrivacyIndicator {},
         EventSoon {},
         SystemHeat {},
-        RainAlert {}
+        RainAlert {},
+        ScreenshotActivity {}
     ]
 
     // One activity per live activity pushed over D-Bus / islandctl.

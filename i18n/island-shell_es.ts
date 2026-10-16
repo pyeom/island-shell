@@ -288,6 +288,39 @@
     </message>
 </context>
 <context>
+    <name>ScreenshotActivity</name>
+    <message>
+        <location filename="../activities/ScreenshotActivity.qml" line="55"/>
+        <source>Screenshot</source>
+        <translation>Captura</translation>
+    </message>
+    <message>
+        <location filename="../activities/ScreenshotActivity.qml" line="101"/>
+        <source>copied to the clipboard</source>
+        <translation>copiada al portapapeles</translation>
+    </message>
+    <message>
+        <location filename="../activities/ScreenshotActivity.qml" line="111"/>
+        <source>Open</source>
+        <translation>Abrir</translation>
+    </message>
+    <message>
+        <location filename="../activities/ScreenshotActivity.qml" line="116"/>
+        <source>Copy</source>
+        <translation>Copiar</translation>
+    </message>
+    <message>
+        <location filename="../activities/ScreenshotActivity.qml" line="122"/>
+        <source>Edit</source>
+        <translation>Editar</translation>
+    </message>
+    <message>
+        <location filename="../activities/ScreenshotActivity.qml" line="127"/>
+        <source>Delete</source>
+        <translation>Borrar</translation>
+    </message>
+</context>
+<context>
     <name>ShellErrors</name>
     <message>
         <location filename="../activities/ShellErrors.qml" line="18"/>

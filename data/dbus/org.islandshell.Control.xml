@@ -23,6 +23,10 @@
     <method name="ShowPower"/>
     <!-- Open quick settings (network, bluetooth, volume, ...) on the focused monitor. -->
     <method name="ShowQuickSettings"/>
+    <!-- Take a screenshot: region | window | output | active. -->
+    <method name="Screenshot">
+      <arg name="mode" type="s" direction="in"/>
+    </method>
     <!-- Names of all registered activities. -->
     <method name="ListActivities">
       <arg name="names" type="as" direction="out"/>

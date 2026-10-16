@@ -31,6 +31,9 @@ Item {
     // Out of the way over fullscreen windows: background information
     // ("minimal") or everything ("hide") except what was asked for.
     readonly property bool hidden: {
+        // Out of the picture while a screenshot is being taken.
+        if (Screenshots.capturing)
+            return true
         if (!fullscreen || modal || Config.fullscreen === "show")
             return false
         if (Config.fullscreen === "hide")

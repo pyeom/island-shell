@@ -67,6 +67,10 @@ Lua:
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("islandctl launcher toggle"))
 hl.bind("ALT + TAB",       hl.dsp.exec_cmd("islandctl power"))
 hl.bind("ALT + p",         hl.dsp.exec_cmd("islandctl expand media"))
+-- Screenshots (saved to ~/Pictures/Screenshots and copied):
+hl.bind("Print",        hl.dsp.exec_cmd("islandctl screenshot region"))
+hl.bind("CTRL + Print", hl.dsp.exec_cmd("islandctl screenshot window"))
+hl.bind("ALT + Print",  hl.dsp.exec_cmd("islandctl screenshot output"))
 -- Optional:
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("islandctl dnd toggle"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("islandctl quick"))
@@ -78,6 +82,9 @@ hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("islandctl quick"))
 bind = SUPER, R, exec, islandctl launcher toggle
 bind = ALT, TAB, exec, islandctl power
 bind = ALT, P, exec, islandctl expand media
+bind = , Print, exec, islandctl screenshot region
+bind = CTRL, Print, exec, islandctl screenshot window
+bind = ALT, Print, exec, islandctl screenshot output
 bind = SUPER, N, exec, islandctl dnd toggle
 bind = SUPER, S, exec, islandctl quick
 ```

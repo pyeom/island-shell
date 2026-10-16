@@ -46,6 +46,7 @@ public slots:
     void SetDnd(bool enabled);
     void ShowPower();
     void ShowQuickSettings();
+    void Screenshot(const QString& mode);
     QStringList ListActivities();
 
 signals:

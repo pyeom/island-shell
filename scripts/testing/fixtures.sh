@@ -18,6 +18,9 @@ rules = [ { app = "Spam", mute = true }, { app = "quiet*", no_popup = true } ]
 
 [weather]
 city = "Santiago"
+
+[screenshots]
+directory = "$t/shots"
 CONF
 
 echo 1000 >"$t/backlight/max_brightness"
