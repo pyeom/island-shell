@@ -128,17 +128,17 @@
 <context>
     <name>LauncherPanel</name>
     <message>
-        <location filename="../activities/LauncherPanel.qml" line="122"/>
+        <location filename="../activities/LauncherPanel.qml" line="124"/>
         <source>Search apps and windows</source>
         <translation>Buscar apps y ventanas</translation>
     </message>
     <message>
-        <location filename="../activities/LauncherPanel.qml" line="135"/>
+        <location filename="../activities/LauncherPanel.qml" line="137"/>
         <source>= calculate   &gt; command   ? web   : emoji   + event</source>
         <translation>= calcular   &gt; comando   ? web   : emoji   + evento</translation>
     </message>
     <message>
-        <location filename="../activities/LauncherPanel.qml" line="146"/>
+        <location filename="../activities/LauncherPanel.qml" line="148"/>
         <source>No results</source>
         <translation>Sin resultados</translation>
     </message>
@@ -200,7 +200,7 @@
 <context>
     <name>MediaPanel</name>
     <message>
-        <location filename="../activities/MediaPanel.qml" line="60"/>
+        <location filename="../activities/MediaPanel.qml" line="61"/>
         <source>Nothing playing</source>
         <translation>Nada en reproducción</translation>
     </message>
@@ -208,7 +208,7 @@
 <context>
     <name>NotificationCard</name>
     <message>
-        <location filename="../activities/NotificationCard.qml" line="148"/>
+        <location filename="../activities/NotificationCard.qml" line="149"/>
         <source>Reply…</source>
         <translation>Responder…</translation>
     </message>
@@ -295,81 +295,81 @@
 <context>
     <name>QuickSettingsPanel</name>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="165"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="244"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="170"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="249"/>
         <source>Wi-Fi</source>
         <translation>Wi-Fi</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="165"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="170"/>
         <source>VPN</source>
         <translation>VPN</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="165"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="170"/>
         <source>Network</source>
         <translation>Red</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="166"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="185"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="171"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="190"/>
         <source>Unavailable</source>
         <translation>No disponible</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="167"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="186"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="199"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="208"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="172"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="191"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="204"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="213"/>
         <source>Off</source>
         <translation>Desactivado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="169"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="174"/>
         <source>Disconnected</source>
         <translation>Desconectado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="184"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="244"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="189"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="249"/>
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="188"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="199"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="208"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="193"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="204"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="213"/>
         <source>On</source>
         <translation>Activado</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="198"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="203"/>
         <source>Night light</source>
         <translation>Luz nocturna</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="207"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="212"/>
         <source>Do not disturb</source>
         <translation>No molestar</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="218"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="274"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="223"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="279"/>
         <source>Mute</source>
         <translation>Silencio</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="327"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="332"/>
         <source>Power saver</source>
         <translation>Ahorro de energía</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="328"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="333"/>
         <source>Performance</source>
         <translation>Rendimiento</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="329"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="334"/>
         <source>Balanced</source>
         <translation>Equilibrado</translation>
     </message>
@@ -385,32 +385,32 @@
 <context>
     <name>ScreenshotActivity</name>
     <message>
-        <location filename="../activities/ScreenshotActivity.qml" line="55"/>
+        <location filename="../activities/ScreenshotActivity.qml" line="56"/>
         <source>Screenshot</source>
         <translation>Captura</translation>
     </message>
     <message>
-        <location filename="../activities/ScreenshotActivity.qml" line="101"/>
+        <location filename="../activities/ScreenshotActivity.qml" line="103"/>
         <source>copied to the clipboard</source>
         <translation>copiada al portapapeles</translation>
     </message>
     <message>
-        <location filename="../activities/ScreenshotActivity.qml" line="111"/>
+        <location filename="../activities/ScreenshotActivity.qml" line="113"/>
         <source>Open</source>
         <translation>Abrir</translation>
     </message>
     <message>
-        <location filename="../activities/ScreenshotActivity.qml" line="116"/>
+        <location filename="../activities/ScreenshotActivity.qml" line="118"/>
         <source>Copy</source>
         <translation>Copiar</translation>
     </message>
     <message>
-        <location filename="../activities/ScreenshotActivity.qml" line="122"/>
+        <location filename="../activities/ScreenshotActivity.qml" line="124"/>
         <source>Edit</source>
         <translation>Editar</translation>
     </message>
     <message>
-        <location filename="../activities/ScreenshotActivity.qml" line="127"/>
+        <location filename="../activities/ScreenshotActivity.qml" line="129"/>
         <source>Delete</source>
         <translation>Borrar</translation>
     </message>
@@ -694,46 +694,72 @@
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="78"/>
-        <source>Apply command</source>
-        <translation>Comando para aplicar</translation>
-    </message>
-    <message>
-        <location filename="../src/app/Settings.qml" line="78"/>
-        <source>%f = file; empty: waypaper + wal</source>
-        <translation>%f = archivo; vacío: waypaper + wal</translation>
+        <source>Wallpaper backend</source>
+        <translation>Backend del fondo</translation>
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="79"/>
+        <source>In use: %1</source>
+        <translation>En uso: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="80"/>
+        <source>Automatic</source>
+        <translation>Automático</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="81"/>
+        <location filename="../src/app/Settings.qml" line="85"/>
+        <source>Custom command</source>
+        <translation>Comando propio</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="82"/>
+        <source>Backend arguments</source>
+        <translation>Argumentos del backend</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="84"/>
+        <source>Run pywal after changing it</source>
+        <translation>Ejecutar pywal al cambiarlo</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="85"/>
+        <source>%f = file</source>
+        <translation>%f = archivo</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="86"/>
         <source>Night light command</source>
         <translation>Comando de luz nocturna</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="79"/>
+        <location filename="../src/app/Settings.qml" line="86"/>
         <source>empty: reuse wlsunset&apos;s</source>
         <translation>vacío: reusar el de wlsunset</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="81"/>
+        <location filename="../src/app/Settings.qml" line="88"/>
         <source>Power</source>
         <translation>Energía</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="82"/>
+        <location filename="../src/app/Settings.qml" line="89"/>
         <source>Lock command</source>
         <translation>Comando de bloqueo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="83"/>
+        <location filename="../src/app/Settings.qml" line="90"/>
         <source>Hold to confirm (ms)</source>
         <translation>Mantener para confirmar (ms)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="251"/>
+        <location filename="../src/app/Settings.qml" line="266"/>
         <source>comma separated</source>
         <translation>separadas por comas</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="272"/>
+        <location filename="../src/app/Settings.qml" line="287"/>
         <source>Open config.toml</source>
         <translation>Abrir config.toml</translation>
     </message>

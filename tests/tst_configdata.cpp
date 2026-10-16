@@ -123,6 +123,26 @@ reminder_minutes = 5
         QCOMPARE(cfg.calendar.reminderMinutes, 5);
     }
 
+    void wallpaper() {
+        std::vector<std::string> errors;
+        auto cfg = parseConfig("", errors);
+        QCOMPARE(cfg.wallpaper.backend, std::string("auto"));
+        QVERIFY(cfg.wallpaper.pywal);
+
+        cfg = parseConfig("[wallpaper]\nbackend = \"awww\"\nbackend_args = \"--transition-type grow\"\n"
+                          "pywal = false\n",
+                          errors);
+        QVERIFY(errors.empty());
+        QCOMPARE(cfg.wallpaper.backend, std::string("awww"));
+        QCOMPARE(cfg.wallpaper.backendArgs, std::string("--transition-type grow"));
+        QVERIFY(!cfg.wallpaper.pywal);
+
+        cfg = parseConfig("[wallpaper]\nbackend = \"feh\"\npywal = \"yes\"\n", errors);
+        QCOMPARE(errors.size(), size_t(2));
+        QCOMPARE(cfg.wallpaper.backend, std::string("auto"));
+        QVERIFY(cfg.wallpaper.pywal);
+    }
+
     void rawKeepsUnknownSections() {
         std::vector<std::string> errors;
         const auto cfg = parseConfig("[activities.weather]\ncity = \"Santiago\"\n", errors);

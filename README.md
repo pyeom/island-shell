@@ -252,6 +252,22 @@ and any battery, including headphones and controllers, raises an alert below
 > NetworkManager, BlueZ and UPower (`scripts/testing/fake-system.py`), not
 > real hardware.
 
+## Wallpaper
+
+`islandctl wallpaper` opens the picker with the images in
+`[wallpaper] directory`, and `islandctl wallpaper random` applies one
+without opening it. `[wallpaper] backend` chooses what sets the wallpaper:
+`awww`, `swww`, `hyprpaper`, `swaybg`, `waypaper`, or `command` to run your
+own `apply` command. `backend_args` adds options to the backend's command,
+such as `--transition-type grow` for awww. With `"auto"` the island uses
+waypaper when it is configured, because `waypaper --restore` brings its last
+choice back at login. Otherwise it uses the daemon that is running.
+
+The picker marks the wallpaper on screen. It asks awww, swww or hyprpaper,
+or reads swaybg's command line, so it also notices changes made by other
+tools. After each change the island runs pywal's `wal` when it is installed
+(`pywal = false` turns this off).
+
 ## Fullscreen
 
 Over a fullscreen window, such as a game or a video, the island hides the

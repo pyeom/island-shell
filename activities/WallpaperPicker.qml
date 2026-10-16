@@ -21,6 +21,8 @@ Activity {
         target: ShellControl
         function onWallpaperPickRequested() {
             root.open = !root.open
+            if (root.open)
+                Wallpapers.refresh()
         }
         function onWallpaperRandomRequested() {
             Wallpapers.random()

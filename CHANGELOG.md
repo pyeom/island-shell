@@ -21,6 +21,9 @@ listed here.
 - Night light toggle (wlsunset) in quick settings.
 - `islandctl screenshot` with a result activity (open, copy, edit, delete).
 - Wallpaper picker (`islandctl wallpaper`), random wallpaper.
+- `[wallpaper] backend` (awww, swww, hyprpaper, swaybg, waypaper or a
+  command), `backend_args` and `pywal`, also in the settings window, which
+  now has on/off switches. `Wallpapers.backend` and `Wallpapers.refresh()`.
 - Calendar events from the launcher (`+ mañana 15:00 dentista`) and a form.
 - Settings window (`islandctl settings`) that edits config.toml in place,
   keeping comments.
@@ -40,7 +43,11 @@ listed here.
   letters; only the actions that fit are shown now.
 - Quick settings tiles overlapped the icon and the title with fonts that
   have tall line heights (Noto Sans).
-- The settings window cut off "Screenshots & wallpaper" in its sidebar.
+- The settings window cut off "Screenshots & wallpaper" in its sidebar, and
+  showed "&&" in that page's title.
+- The wallpaper picker only marked the current wallpaper when pywal had set
+  it. It now asks the backend, so it follows awww, swww, hyprpaper, swaybg
+  and changes made outside the island.
 
 ### Changed
 - Default `[island] surface_height` is 560 so the richer expanded view fits.

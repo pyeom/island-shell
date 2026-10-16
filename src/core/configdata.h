@@ -94,8 +94,14 @@ struct ScreenshotsConfig {
 
 struct WallpaperConfig {
     std::string directory = "~/.config/wallpapers";
-    // Shell command; %f is replaced by the quoted file. Empty: waypaper (or
-    // awww/swww/hyprpaper), then `wal` if installed.
+    // "auto", "awww", "swww", "hyprpaper", "swaybg", "waypaper" or "command".
+    std::string backend = "auto";
+    // Extra arguments for the backend's command (awww/swww img, swaybg, waypaper).
+    std::string backendArgs;
+    // Run pywal's `wal` afterwards when it is installed.
+    bool pywal = true;
+    // backend = "command": shell command, %f is the quoted file. With
+    // backend = "auto", a non-empty apply also selects it (older configs).
     std::string apply;
 };
 

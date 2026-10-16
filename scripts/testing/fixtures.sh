@@ -6,6 +6,23 @@ t=/tmp/ish-test
 mkdir -p "$t"/{activities,state,cache,backlight} "$t"/calendars/{personal,trabajo} /tmp/ish-shots
 
 cp "$root/examples/activities/Pomodoro.qml" "$t/activities/"
+# awww when installed (start awww-daemon in the nested session to see it),
+# else a command that only records the file.
+wallpaper_backend=command
+command -v awww >/dev/null && wallpaper_backend=awww
+mkdir -p "$t/wallpapers"
+python3 -I - "$t/wallpapers" <<'PY'
+# Three solid-color PNGs for the wallpaper picker.
+import struct, sys, zlib
+def png(path, rgb, w=160, h=90):
+    row = b"\0" + bytes(rgb) * w
+    chunk = lambda tag, data: struct.pack(">I", len(data)) + tag + data + struct.pack(">I", zlib.crc32(tag + data))
+    open(path, "wb").write(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0))
+                           + chunk(b"IDAT", zlib.compress(row * h)) + chunk(b"IEND", b""))
+for name, rgb in (("blue", (40, 90, 160)), ("green", (40, 140, 90)), ("orange", (200, 110, 40))):
+    png(f"{sys.argv[1]}/{name}.png", rgb)
+PY
+
 cat >"$t/config.toml" <<CONF
 [activities.pomodoro]
 minutes = 1
@@ -21,6 +38,14 @@ city = "Santiago"
 
 [screenshots]
 directory = "$t/shots"
+
+# Never "auto" here: it could pick waypaper and rewrite the real
+# ~/.config/waypaper/config.ini. awww talks to the nested session's daemon.
+[wallpaper]
+directory = "$t/wallpapers"
+backend = "$wallpaper_backend"
+apply = "echo %f >$t/wallpaper-applied"
+pywal = false
 CONF
 
 echo 1000 >"$t/backlight/max_brightness"

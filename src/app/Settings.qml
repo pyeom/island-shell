@@ -75,7 +75,14 @@ Window {
             { key: "screenshots.directory", label: qsTr("Screenshot folder"), kind: "text", def: "~/Pictures/Screenshots" },
             { key: "screenshots.editor", label: qsTr("Editor"), kind: "text", def: "", hint: "satty --filename" },
             { key: "wallpaper.directory", label: qsTr("Wallpaper folder"), kind: "text", def: "~/.config/wallpapers" },
-            { key: "wallpaper.apply", label: qsTr("Apply command"), kind: "text", def: "", hint: qsTr("%f = file; empty: waypaper + wal") },
+            { key: "wallpaper.backend", label: qsTr("Wallpaper backend"), kind: "choice", def: "auto",
+              hint: qsTr("In use: %1").arg(Wallpapers.backend),
+              choices: [["auto", qsTr("Automatic")], ["awww", "awww"], ["swww", "swww"], ["hyprpaper", "hyprpaper"],
+                        ["swaybg", "swaybg"], ["waypaper", "waypaper"], ["command", qsTr("Custom command")]] },
+            { key: "wallpaper.backend_args", label: qsTr("Backend arguments"), kind: "text", def: "",
+              hint: "--transition-type grow" },
+            { key: "wallpaper.pywal", label: qsTr("Run pywal after changing it"), kind: "bool", def: true },
+            { key: "wallpaper.apply", label: qsTr("Custom command"), kind: "text", def: "", hint: qsTr("%f = file") },
             { key: "night_light.command", label: qsTr("Night light command"), kind: "text", def: "", hint: qsTr("empty: reuse wlsunset's") },
         ]},
         { title: qsTr("Power"), icon: "system-shutdown-symbolic", options: [
@@ -134,7 +141,7 @@ Window {
                 spacing: 18
 
                 Label {
-                    text: win.pages[win.page].title
+                    text: win.pages[win.page].title.replace("&&", "&") // && is for the sidebar's mnemonics
                     font.pixelSize: 22
                     font.weight: Font.DemiBold
                 }
@@ -183,6 +190,7 @@ Window {
                                            : row.modelData.kind === "choice" ? choiceEditor
                                            : row.modelData.kind === "color" ? colorEditor
                                            : row.modelData.kind === "list" ? listEditor
+                                           : row.modelData.kind === "bool" ? boolEditor
                                            : textEditor
 
                             Component {
@@ -241,6 +249,17 @@ Window {
                                         text: row.current
                                         validator: RegularExpressionValidator { regularExpression: /#[0-9a-fA-F]{6}/ }
                                         onEditingFinished: Config.set(row.modelData.key, text)
+                                    }
+                                }
+                            }
+                            Component {
+                                id: boolEditor
+                                Item {
+                                    implicitHeight: toggle.implicitHeight
+                                    Switch {
+                                        id: toggle
+                                        checked: row.current
+                                        onToggled: Config.set(row.modelData.key, checked)
                                     }
                                 }
                             }

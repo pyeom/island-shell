@@ -120,10 +120,20 @@ editor = ""
 
 [wallpaper]
 directory = "~/.config/wallpapers"
-# Command that applies a wallpaper; %f is the (quoted) file. Empty: waypaper
-# (or awww/swww/hyprpaper), then `wal` if installed. Example adding a kitty
-# theme refresh:
-#   apply = "waypaper --wallpaper %f && wal -q -n -i %f && cp ~/.cache/wal/colors-kitty.conf ~/.config/kitty/current-theme.conf"
+# What sets the wallpaper: "awww", "swww", "hyprpaper", "swaybg", "waypaper"
+# or "command" (runs `apply` below). "auto" uses waypaper when it is set up,
+# since `waypaper --restore` brings its last choice back at login; else the
+# daemon that is running; else the first one installed.
+backend = "auto"
+# Extra arguments for the backend's command, e.g. for awww or swww:
+#   backend_args = "--transition-type grow --transition-duration 1"
+backend_args = ""
+# Run pywal (`wal`) after changing the wallpaper, when it is installed, so
+# the pywal theme follows. Not used with backend = "command".
+pywal = true
+# backend = "command": the command; %f is the (quoted) file. Example that
+# also refreshes a kitty theme:
+#   apply = "awww img %f && wal -q -n -i %f && cp ~/.cache/wal/colors-kitty.conf ~/.config/kitty/current-theme.conf"
 apply = ""
 
 [power]

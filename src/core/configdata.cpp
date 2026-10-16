@@ -24,6 +24,17 @@ void readInt(const toml::table& t, std::string_view section, std::string_view ke
     out = static_cast<int>(*v);
 }
 
+void readBool(const toml::table& t, std::string_view section, std::string_view key, bool& out,
+              std::vector<std::string>& errors) {
+    const auto* node = t.get(key);
+    if (!node)
+        return;
+    if (const auto v = node->value<bool>())
+        out = *v;
+    else
+        errors.push_back(std::format("{}.{}: expected true or false", section, key));
+}
+
 void readString(const toml::table& t, std::string_view section, std::string_view key,
                 std::string& out, std::initializer_list<std::string_view> allowed,
                 std::vector<std::string>& errors) {
@@ -207,6 +218,10 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
 
     if (const auto* t = cfg.raw["wallpaper"].as_table()) {
         readString(*t, "wallpaper", "directory", cfg.wallpaper.directory, {}, errors);
+        readString(*t, "wallpaper", "backend", cfg.wallpaper.backend,
+                   {"auto", "awww", "swww", "hyprpaper", "swaybg", "waypaper", "command"}, errors);
+        readString(*t, "wallpaper", "backend_args", cfg.wallpaper.backendArgs, {}, errors);
+        readBool(*t, "wallpaper", "pywal", cfg.wallpaper.pywal, errors);
         readString(*t, "wallpaper", "apply", cfg.wallpaper.apply, {}, errors);
     }
 
