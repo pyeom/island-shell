@@ -4,12 +4,33 @@
 
 A Dynamic Island style shell for Hyprland, written in C++23 on Qt6 Quick.
 
-The island lives in a fixed-size overlay layer surface with a fixed exclusive
-zone. It expands and collapses inside that surface, and only the Wayland input
-region follows the pill, so windows are never re-laid out and clicks outside
-the pill reach the windows below.
+Expanding and collapsing the island never moves your windows. Each monitor
+gets one overlay layer surface whose size and exclusive zone never change.
+The pill animates inside that surface, and the Wayland input region follows
+the pill on every frame, so clicks outside it reach the windows below.
 
-Version 0.1. See [docs/PLAN.md](docs/PLAN.md) for the design and roadmap.
+Version 0.1. The design notes and roadmap are in
+[docs/PLAN.md](docs/PLAN.md) (in Spanish).
+
+## Features
+
+- Notification server with actions, do-not-disturb and a history grouped
+  by app.
+- Workspaces as dots on the pill, a clock on every monitor.
+- Media controls for any MPRIS player, and a volume and mic OSD.
+- Launcher for apps, open windows, a calculator, shell commands, web search,
+  emoji and new calendar events.
+- Calendar from local `.ics` folders, synced with vdirsyncer.
+- Quick settings for Wi-Fi, Bluetooth, night light, audio devices,
+  brightness and power profile.
+- Microphone, camera and screen sharing indicators.
+- CPU, GPU, RAM and SSD gauges with temperatures, and an alert when
+  something stays hot.
+- Weather from Open-Meteo, with no account, and a rain alert.
+- Screenshot results (open, copy, edit, delete) and a wallpaper picker.
+- A settings window that edits `config.toml` and keeps its comments.
+- Your own activities in QML, reloaded on save, and Live Activities over
+  D-Bus from any script.
 
 ## Installing (Arch Linux)
 
@@ -19,8 +40,8 @@ cd island-shell/packaging/arch
 makepkg -si
 ```
 
-Then follow [docs/migration.md](docs/migration.md) to start it from Hyprland
-and move notifications, launcher and keybinds over.
+[docs/migration.md](docs/migration.md) covers starting it from Hyprland and
+moving notifications, the launcher and keybinds over from your current setup.
 
 ## Building
 
@@ -64,9 +85,9 @@ scripts/dev-nested.sh
 `scripts/test-pkg.sh` builds and installs the package in a clean Arch
 container (docker or podman) from the committed HEAD.
 
-Translations live in `i18n/`. After changing user-visible strings:
-`cmake --build --preset dev --target update_translations`, then translate the
-new entries in `i18n/island-shell_es.ts` (Qt Linguist or a text editor).
+Translations live in `i18n/`. After changing user-visible strings, run
+`cmake --build --preset dev --target update_translations` and translate the
+new entries in `i18n/island-shell_es.ts` with Qt Linguist or a text editor.
 
 ## Configuration and activities
 
@@ -94,20 +115,20 @@ bind = ALT, TAB, exec, islandctl power
 bind = ALT, P, exec, islandctl expand media
 ```
 
-Volume keys need no change: the OSD follows PipeWire, whatever changed the
-volume.
+Volume keys need no change. The OSD follows PipeWire, so it shows whatever
+program changed the volume.
 
 ## Notifications
 
 island-shell is a notification server. Only one program can own
 `org.freedesktop.Notifications`, so stop swaync, mako, dunst or hyprpanel
-first; if another one holds the name, the island shows an error and leaves it
-alone.
+first. If another program holds the name, the island shows an error and
+leaves that program alone.
 
 ## Calendar
 
 The island reads local calendars (vdir collections or folders of `.ics`
-files); it never talks to calendar servers itself. To show Google, iCloud,
+files) and never talks to calendar servers itself. To show Google, iCloud,
 Nextcloud or any CalDAV calendar, sync it with
 [vdirsyncer](https://vdirsyncer.pimutils.org/):
 
@@ -137,14 +158,15 @@ Then `vdirsyncer discover && vdirsyncer sync` (and a timer for periodic
 syncs). `~/.calendars` is in the default `[calendar] paths`. For Google
 Calendar use vdirsyncer's `google_calendar` storage.
 
-New events (launcher `+`, or the `+` on the expanded calendar) are written
-to the local folder; vdirsyncer uploads them on its next sync.
+New events, from the launcher's `+` prefix or the `+` button on the
+expanded calendar, go to the local folder. vdirsyncer uploads them on its
+next sync.
 
 ## Launcher
 
-`islandctl launcher toggle` (bind it to SUPER+R). Type to search apps and
-open windows; a query that looks like math (`2*(3+4)`, `sqrt(2)`) shows the
-result. Prefixes:
+`islandctl launcher toggle` opens it (bind it to SUPER+R). Typing searches
+apps and open windows. A query that looks like math, such as `2*(3+4)` or
+`sqrt(2)`, shows the result. Prefixes switch modes:
 
 | Prefix | Does |
 |---|---|
@@ -156,13 +178,17 @@ result. Prefixes:
 
 ## Quick settings
 
-Right click on the island, or `islandctl quick`: network, Bluetooth,
-night light, do-not-disturb, output volume and device, microphone level,
-mute and device, brightness (laptops) and power profile. The arrows on the
-Wi-Fi and Bluetooth tiles list networks and devices to connect to (secured
-networks ask for the password; Bluetooth devices that need a PIN are not
-supported yet). Laptop and peripheral batteries come from UPower; the
-laptop's shows next to the clock and anything under 15% raises an alert.
+Right-click the island or run `islandctl quick`. The panel has network,
+Bluetooth, night light, do-not-disturb, output volume and device, microphone
+level, mute and device, brightness (laptops only) and power profile.
+
+The arrows on the Wi-Fi and Bluetooth tiles list networks and devices to
+connect to. Secured networks ask for the password. Bluetooth devices that
+need a PIN are not supported yet.
+
+Battery levels come from UPower. A laptop battery shows next to the clock,
+and any battery, including headphones and controllers, raises an alert below
+15%.
 
 > Wi-Fi, Bluetooth and battery support was tested against simulated
 > NetworkManager, BlueZ and UPower (`scripts/testing/fake-system.py`), not
@@ -170,9 +196,9 @@ laptop's shows next to the clock and anything under 15% raises an alert.
 
 ## Fullscreen
 
-Over a fullscreen window (games, videos) the island hides the clock, media
-and privacy indicators and stops taking input; notifications and the OSD
-still show. `[island] fullscreen = "hide"` keeps only critical notifications;
+Over a fullscreen window, such as a game or a video, the island hides the
+clock, media and privacy indicators and stops taking input. Notifications
+and the OSD still show. `[island] fullscreen = "hide"` keeps only critical notifications;
 `"show"` disables this.
 
 ## License
