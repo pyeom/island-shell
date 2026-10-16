@@ -1,6 +1,7 @@
 #include "calendar.h"
 
 #include "config.h"
+#include "quickevent.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -8,6 +9,7 @@
 #include <QFile>
 #include <QJSEngine>
 #include <QLoggingCategory>
+#include <QUuid>
 
 #include <algorithm>
 
@@ -92,6 +94,35 @@ void Calendar::reload() {
     }
     std::ranges::stable_sort(events, {}, &CalendarEvent::start);
     m_events = std::move(events);
+
+    // Collections: folders with a displayname or .ics files (vdir layout),
+    // including empty ones vdirsyncer just created.
+    QVariantList collections;
+    for (const auto& configured : cfg.paths) {
+        const auto root = expandHome(configured);
+        QStringList candidates{root};
+        for (const auto& sub : QDir(root).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name))
+            candidates.append(root + u'/' + sub);
+        for (const auto& dir : candidates) {
+            const QDir d(dir);
+            if (!d.exists() || (!QFile::exists(dir + QLatin1String("/displayname")) &&
+                                d.entryList({QStringLiteral("*.ics")}, QDir::Files).isEmpty()))
+                continue;
+            auto name = readMeta(dir, "displayname");
+            if (name.isEmpty())
+                name = d.dirName();
+            collections.append(QVariantMap{{QStringLiteral("name"), name},
+                                           {QStringLiteral("path"), dir},
+                                           {QStringLiteral("color"), readMeta(dir, "color")}});
+        }
+    }
+    const auto wanted = QString::fromStdString(cfg.defaultCalendar);
+    std::ranges::stable_partition(collections, [&](const QVariant& c) {
+        const auto m = c.toMap();
+        return !wanted.isEmpty() && (m.value(QStringLiteral("name")) == wanted ||
+                                     QFileInfo(m.value(QStringLiteral("path")).toString()).fileName() == wanted);
+    });
+    m_collections = collections;
     m_files = files;
 
     if (!m_watcher.directories().isEmpty())
@@ -162,6 +193,56 @@ QList<int> Calendar::busyDays(int year, int month) const {
     }
     std::ranges::sort(days);
     return days;
+}
+
+QString Calendar::defaultCollection() const {
+    return m_collections.isEmpty() ? QString()
+                                   : m_collections.first().toMap().value(QStringLiteral("path")).toString();
+}
+
+QVariantMap Calendar::previewQuick(const QString& text) const {
+    QString error;
+    const auto e = parseQuickEvent(text, QDateTime::currentDateTime(), &error);
+    if (!e)
+        return {{QStringLiteral("ok"), false}, {QStringLiteral("error"), error}};
+    if (m_collections.isEmpty())
+        return {{QStringLiteral("ok"), false},
+                {QStringLiteral("error"), QStringLiteral("no calendar folders in [calendar] paths")}};
+    return {
+        {QStringLiteral("ok"), true},
+        {QStringLiteral("summary"), e->summary},
+        {QStringLiteral("start"), e->start},
+        {QStringLiteral("end"), e->end},
+        {QStringLiteral("allDay"), e->allDay},
+        {QStringLiteral("calendar"), m_collections.first().toMap().value(QStringLiteral("name"))},
+    };
+}
+
+bool Calendar::addQuick(const QString& text) {
+    const auto e = parseQuickEvent(text, QDateTime::currentDateTime());
+    return e && addEvent(e->summary, e->start, e->end, e->allDay);
+}
+
+bool Calendar::addEvent(const QString& summary, const QDateTime& start, const QDateTime& end,
+                        bool allDay, const QString& collectionPath) {
+    const auto dir = collectionPath.isEmpty() ? defaultCollection() : collectionPath;
+    if (dir.isEmpty() || summary.trimmed().isEmpty() || !start.isValid() || end < start)
+        return false;
+    const auto uid = QUuid::createUuid().toString(QUuid::WithoutBraces) + QLatin1String("@island-shell");
+    QuickEvent e{summary.trimmed(), start, end.isValid() ? end : start.addSecs(3600), allDay};
+    if (allDay) {
+        e.start = start.date().startOfDay();
+        e.end = std::max(end.date(), start.date().addDays(1)).startOfDay();
+    }
+    // vdir: one event per file, named after its UID.
+    QFile f(dir + u'/' + uid.section(u'@', 0, 0) + QLatin1String(".ics"));
+    if (!f.open(QIODevice::WriteOnly | QIODevice::NewOnly))
+        return false;
+    f.write(eventToIcs(e, uid, QDateTime::currentDateTimeUtc()));
+    f.close();
+    qCInfo(lcCalendar).noquote() << "added" << e.summary << "to" << dir;
+    reload();
+    return true;
 }
 
 void Calendar::checkSoon() {

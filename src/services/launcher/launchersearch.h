@@ -1,6 +1,9 @@
 #pragma once
 
 #include <QList>
+#include <QVariantMap>
+
+#include <functional>
 #include <QObject>
 #include <QVariantList>
 #include <QtQml/qqmlregistration.h>
@@ -18,9 +21,10 @@ namespace island {
 //   >command     run a shell command (Shift+Enter: in a terminal)
 //   ?words       search the web ([launcher] search_url)
 //   :name        emoji
+//   +text        new calendar event ("+ mañana 15:00 dentista")
 //
 // Items are maps: { kind, title, subtitle, icon, value, actions? } with kind
-// one of app, window, calc, command, web, emoji, error.
+// one of app, window, calc, command, web, emoji, event, error.
 class LauncherSearch : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -57,6 +61,8 @@ private:
     QVariantList windowResults(const QString& query, int limit) const;
 
     QList<Emoji> m_emoji;
+    std::function<QVariantMap(const QString&)> m_calendarPreview;
+    std::function<void(const QString&)> m_calendarAdd;
     QVariantList m_windows;
     int m_revision = 0;
 };

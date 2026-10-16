@@ -6,6 +6,7 @@ add_library(islandlogic STATIC
     services/notifications/notificationrules.h services/notifications/notificationrules.cpp
     services/apps/desktopentry.h services/apps/desktopentry.cpp
     services/calendar/calendarparse.h services/calendar/calendarparse.cpp
+    services/calendar/quickevent.h services/calendar/quickevent.cpp
     services/power/nesteddetect.h services/power/nesteddetect.cpp
     services/launcher/calc.h services/launcher/calc.cpp
     services/system/sysparse.h services/system/sysparse.cpp

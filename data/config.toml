@@ -89,6 +89,8 @@ days = 60
 # Show an upcoming event in the island this many minutes before it starts
 # (0 disables).
 reminder_minutes = 10
+# Calendar new events go to (display name or folder); empty: the first one.
+default = ""
 
 [system]
 # Alert when a temperature stays at or above these for 10 s (°C, 0 disables).

@@ -25,7 +25,8 @@ QtObject {
         SystemHeat {},
         RainAlert {},
         ScreenshotActivity {},
-        WallpaperPicker {}
+        WallpaperPicker {},
+        EventForm {}
     ]
 
     // One activity per live activity pushed over D-Bus / islandctl.

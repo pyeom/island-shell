@@ -2,6 +2,39 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es" sourcelanguage="en">
 <context>
+    <name>EventForm</name>
+    <message>
+        <location filename="../activities/EventForm.qml" line="79"/>
+        <source>New event</source>
+        <translation>Nuevo evento</translation>
+    </message>
+    <message>
+        <location filename="../activities/EventForm.qml" line="104"/>
+        <source>Title</source>
+        <translation>Título</translation>
+    </message>
+    <message>
+        <location filename="../activities/EventForm.qml" line="143"/>
+        <source>All day</source>
+        <translation>Todo el día</translation>
+    </message>
+    <message>
+        <location filename="../activities/EventForm.qml" line="198"/>
+        <source>No calendar folder found; set [calendar] paths (see README).</source>
+        <translation>No hay carpeta de calendario; configura [calendar] paths (ver README).</translation>
+    </message>
+    <message>
+        <location filename="../activities/EventForm.qml" line="207"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../activities/EventForm.qml" line="211"/>
+        <source>Save</source>
+        <translation>Guardar</translation>
+    </message>
+</context>
+<context>
     <name>EventList</name>
     <message>
         <location filename="../activities/EventList.qml" line="17"/>
@@ -57,8 +90,8 @@
     </message>
     <message>
         <location filename="../activities/LauncherPanel.qml" line="135"/>
-        <source>= calculate   &gt; command   ? web   : emoji</source>
-        <translation>= calcular   &gt; comando   ? web   : emoji</translation>
+        <source>= calculate   &gt; command   ? web   : emoji   + event</source>
+        <translation>= calcular   &gt; comando   ? web   : emoji   + evento</translation>
     </message>
     <message>
         <location filename="../activities/LauncherPanel.qml" line="146"/>
@@ -69,39 +102,55 @@
 <context>
     <name>LauncherSearch</name>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="39"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="41"/>
         <source>Calculator</source>
         <translation>Calculadora</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="45"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="47"/>
         <source>Enter copies the result</source>
         <translation>Enter copia el resultado</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="105"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="110"/>
         <source>Window · %1 · workspace %2</source>
         <translation>Ventana · %1 · workspace %2</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="148"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="153"/>
         <source>Type a command</source>
         <translation>Escribe un comando</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="149"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="154"/>
         <source>Enter runs it, Shift+Enter in a terminal</source>
         <translation>Enter lo ejecuta, Shift+Enter en una terminal</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="152"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="157"/>
         <source>Run command · Shift+Enter: in a terminal</source>
         <translation>Ejecutar comando · Shift+Enter: en una terminal</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="158"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="163"/>
         <source>Search the web for “%1”</source>
         <translation>Buscar “%1” en la web</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="173"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="178"/>
+        <source>New event</source>
+        <translation>Nuevo evento</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="174"/>
+        <source>e.g. + tomorrow 15:00 dentist 1h</source>
+        <translation>ej.: + mañana 15:00 dentista 1h</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="190"/>
+        <source>Enter adds it</source>
+        <translation>Enter lo agrega</translation>
     </message>
 </context>
 <context>

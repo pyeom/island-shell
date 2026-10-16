@@ -57,6 +57,13 @@ Column {
                 iconSize: 12
                 onClicked: root.shown = new Date(root.year, root.month + 1, 1)
             }
+            IconButton {
+                width: 24
+                height: 24
+                icon: "list-add-symbolic"
+                iconSize: 12
+                onClicked: Calendar.requestNewEvent(root.selected)
+            }
         }
     }
 

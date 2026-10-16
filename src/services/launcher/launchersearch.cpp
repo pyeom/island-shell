@@ -2,6 +2,7 @@
 
 #include "apps.h"
 #include "calc.h"
+#include "calendar.h"
 #include "config.h"
 #include "desktopentry.h"
 #include "hyprland.h"
@@ -11,6 +12,7 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QJSEngine>
+#include <QLocale>
 #include <QUrl>
 
 #include <algorithm>
@@ -58,6 +60,9 @@ LauncherSearch* LauncherSearch::create(QQmlEngine*, QJSEngine*) {
 
 LauncherSearch::LauncherSearch(QObject* parent) : QObject(parent) {
     loadEmoji();
+    auto* calendar = Calendar::create(nullptr, nullptr);
+    m_calendarPreview = [calendar](const QString& t) { return calendar->previewQuick(t); };
+    m_calendarAdd = [calendar](const QString& t) { calendar->addQuick(t); };
 }
 
 void LauncherSearch::loadEmoji() {
@@ -162,6 +167,29 @@ QVariantList LauncherSearch::query(const QString& text, int limit) const {
     }
     if (t.startsWith(u':'))
         return emojiResults(rest, limit);
+    if (t.startsWith(u'+')) {
+        const auto icon = Icons::source(QStringLiteral("x-office-calendar"), QStringLiteral("office-calendar"));
+        if (rest.isEmpty())
+            return {item("error", QCoreApplication::translate("LauncherSearch", "New event"),
+                         QCoreApplication::translate("LauncherSearch", "e.g. + tomorrow 15:00 dentist 1h"),
+                         icon, {})};
+        const auto preview = m_calendarPreview ? m_calendarPreview(rest) : QVariantMap();
+        if (!preview.value(QStringLiteral("ok")).toBool())
+            return {item("error", QCoreApplication::translate("LauncherSearch", "New event"),
+                         preview.value(QStringLiteral("error")).toString(), icon, {})};
+        const auto start = preview.value(QStringLiteral("start")).toDateTime();
+        const auto end = preview.value(QStringLiteral("end")).toDateTime();
+        const auto locale = QLocale::system();
+        auto when = locale.toString(start.date(), QStringLiteral("ddd d MMM"));
+        if (!preview.value(QStringLiteral("allDay")).toBool())
+            when += u' ' + locale.toString(start.time(), QStringLiteral("HH:mm")) + QStringLiteral("–") +
+                    locale.toString(end.time(), QStringLiteral("HH:mm"));
+        return {item("event", preview.value(QStringLiteral("summary")).toString(),
+                     when + QStringLiteral("  ·  ") + preview.value(QStringLiteral("calendar")).toString() +
+                         QStringLiteral("  ·  ") +
+                         QCoreApplication::translate("LauncherSearch", "Enter adds it"),
+                     icon, rest)};
+    }
 
     QVariantList out;
     if (looksLikeMath(t)) {
@@ -205,6 +233,9 @@ void LauncherSearch::activate(const QVariantMap& it, int action) {
             apps->runInTerminal(value);
         else
             apps->run(value);
+    } else if (kind == u"event") {
+        if (m_calendarAdd)
+            m_calendarAdd(value);
     } else if (kind == u"web") {
         auto url = QString::fromStdString(Config::instance()->data().launcher.searchUrl);
         url.replace(QStringLiteral("%s"), QString::fromUtf8(QUrl::toPercentEncoding(value)));

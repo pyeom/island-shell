@@ -64,6 +64,8 @@ struct CalendarConfig {
     std::vector<std::string> paths = {"~/.calendars", "~/.local/share/calendars"};
     int days = 60;               // how far ahead to expand events
     int reminderMinutes = 10;    // show an upcoming event this long before
+    // Collection new events go to (display name or folder name); empty: first.
+    std::string defaultCalendar;
 };
 
 struct SystemConfig {

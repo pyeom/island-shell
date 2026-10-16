@@ -132,7 +132,7 @@ Item {
         anchors.topMargin: 8
         anchors.horizontalCenter: parent.horizontalCenter
         visible: panel.showHelp
-        text: qsTr("= calculate   > command   ? web   : emoji")
+        text: qsTr("= calculate   > command   ? web   : emoji   + event")
         color: Theme.secondaryForeground
         font.pixelSize: 11
         font.family: "monospace"

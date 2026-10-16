@@ -182,6 +182,7 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
         }
         readInt(*t, "calendar", "days", c.days, 1, 730, errors);
         readInt(*t, "calendar", "reminder_minutes", c.reminderMinutes, 0, 1440, errors);
+        readString(*t, "calendar", "default", c.defaultCalendar, {}, errors);
     }
 
     if (const auto* t = cfg.raw["system"].as_table()) {

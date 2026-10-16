@@ -133,6 +133,9 @@ path = "~/.calendars/"
 fileext = ".ics"
 ```
 
+New events (launcher `+`, or the `+` on the expanded calendar) are written
+to the local folder; vdirsyncer uploads them on its next sync.
+
 Then `vdirsyncer discover && vdirsyncer sync` (and a timer for periodic
 syncs). `~/.calendars` is in the default `[calendar] paths`. For Google
 Calendar use vdirsyncer's `google_calendar` storage.
@@ -149,6 +152,7 @@ result. Prefixes:
 | `>` | run a shell command; Shift+Enter runs it in a terminal |
 | `?` | search the web (`[launcher] search_url`) |
 | `:` | emoji; Enter copies it |
+| `+` | new calendar event: `+ mañana 15:00 dentista 1h`, `+ vie 9 reunión`, `+ 20/10 feriado` |
 
 ## Quick settings
 
