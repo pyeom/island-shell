@@ -43,6 +43,10 @@ Item {
                     color: Theme.secondaryForeground
                     font.pixelSize: 14
                 }
+                Item { width: 1; height: 6; visible: Weather.available }
+                WeatherLine {
+                    anchors.horizontalCenter: root.withCalendar ? undefined : parent.horizontalCenter
+                }
                 Item { width: 1; height: 8 }
                 WorkspaceDots {
                     anchors.horizontalCenter: root.withCalendar ? undefined : parent.horizontalCenter
@@ -66,6 +70,10 @@ Item {
                 id: month
                 visible: root.withCalendar
             }
+        }
+
+        SystemStatsRow {
+            anchors.horizontalCenter: parent.horizontalCenter
         }
 
         // Shortcuts, so the expanded island is useful even with nothing else

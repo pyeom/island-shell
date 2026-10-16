@@ -8,6 +8,8 @@ add_library(islandlogic STATIC
     services/calendar/calendarparse.h services/calendar/calendarparse.cpp
     services/power/nesteddetect.h services/power/nesteddetect.cpp
     services/launcher/calc.h services/launcher/calc.cpp
+    services/system/sysparse.h services/system/sysparse.cpp
+    services/weather/weatherparse.h services/weather/weatherparse.cpp
     activity/selection.h
 )
 target_include_directories(islandlogic PUBLIC

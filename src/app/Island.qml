@@ -185,9 +185,12 @@ Item {
         }
 
         // Expanded presentation, at its own implicit size; the pill reveals it.
+        // Anchored to the top: content taller than the surface loses its
+        // bottom, never its header.
         Loader {
             id: expandedLoader
-            anchors.centerIn: parent
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
             active: root.expanded || opacity > 0
             sourceComponent: root.expandedActivity?.expanded ?? null
             opacity: root.expanded ? 1 : 0

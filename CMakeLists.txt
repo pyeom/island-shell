@@ -16,7 +16,7 @@ option(ISLAND_BUILD_TESTS "Build unit tests" ON)
 # minor upgrades, as with other Qt-based shells.
 set(QT_NO_PRIVATE_MODULE_WARNING ON)
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui GuiPrivate Quick DBus LinguistTools)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui GuiPrivate Quick DBus Network LinguistTools)
 find_package(tomlplusplus REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(PIPEWIRE REQUIRED IMPORTED_TARGET libpipewire-0.3)

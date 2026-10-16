@@ -21,7 +21,7 @@ struct IslandConfig {
     int topMargin = 6;
     int exclusiveZone = 44;
     int surfaceWidth = 600;
-    int surfaceHeight = 420;
+    int surfaceHeight = 560;
     // With a fullscreen window: "minimal" hides ambient activities, "hide"
     // hides everything but modals and critical notifications, "show" changes
     // nothing.
@@ -66,6 +66,25 @@ struct CalendarConfig {
     int reminderMinutes = 10;    // show an upcoming event this long before
 };
 
+struct SystemConfig {
+    // Alert when a temperature stays at or above these (°C); 0 disables.
+    int cpuHot = 90;
+    int gpuHot = 95;
+    int nvmeHot = 70;
+};
+
+struct WeatherConfig {
+    std::string city;           // empty: weather disabled
+    std::string units = "metric"; // metric | imperial
+    int rainAlert = 60;         // % chance within 2 hours to alert; 0 disables
+};
+
+struct NightLightConfig {
+    // Command that starts the night light; empty: reuse the arguments of the
+    // last wlsunset that was running.
+    std::string command;
+};
+
 struct PowerConfig {
     std::string lockCommand = "hyprlock";
     int holdMs = 800; // press-and-hold time for shutdown and reboot
@@ -80,6 +99,9 @@ struct ConfigData {
     LauncherConfig launcher;
     PowerConfig power;
     CalendarConfig calendar;
+    SystemConfig system;
+    WeatherConfig weather;
+    NightLightConfig nightLight;
     std::string iconTheme; // empty: platform default
     toml::table raw; // the whole document, for activity-specific settings
 };

@@ -21,7 +21,9 @@ QtObject {
         PowerMenu {},
         QuickSettings {},
         PrivacyIndicator {},
-        EventSoon {}
+        EventSoon {},
+        SystemHeat {},
+        RainAlert {}
     ]
 
     // One activity per live activity pushed over D-Bus / islandctl.

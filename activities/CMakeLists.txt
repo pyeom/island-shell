@@ -28,6 +28,10 @@ qt_add_qml_module(islandactivities
         QuickSettings.qml
         QuickSettingsPanel.qml
         AudioDeviceList.qml
+        WeatherLine.qml
+        SystemStatsRow.qml
+        SystemHeat.qml
+        RainAlert.qml
         PrivacyIndicator.qml
         CalendarMonth.qml
         EventList.qml

@@ -8,7 +8,7 @@ Item {
 
     signal close()
 
-    implicitWidth: 440
+    implicitWidth: 520
     implicitHeight: column.implicitHeight + 36
 
     focus: true
@@ -27,7 +27,7 @@ Item {
 
         signal clicked()
 
-        width: (column.width - 2 * 10) / 3
+        width: (column.width - 3 * 10) / 4
         height: 64
         radius: 18
         color: !available ? Qt.rgba(1, 1, 1, 0.05)
@@ -171,6 +171,15 @@ Item {
                 on: Bluetooth.powered
                 available: Bluetooth.available
                 onClicked: Bluetooth.setPowered(!Bluetooth.powered)
+            }
+
+            Tile {
+                icon: "redshift-status-on"
+                title: qsTr("Night light")
+                subtitle: NightLight.running ? qsTr("On") : qsTr("Off")
+                on: NightLight.running
+                available: NightLight.available
+                onClicked: NightLight.setRunning(!NightLight.running)
             }
 
             Tile {

@@ -28,22 +28,22 @@
 <context>
     <name>IdleExpanded</name>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="61"/>
+        <location filename="../activities/IdleExpanded.qml" line="65"/>
         <source>No upcoming events</source>
         <translation>Sin próximos eventos</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="61"/>
+        <location filename="../activities/IdleExpanded.qml" line="65"/>
         <source>No events</source>
         <translation>Sin eventos</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="79"/>
+        <location filename="../activities/IdleExpanded.qml" line="87"/>
         <source>Search apps</source>
         <translation>Buscar apps</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="84"/>
+        <location filename="../activities/IdleExpanded.qml" line="92"/>
         <source>Quick settings</source>
         <translation>Ajustes rápidos</translation>
     </message>
@@ -226,6 +226,7 @@
         <location filename="../activities/QuickSettingsPanel.qml" line="151"/>
         <location filename="../activities/QuickSettingsPanel.qml" line="168"/>
         <location filename="../activities/QuickSettingsPanel.qml" line="179"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="188"/>
         <source>Off</source>
         <translation>Desactivado</translation>
     </message>
@@ -242,34 +243,48 @@
     <message>
         <location filename="../activities/QuickSettingsPanel.qml" line="170"/>
         <location filename="../activities/QuickSettingsPanel.qml" line="179"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="188"/>
         <source>On</source>
         <translation>Activado</translation>
     </message>
     <message>
         <location filename="../activities/QuickSettingsPanel.qml" line="178"/>
+        <source>Night light</source>
+        <translation>Luz nocturna</translation>
+    </message>
+    <message>
+        <location filename="../activities/QuickSettingsPanel.qml" line="187"/>
         <source>Do not disturb</source>
         <translation>No molestar</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="189"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="212"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="198"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="221"/>
         <source>Mute</source>
         <translation>Silencio</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="265"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="274"/>
         <source>Power saver</source>
         <translation>Ahorro de energía</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="266"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="275"/>
         <source>Performance</source>
         <translation>Rendimiento</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="267"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="276"/>
         <source>Balanced</source>
         <translation>Equilibrado</translation>
+    </message>
+</context>
+<context>
+    <name>RainAlert</name>
+    <message>
+        <location filename="../activities/RainAlert.qml" line="30"/>
+        <source>Rain %1% · %2</source>
+        <translation>Lluvia %1% · %2</translation>
     </message>
 </context>
 <context>
@@ -299,6 +314,14 @@
     </message>
 </context>
 <context>
+    <name>SystemHeat</name>
+    <message>
+        <location filename="../activities/SystemHeat.qml" line="61"/>
+        <source>%1 is running hot: %2 °C</source>
+        <translation>%1 está muy caliente: %2 °C</translation>
+    </message>
+</context>
+<context>
     <name>VolumeOsd</name>
     <message>
         <location filename="../activities/VolumeOsd.qml" line="18"/>
@@ -314,6 +337,54 @@
         <location filename="../activities/VolumeOsd.qml" line="20"/>
         <source>Mute</source>
         <translation>Silencio</translation>
+    </message>
+</context>
+<context>
+    <name>Weather</name>
+    <message>
+        <location filename="../src/services/weather/weather.cpp" line="195"/>
+        <source>Clear</source>
+        <translation>Despejado</translation>
+    </message>
+    <message>
+        <location filename="../src/services/weather/weather.cpp" line="195"/>
+        <source>Partly cloudy</source>
+        <translation>Parcialmente nublado</translation>
+    </message>
+    <message>
+        <location filename="../src/services/weather/weather.cpp" line="196"/>
+        <source>Overcast</source>
+        <translation>Cubierto</translation>
+    </message>
+    <message>
+        <location filename="../src/services/weather/weather.cpp" line="196"/>
+        <source>Fog</source>
+        <translation>Niebla</translation>
+    </message>
+    <message>
+        <location filename="../src/services/weather/weather.cpp" line="197"/>
+        <source>Drizzle</source>
+        <translation>Llovizna</translation>
+    </message>
+    <message>
+        <location filename="../src/services/weather/weather.cpp" line="197"/>
+        <source>Rain</source>
+        <translation>Lluvia</translation>
+    </message>
+    <message>
+        <location filename="../src/services/weather/weather.cpp" line="198"/>
+        <source>Snow</source>
+        <translation>Nieve</translation>
+    </message>
+    <message>
+        <location filename="../src/services/weather/weather.cpp" line="198"/>
+        <source>Thunderstorm</source>
+        <translation>Tormenta</translation>
+    </message>
+    <message>
+        <location filename="../src/services/weather/weather.cpp" line="199"/>
+        <source>Cloudy</source>
+        <translation>Nublado</translation>
     </message>
 </context>
 </TS>

@@ -22,7 +22,7 @@ exclusive_zone = 44
 # Size of the transparent layer surface the island animates inside. It never
 # resizes, so it must fit the largest state (raised automatically if not).
 surface_width = 600
-surface_height = 420
+surface_height = 560
 # With a fullscreen window (games, videos) on the monitor:
 #   "minimal": hide the clock, media and privacy; notifications, OSD and
 #              other alerts still show
@@ -89,6 +89,25 @@ days = 60
 # Show an upcoming event in the island this many minutes before it starts
 # (0 disables).
 reminder_minutes = 10
+
+[system]
+# Alert when a temperature stays at or above these for 10 s (°C, 0 disables).
+cpu_hot = 90
+gpu_hot = 95
+nvme_hot = 70
+
+[weather]
+# City for the forecast (Open-Meteo, no account needed). Empty disables it.
+# Only the city name is sent for geocoding; its coordinates are cached.
+city = ""
+units = "metric"          # metric | imperial
+# Alert when rain is at least this likely within 2 hours (%, 0 disables).
+rain_alert = 60
+
+[night_light]
+# Command that starts the night light. Empty: turning it off remembers how
+# wlsunset was running (with your coordinates) and reuses that.
+command = ""
 
 [power]
 lock_command = "hyprlock"

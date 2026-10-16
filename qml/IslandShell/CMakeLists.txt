@@ -70,6 +70,9 @@ qt_add_qml_module(islandshell
         ${src}/services/privacy/privacy.h ${src}/services/privacy/privacy.cpp
         ${src}/services/calendar/calendar.h ${src}/services/calendar/calendar.cpp
         ${src}/services/launcher/launchersearch.h ${src}/services/launcher/launchersearch.cpp
+        ${src}/services/system/systemstats.h ${src}/services/system/systemstats.cpp
+        ${src}/services/weather/weather.h ${src}/services/weather/weather.cpp
+        ${src}/services/nightlight/nightlight.h ${src}/services/nightlight/nightlight.cpp
         ${src}/dbus/dbusutil.h
         ${src}/dbus/dbusproperties.h ${src}/dbus/dbusproperties.cpp
         ${src}/core/icons.h ${src}/core/icons.cpp
@@ -105,12 +108,16 @@ target_include_directories(islandshell PUBLIC
     ${src}/services/privacy
     ${src}/services/calendar
     ${src}/services/launcher
+    ${src}/services/system
+    ${src}/services/weather
+    ${src}/services/nightlight
     ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(islandshell PUBLIC
     islandlogic
     Qt6::Quick
     Qt6::DBus
+    Qt6::Network
     LayerShellQt::Interface
     Qt6::GuiPrivate
     PkgConfig::WAYLAND_CLIENT

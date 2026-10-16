@@ -15,6 +15,9 @@ paths = ["$t/calendars"]
 
 [notifications]
 rules = [ { app = "Spam", mute = true }, { app = "quiet*", no_popup = true } ]
+
+[weather]
+city = "Santiago"
 CONF
 
 echo 1000 >"$t/backlight/max_brightness"
