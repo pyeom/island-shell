@@ -14,15 +14,33 @@ listed here.
 - Launcher modes: open windows, calculator (`=`, or automatic for math),
   commands (`>`), web search (`?`, `[launcher] search_url`), emoji (`:`).
 - `LauncherSearch` in the public module.
+- System gauges (CPU, GPU, VRAM, RAM, SSD) in the expanded view and a
+  sustained-heat alert (`[system]`).
+- Weather for `[weather] city` (Open-Meteo) with hourly forecast and a rain
+  alert.
+- Night light toggle (wlsunset) in quick settings.
+- `islandctl screenshot` with a result activity (open, copy, edit, delete).
+- Wallpaper picker (`islandctl wallpaper`), random wallpaper.
+- Calendar events from the launcher (`+ mañana 15:00 dentista`) and a form.
+- Settings window (`islandctl settings`) that edits config.toml in place,
+  keeping comments.
+- Wi-Fi network list and connection, Bluetooth device list, discovery and
+  pairing, laptop and peripheral batteries with low-battery alerts.
 
 ### Fixed
 - Privacy indicator no longer flickers and re-alerts while a voice chat
   toggles capture.
 - Fuzzy search ranks literal matches first (`fire` → 🔥, not 🇮🇪).
+- Bluetooth devices added after startup were never seen (the
+  InterfacesAdded slot did not connect).
+
+### Changed
+- Default `[island] surface_height` is 560 so the richer expanded view fits.
 
 ### Notes
 - The empty input region uses a Qt QPA header: rebuild after Qt minor
   upgrades.
+- `docs/api-review.md`: what changes before the API is frozen as 1.0.
 
 ## 0.1.0 — 2026-10-15
 
