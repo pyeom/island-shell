@@ -57,6 +57,7 @@ qt_add_qml_module(islandshell
         ${src}/dbus/shellcontrol.h ${src}/dbus/shellcontrol.cpp
         ${src}/services/hyprland/hyprland.h ${src}/services/hyprland/hyprland.cpp
         ${src}/services/hyprland/hyprlandipc.h ${src}/services/hyprland/hyprlandipc.cpp
+        ${src}/services/hyprland/keybinds.h ${src}/services/hyprland/keybinds.cpp
         ${src}/services/notifications/notifications.h ${src}/services/notifications/notifications.cpp
         ${src}/services/audio/audio.h ${src}/services/audio/audio.cpp
         ${src}/services/mpris/mpris.h ${src}/services/mpris/mpris.cpp

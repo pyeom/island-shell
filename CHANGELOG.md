@@ -36,6 +36,10 @@ listed here.
   as well as copied.
 - `Hyprland.exec()`, `focusWorkspace()` and `focusWindow()`, which work with
   both hyprland.conf and hyprland.lua.
+- `[keybinds]`: island actions bound in Hyprland while the island runs,
+  re-added after Hyprland reloads its config, and a Keybindings page in the
+  settings window that records combinations. `Keybinds` in the public
+  module.
 
 ### Fixed
 - Privacy indicator no longer flickers and re-alerts while a voice chat
@@ -69,6 +73,8 @@ listed here.
 
 ### Changed
 - Default `[island] surface_height` is 560 so the richer expanded view fits.
+- The expanded view always shows the month. Without calendars, the first
+  new event creates a local one in the last `[calendar] paths` folder.
 
 ### Notes
 - The empty input region uses a Qt QPA header: rebuild after Qt minor

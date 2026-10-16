@@ -4,6 +4,7 @@ add_library(islandlogic STATIC
     core/pywal.h core/pywal.cpp
     core/tomledit.h core/tomledit.cpp
     services/hyprland/hyprlandparse.h services/hyprland/hyprlandparse.cpp
+    services/hyprland/keybind.h services/hyprland/keybind.cpp
     services/notifications/notificationrules.h services/notifications/notificationrules.cpp
     services/apps/desktopentry.h services/apps/desktopentry.cpp
     services/calendar/calendarparse.h services/calendar/calendarparse.cpp
@@ -27,7 +28,7 @@ target_include_directories(islandlogic PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/services/launcher
     ${CMAKE_CURRENT_SOURCE_DIR}/services/wallpaper)
 target_link_libraries(islandlogic PUBLIC Qt6::Core Qt6::Gui tomlplusplus::tomlplusplus
-    PkgConfig::LIBICAL)
+    PkgConfig::LIBICAL PkgConfig::XKBCOMMON)
 
 # Internal module: the shell root and the island itself.
 qt_add_qml_module(islandapp

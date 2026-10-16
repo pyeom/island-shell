@@ -57,6 +57,9 @@ public:
 
     using Reply = std::function<void(const QByteArray&)>;
     void request(const QByteArray& command, Reply reply = {});
+    // Calls back with true for a Lua config (hyprland.lua), false for
+    // hyprland.conf; asks Hyprland the first time.
+    void configIsLua(std::function<void(bool)> callback);
 
 signals:
     void availableChanged();

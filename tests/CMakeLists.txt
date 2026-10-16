@@ -19,6 +19,7 @@ island_test(weatherparse)
 island_test(quickevent)
 island_test(tomledit)
 island_test(wallpaperbackend)
+island_test(keybind)
 
 # Integration test against the QML module's services (needs a QGuiApplication).
 qt_add_executable(tst_launchersearch tst_launchersearch.cpp)

@@ -139,6 +139,18 @@ pywal = true
 #   apply = "awww img %f && wal -q -n -i %f && cp ~/.cache/wal/colors-kitty.conf ~/.config/kitty/current-theme.conf"
 apply = ""
 
+[keybinds]
+# Bound in Hyprland while the island runs, replacing any other bind on the
+# same keys; "" or a missing line leaves the action unbound. Keys as in
+# hl.bind: "SUPER + SHIFT + R", "ALT + TAB", "Print", "XF86AudioPlay".
+# Actions: launcher, power, quick_settings, settings, expand, collapse, media,
+# wallpaper, wallpaper_random, screenshot_region, screenshot_window,
+# screenshot_output, dnd, notifications_clear, reload.
+# launcher = "SUPER + R"
+# power = "ALT + TAB"
+# media = "ALT + P"
+# screenshot_region = "Print"
+
 [power]
 lock_command = "hyprlock"
 # Press-and-hold time for shut down and restart (ms).

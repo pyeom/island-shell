@@ -40,7 +40,6 @@ Activity {
             }
             readonly property bool valid: title.text.trim().length > 0
                                           && (allDay || (startTime && startTime.h < 24 && startTime.m < 60))
-                                          && Calendar.collections.length > 0
 
             function save() {
                 if (!valid)
@@ -201,8 +200,8 @@ Activity {
                     visible: Calendar.collections.length === 0
                     width: parent.width
                     wrapMode: Text.Wrap
-                    text: qsTr("No calendar folder found; set [calendar] paths (see README).")
-                    color: Theme.danger
+                    text: qsTr("Saved to a new local calendar. To sync Google or CalDAV, see the README.")
+                    color: Theme.secondaryForeground
                     font.pixelSize: 12
                 }
 

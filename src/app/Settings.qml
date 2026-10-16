@@ -89,12 +89,34 @@ Window {
             { key: "wallpaper.apply", label: qsTr("Custom command"), kind: "text", def: "", hint: qsTr("%f = file") },
             { key: "night_light.command", label: qsTr("Night light command"), kind: "text", def: "", hint: qsTr("empty: reuse wlsunset's") },
         ]},
+        { title: qsTr("Keybindings"), icon: "preferences-desktop-keyboard-shortcuts", options: [
+            { key: "keybinds.launcher", label: qsTr("Launcher"), kind: "key" },
+            { key: "keybinds.power", label: qsTr("Power menu"), kind: "key" },
+            { key: "keybinds.quick_settings", label: qsTr("Quick settings"), kind: "key" },
+            { key: "keybinds.media", label: qsTr("Media player"), kind: "key" },
+            { key: "keybinds.expand", label: qsTr("Expand the island"), kind: "key" },
+            { key: "keybinds.collapse", label: qsTr("Collapse the island"), kind: "key" },
+            { key: "keybinds.wallpaper", label: qsTr("Wallpaper picker"), kind: "key" },
+            { key: "keybinds.wallpaper_random", label: qsTr("Random wallpaper"), kind: "key" },
+            { key: "keybinds.screenshot_region", label: qsTr("Screenshot of a region"), kind: "key" },
+            { key: "keybinds.screenshot_window", label: qsTr("Screenshot of a window"), kind: "key" },
+            { key: "keybinds.screenshot_output", label: qsTr("Screenshot of the screen"), kind: "key" },
+            { key: "keybinds.dnd", label: qsTr("Do not disturb"), kind: "key" },
+            { key: "keybinds.notifications_clear", label: qsTr("Clear notifications"), kind: "key" },
+            { key: "keybinds.settings", label: qsTr("Settings"), kind: "key" },
+            { key: "keybinds.reload", label: qsTr("Reload the island"), kind: "key" },
+        ], note: qsTr("The island adds these binds to Hyprland while it runs; any other bind on the same keys is replaced. Recording pauses Hyprland's binds until you press a key, or Esc to cancel.") },
         { title: qsTr("Power"), icon: "system-shutdown-symbolic", options: [
             { key: "power.lock_command", label: qsTr("Lock command"), kind: "text", def: "hyprlock" },
             { key: "power.hold_ms", label: qsTr("Hold to confirm (ms)"), kind: "int", def: 800, from: 0, to: 5000, step: 100 },
         ]},
     ]
     property int page: 0
+    // Config key of the keybinding being recorded, if any.
+    property string recordingKey: ""
+
+    onPageChanged: Keybinds.stopRecording()
+    onVisibleChanged: if (!visible) Keybinds.stopRecording()
 
     function value(option: var): var {
         const v = Config.get(option.key, option.def)
@@ -158,12 +180,25 @@ Window {
                     text: Config.errors.join("\n")
                 }
 
+                Label {
+                    Layout.fillWidth: true
+                    readonly property bool keysPage: win.pages[win.page].options.some(o => o.kind === "key")
+                    visible: keysPage && (!Keybinds.available || Keybinds.errors.length > 0)
+                    wrapMode: Text.Wrap
+                    color: Theme.danger
+                    text: !Keybinds.available ? qsTr("Hyprland is not running: these keys are not bound.")
+                                              : qsTr("Hyprland refused some binds:") + "\n" + Keybinds.errors.join("\n")
+                }
+
                 Repeater {
                     model: win.pages[win.page].options
                     delegate: RowLayout {
                         id: row
                         required property var modelData
                         readonly property var current: Config.revision >= 0 ? win.value(modelData) : undefined
+                        readonly property string hint: modelData.kind === "key"
+                            && Keybinds.replaced.includes(modelData.key.split(".")[1])
+                            ? qsTr("Replaces a bind from your Hyprland config") : (modelData.hint ?? "")
                         Layout.fillWidth: true
                         spacing: 16
 
@@ -180,8 +215,8 @@ Window {
                             Label {
                                 Layout.fillWidth: true
                                 elide: Text.ElideRight
-                                visible: !!row.modelData.hint
-                                text: row.modelData.hint ?? ""
+                                visible: row.hint !== ""
+                                text: row.hint
                                 opacity: 0.6
                                 font.pixelSize: 11
                             }
@@ -195,6 +230,7 @@ Window {
                                            : row.modelData.kind === "color" ? colorEditor
                                            : row.modelData.kind === "list" ? listEditor
                                            : row.modelData.kind === "bool" ? boolEditor
+                                           : row.modelData.kind === "key" ? keyEditor
                                            : textEditor
 
                             Component {
@@ -264,6 +300,52 @@ Window {
                                         id: toggle
                                         checked: row.current
                                         onToggled: Config.set(row.modelData.key, checked)
+                                    }
+                                }
+                            }
+                            Component {
+                                id: keyEditor
+                                RowLayout {
+                                    readonly property bool recording: Keybinds.recording && win.recordingKey === row.modelData.key
+                                    spacing: 6
+                                    TextField {
+                                        id: keys
+                                        Layout.fillWidth: true
+                                        text: parent.recording ? qsTr("Press the keys…") : (row.current ?? "")
+                                        readOnly: parent.recording
+                                        placeholderText: text === "" ? qsTr("Not set") : ""
+                                        selectByMouse: true
+                                        onEditingFinished: if (!parent.recording && text.trim() !== (row.current ?? ""))
+                                                               Config.set(row.modelData.key, text.trim())
+                                        Keys.onPressed: event => {
+                                            if (!parent.recording)
+                                                return
+                                            event.accepted = true
+                                            const combo = Keybinds.combo(event.modifiers, event.nativeScanCode)
+                                            if (combo === "")
+                                                return // a modifier on its own: wait for the key
+                                            Keybinds.stopRecording()
+                                            Config.set(row.modelData.key, combo)
+                                        }
+                                    }
+                                    Button {
+                                        text: parent.recording ? qsTr("Cancel") : qsTr("Record")
+                                        onClicked: {
+                                            if (parent.recording) {
+                                                Keybinds.stopRecording()
+                                                return
+                                            }
+                                            win.recordingKey = row.modelData.key
+                                            keys.forceActiveFocus()
+                                            Keybinds.startRecording()
+                                        }
+                                    }
+                                    ToolButton {
+                                        icon.source: Icons.source("edit-clear-symbolic", "edit-clear")
+                                        enabled: (row.current ?? "") !== ""
+                                        onClicked: Config.set(row.modelData.key, "")
+                                        ToolTip.visible: hovered
+                                        ToolTip.text: qsTr("Remove")
                                     }
                                 }
                             }

@@ -15,7 +15,7 @@ depends=(
     glibc gcc-libs
     qt6-base qt6-declarative qt6-wayland qt6-svg
     layer-shell-qt
-    libpipewire libical
+    libpipewire libical libxkbcommon
     hyprland
 )
 makedepends=(git cmake ninja qt6-tools qt6-shadertools tomlplusplus)

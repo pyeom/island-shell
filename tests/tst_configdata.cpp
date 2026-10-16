@@ -147,6 +147,33 @@ reminder_minutes = 5
         QCOMPARE(cfg.launcher.searchUrl, std::string("https://duckduckgo.com/?q=%s"));
     }
 
+    void keybinds() {
+        std::vector<std::string> errors;
+        QVERIFY(parseConfig("", errors).keybinds.empty());
+        auto cfg = parseConfig(R"(
+[keybinds]
+launcher = "super+r"
+power = "ALT + TAB"
+quick_settings = ""
+media = "SUPER + R"
+wallpaper = "HYPER + W"
+nope = "SUPER + N"
+dnd = 3
+)", errors);
+        QCOMPARE(cfg.keybinds.size(), 2u);
+        QCOMPARE(cfg.keybinds[0].action, std::string("launcher"));
+        QCOMPARE(cfg.keybinds[0].keys, std::string("SUPER + R"));
+        QCOMPARE(cfg.keybinds[1].keys, std::string("ALT + Tab"));
+        QCOMPARE(errors.size(), 4u);
+        const auto has = [&](std::string_view text) {
+            return std::ranges::any_of(errors, [&](const std::string& e) { return e.find(text) != std::string::npos; });
+        };
+        QVERIFY(has("keybinds.media: SUPER + R is already used by keybinds.launcher"));
+        QVERIFY(has("keybinds.wallpaper: unknown modifier"));
+        QVERIFY(has("keybinds.nope: unknown action"));
+        QVERIFY(has("keybinds.dnd: expected a string"));
+    }
+
     void wallpaper() {
         std::vector<std::string> errors;
         auto cfg = parseConfig("", errors);

@@ -157,20 +157,30 @@ new entries in `i18n/island-shell_es.ts` with Qt Linguist or a text editor.
 
 ## Keybinds
 
-Example for a Lua Hyprland config (`hl.bind`):
+Set them in `[keybinds]` or on the Keybindings page of the settings window,
+which can record a combination:
+
+```toml
+[keybinds]
+launcher = "SUPER + R"
+power = "ALT + TAB"
+media = "ALT + P"
+screenshot_region = "Print"
+```
+
+The island adds these binds to Hyprland while it runs (with `hyprctl eval`
+for hyprland.lua, `hyprctl keyword` for hyprland.conf) and adds them again
+after Hyprland reloads its config. A bind replaces any other bind on the same
+keys, so it can stay in your Hyprland config as a fallback. Actions:
+`launcher`, `power`, `quick_settings`, `settings`, `expand`, `collapse`,
+`media`, `wallpaper`, `wallpaper_random`, `screenshot_region`,
+`screenshot_window`, `screenshot_output`, `dnd`, `notifications_clear`,
+`reload`.
+
+Anything else can be bound in Hyprland to an `islandctl` command:
 
 ```lua
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("islandctl launcher toggle"))
-hl.bind("ALT + TAB",       hl.dsp.exec_cmd("islandctl power"))
-hl.bind("ALT + p",         hl.dsp.exec_cmd("islandctl expand media"))
-```
-
-or `hyprland.conf`:
-
-```
-bind = SUPER, R, exec, islandctl launcher toggle
-bind = ALT, TAB, exec, islandctl power
-bind = ALT, P, exec, islandctl expand media
+hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("islandctl screenshot active"))
 ```
 
 Volume keys need no change. The OSD follows PipeWire, so it shows whatever
@@ -186,8 +196,9 @@ leaves that program alone.
 ## Calendar
 
 The island reads local calendars (vdir collections or folders of `.ics`
-files) and never talks to calendar servers itself. To show Google, iCloud,
-Nextcloud or any CalDAV calendar, sync it with
+files) and never talks to calendar servers itself. Without any, events you
+add go to a local calendar in `~/.local/share/calendars/local`. To show
+Google, iCloud, Nextcloud or any CalDAV calendar, sync it with
 [vdirsyncer](https://vdirsyncer.pimutils.org/):
 
 ```ini

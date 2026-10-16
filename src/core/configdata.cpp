@@ -1,5 +1,7 @@
 #include "configdata.h"
 
+#include "keybind.h"
+
 #include <algorithm>
 #include <format>
 
@@ -250,6 +252,37 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
         readString(*t, "wallpaper", "backend_args", cfg.wallpaper.backendArgs, {}, errors);
         readBool(*t, "wallpaper", "pywal", cfg.wallpaper.pywal, errors);
         readString(*t, "wallpaper", "apply", cfg.wallpaper.apply, {}, errors);
+    }
+
+    if (const auto* t = cfg.raw["keybinds"].as_table()) {
+        for (const auto& [name, node] : *t) {
+            const std::string action(name.str());
+            const auto where = "keybinds." + action;
+            if (!hypr::keyAction(action)) {
+                errors.push_back(where + ": unknown action");
+                continue;
+            }
+            const auto v = node.value<std::string>();
+            if (!v) {
+                errors.push_back(where + ": expected a string such as \"SUPER + R\"");
+                continue;
+            }
+            if (v->find_first_not_of(" \t") == std::string::npos)
+                continue; // "" leaves it unbound
+            QString why;
+            const auto combo = hypr::parseKeyCombo(QString::fromStdString(*v), &why);
+            if (!combo) {
+                errors.push_back(std::format("{}: {}", where, why.toStdString()));
+                continue;
+            }
+            const auto keys = hypr::comboText(*combo).toStdString();
+            const auto taken = std::ranges::find(cfg.keybinds, keys, &Keybind::keys);
+            if (taken != cfg.keybinds.end()) {
+                errors.push_back(std::format("{}: {} is already used by keybinds.{}", where, keys, taken->action));
+                continue;
+            }
+            cfg.keybinds.push_back({action, keys});
+        }
     }
 
     if (const auto* t = cfg.raw["power"].as_table()) {

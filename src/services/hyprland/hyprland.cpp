@@ -103,6 +103,21 @@ void Hyprland::send(const hypr::Dispatch& d) {
     });
 }
 
+void Hyprland::configIsLua(std::function<void(bool)> callback) {
+    if (m_syntax != Syntax::Unknown) {
+        callback(m_syntax == Syntax::Lua);
+        return;
+    }
+    // hyprland.conf answers "eval is only supported with the lua config
+    // manager" (older versions: "unknown request").
+    request("eval local _ = 1", [this, callback = std::move(callback)](const QByteArray& reply) {
+        const bool lua = reply.trimmed() == "ok";
+        if (!reply.isEmpty()) // empty: no answer, ask again next time
+            m_syntax = lua ? Syntax::Lua : Syntax::Conf;
+        callback(lua);
+    });
+}
+
 void Hyprland::exec(const QString& command) {
     send(hypr::execDispatch(command));
 }

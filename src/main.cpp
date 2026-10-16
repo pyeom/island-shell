@@ -1,5 +1,6 @@
 #include "config.h"
 #include "icons.h"
+#include "keybinds.h"
 #include "liveactivities.h"
 #include "notifications.h"
 #include "shellcontrol.h"
@@ -75,6 +76,8 @@ int main(int argc, char* argv[]) {
     case island::ShellControl::Registration::Ok:
         island::Notifications::instance()->registerOnBus();
         island::LiveActivities::instance()->registerOnBus();
+        // Only the instance that owns the bus: the binds call islandctl.
+        island::Keybinds::instance();
         break;
     }
 

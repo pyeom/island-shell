@@ -196,8 +196,11 @@ QList<int> Calendar::busyDays(int year, int month) const {
 }
 
 QString Calendar::defaultCollection() const {
-    return m_collections.isEmpty() ? QString()
-                                   : m_collections.first().toMap().value(QStringLiteral("path")).toString();
+    if (!m_collections.isEmpty())
+        return m_collections.first().toMap().value(QStringLiteral("path")).toString();
+    // No calendars yet: a local one, created with the first event.
+    const auto& paths = Config::instance()->data().calendar.paths;
+    return paths.empty() ? QString() : expandHome(paths.back()) + QLatin1String("/local");
 }
 
 QVariantMap Calendar::previewQuick(const QString& text) const {
@@ -205,7 +208,7 @@ QVariantMap Calendar::previewQuick(const QString& text) const {
     const auto e = parseQuickEvent(text, QDateTime::currentDateTime(), &error);
     if (!e)
         return {{QStringLiteral("ok"), false}, {QStringLiteral("error"), error}};
-    if (m_collections.isEmpty())
+    if (defaultCollection().isEmpty())
         return {{QStringLiteral("ok"), false},
                 {QStringLiteral("error"), QStringLiteral("no calendar folders in [calendar] paths")}};
     return {
@@ -214,7 +217,9 @@ QVariantMap Calendar::previewQuick(const QString& text) const {
         {QStringLiteral("start"), e->start},
         {QStringLiteral("end"), e->end},
         {QStringLiteral("allDay"), e->allDay},
-        {QStringLiteral("calendar"), m_collections.first().toMap().value(QStringLiteral("name"))},
+        {QStringLiteral("calendar"), m_collections.isEmpty()
+                                         ? QVariant(QStringLiteral("Local"))
+                                         : m_collections.first().toMap().value(QStringLiteral("name"))},
     };
 }
 
@@ -233,6 +238,13 @@ bool Calendar::addEvent(const QString& summary, const QDateTime& start, const QD
     if (allDay) {
         e.start = start.date().startOfDay();
         e.end = std::max(end.date(), start.date().addDays(1)).startOfDay();
+    }
+    if (!QFileInfo::exists(dir)) {
+        if (!QDir().mkpath(dir))
+            return false;
+        QFile name(dir + QLatin1String("/displayname"));
+        if (name.open(QIODevice::WriteOnly))
+            name.write("Local\n");
     }
     // vdir: one event per file, named after its UID.
     QFile f(dir + u'/' + uid.section(u'@', 0, 0) + QLatin1String(".ics"));

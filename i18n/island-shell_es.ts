@@ -48,32 +48,32 @@
 <context>
     <name>EventForm</name>
     <message>
-        <location filename="../activities/EventForm.qml" line="79"/>
+        <location filename="../activities/EventForm.qml" line="78"/>
         <source>New event</source>
         <translation>Nuevo evento</translation>
     </message>
     <message>
-        <location filename="../activities/EventForm.qml" line="104"/>
+        <location filename="../activities/EventForm.qml" line="103"/>
         <source>Title</source>
         <translation>Título</translation>
     </message>
     <message>
-        <location filename="../activities/EventForm.qml" line="143"/>
+        <location filename="../activities/EventForm.qml" line="142"/>
         <source>All day</source>
         <translation>Todo el día</translation>
     </message>
     <message>
-        <location filename="../activities/EventForm.qml" line="204"/>
-        <source>No calendar folder found; set [calendar] paths (see README).</source>
-        <translation>No hay carpeta de calendario; configura [calendar] paths (ver README).</translation>
+        <location filename="../activities/EventForm.qml" line="203"/>
+        <source>Saved to a new local calendar. To sync Google or CalDAV, see the README.</source>
+        <translation>Se guardará en un calendario local nuevo. Para sincronizar con Google o CalDAV, mira el README.</translation>
     </message>
     <message>
-        <location filename="../activities/EventForm.qml" line="213"/>
+        <location filename="../activities/EventForm.qml" line="212"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../activities/EventForm.qml" line="217"/>
+        <location filename="../activities/EventForm.qml" line="216"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
@@ -105,22 +105,22 @@
 <context>
     <name>IdleExpanded</name>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="65"/>
+        <location filename="../activities/IdleExpanded.qml" line="56"/>
         <source>No upcoming events</source>
         <translation>Sin próximos eventos</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="65"/>
+        <location filename="../activities/IdleExpanded.qml" line="56"/>
         <source>No events</source>
         <translation>Sin eventos</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="87"/>
+        <location filename="../activities/IdleExpanded.qml" line="77"/>
         <source>Search apps</source>
         <translation>Buscar apps</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="92"/>
+        <location filename="../activities/IdleExpanded.qml" line="82"/>
         <source>Quick settings</source>
         <translation>Ajustes rápidos</translation>
     </message>
@@ -574,6 +574,7 @@
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="52"/>
+        <location filename="../src/app/Settings.qml" line="93"/>
         <source>Launcher</source>
         <translation>Lanzador</translation>
     </message>
@@ -755,26 +756,146 @@
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="92"/>
+        <source>Keybindings</source>
+        <translation>Atajos de teclado</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="94"/>
+        <source>Power menu</source>
+        <translation>Menú de apagado</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="95"/>
+        <source>Quick settings</source>
+        <translation>Ajustes rápidos</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="96"/>
+        <source>Media player</source>
+        <translation>Reproductor</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="97"/>
+        <source>Expand the island</source>
+        <translation>Expandir la isla</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="98"/>
+        <source>Collapse the island</source>
+        <translation>Contraer la isla</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="99"/>
+        <source>Wallpaper picker</source>
+        <translation>Selector de fondos</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="100"/>
+        <source>Random wallpaper</source>
+        <translation>Fondo aleatorio</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="101"/>
+        <source>Screenshot of a region</source>
+        <translation>Captura de una región</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="102"/>
+        <source>Screenshot of a window</source>
+        <translation>Captura de una ventana</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="103"/>
+        <source>Screenshot of the screen</source>
+        <translation>Captura de la pantalla</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="104"/>
+        <source>Do not disturb</source>
+        <translation>No molestar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="105"/>
+        <source>Clear notifications</source>
+        <translation>Borrar notificaciones</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="106"/>
+        <source>Settings</source>
+        <translation>Ajustes</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="107"/>
+        <source>Reload the island</source>
+        <translation>Recargar la isla</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="108"/>
+        <source>The island adds these binds to Hyprland while it runs; any other bind on the same keys is replaced. Recording pauses Hyprland&apos;s binds until you press a key, or Esc to cancel.</source>
+        <translation>La isla registra estos atajos en Hyprland mientras está abierta y reemplaza cualquier otro atajo en las mismas teclas. Al grabar, los atajos de Hyprland se pausan hasta que presiones una combinación, o Esc para cancelar.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="109"/>
         <source>Power</source>
         <translation>Energía</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="93"/>
+        <location filename="../src/app/Settings.qml" line="110"/>
         <source>Lock command</source>
         <translation>Comando de bloqueo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="94"/>
+        <location filename="../src/app/Settings.qml" line="111"/>
         <source>Hold to confirm (ms)</source>
         <translation>Mantener para confirmar (ms)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="274"/>
+        <location filename="../src/app/Settings.qml" line="189"/>
+        <source>Hyprland is not running: these keys are not bound.</source>
+        <translation>Hyprland no está corriendo: estos atajos no están registrados.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="190"/>
+        <source>Hyprland refused some binds:</source>
+        <translation>Hyprland rechazó algunos atajos:</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="201"/>
+        <source>Replaces a bind from your Hyprland config</source>
+        <translation>Reemplaza un atajo de tu config de Hyprland</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="314"/>
+        <source>Press the keys…</source>
+        <translation>Presiona las teclas…</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="316"/>
+        <source>Not set</source>
+        <translation>Sin asignar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="332"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="332"/>
+        <source>Record</source>
+        <translation>Grabar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="348"/>
+        <source>Remove</source>
+        <translation>Quitar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="356"/>
         <source>comma separated</source>
         <translation>separadas por comas</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="295"/>
+        <location filename="../src/app/Settings.qml" line="377"/>
         <source>Open config.toml</source>
         <translation>Abrir config.toml</translation>
     </message>

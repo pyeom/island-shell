@@ -114,6 +114,7 @@ Activity {
 | `Theme` | `background`, `foreground`, `secondaryForeground`, `accent`, `danger`, `blur`. |
 | `Clock.now` | A `date` that updates every second. |
 | `Hyprland` | `monitors`, `workspaces`, `focusedMonitor`, `dispatch("workspace 3")`, `event(name, data)` signal. |
+| `Keybinds` | `available`, `replaced`, `errors`, `recording`, `startRecording()`, `stopRecording()`, `combo(modifiers, nativeScanCode)`. |
 | `IslandScreen` | Attached: `IslandScreen.name`, `IslandScreen.focused` for the monitor a presentation is drawn on. |
 | `ShellControl` | `dnd` and the requests coming from `islandctl`. |
 | `ActivityRegistry` | `activities`, `find(name)`. |

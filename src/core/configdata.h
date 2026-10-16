@@ -112,6 +112,12 @@ struct WallpaperConfig {
     std::string apply;
 };
 
+// [keybinds]: island actions bound in Hyprland while the island runs.
+struct Keybind {
+    std::string action; // see hypr::keyActions()
+    std::string keys;   // canonical, "SUPER + R"
+};
+
 struct PowerConfig {
     std::string lockCommand = "hyprlock";
     int holdMs = 800; // press-and-hold time for shutdown and reboot
@@ -131,6 +137,7 @@ struct ConfigData {
     NightLightConfig nightLight;
     ScreenshotsConfig screenshots;
     WallpaperConfig wallpaper;
+    std::vector<Keybind> keybinds;
     std::string iconTheme; // empty: platform default
     toml::table raw; // the whole document, for activity-specific settings
 };
