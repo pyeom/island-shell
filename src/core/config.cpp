@@ -1,7 +1,14 @@
 #include "config.h"
 
+#include "tomledit.h"
+
 #include <QCoreApplication>
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
+#include <QSaveFile>
+
+#include <cmath>
 #include <QJSEngine>
 #include <QLoggingCategory>
 #include <QStandardPaths>
@@ -84,6 +91,34 @@ QVariant Config::get(const QString& path, const QVariant& fallback) const {
     return value.isValid() ? value : fallback;
 }
 
+bool Config::set(const QString& path, const QVariant& rawValue) {
+    const auto dot = path.lastIndexOf(u'.');
+    if (dot <= 0)
+        return false;
+    QVariant value = rawValue;
+    // QML numbers are doubles; whole ones are TOML integers (sizes, minutes).
+    if (value.typeId() == QMetaType::Double && value.toDouble() == std::floor(value.toDouble()) &&
+        std::abs(value.toDouble()) < 1e15)
+        value = QVariant::fromValue<qlonglong>(static_cast<qlonglong>(value.toDouble()));
+
+    QString text;
+    QFile in(m_watch.path());
+    if (in.open(QIODevice::ReadOnly))
+        text = QString::fromUtf8(in.readAll());
+    in.close();
+    text = tomlSet(text, path.left(dot), path.mid(dot + 1), value);
+
+    QDir().mkpath(QFileInfo(m_watch.path()).path());
+    QSaveFile out(m_watch.path());
+    if (!out.open(QIODevice::WriteOnly))
+        return false;
+    out.write(text.toUtf8());
+    if (!out.commit())
+        return false;
+    reload();
+    return true;
+}
+
 void Config::reload() {
     std::string text;
     QFile file(path());
@@ -99,6 +134,7 @@ void Config::reload() {
     }
     qCInfo(lcConfig).noquote() << (file.isOpen() ? "loaded" : "using defaults, no file at")
                                << path();
+    ++m_revision;
     emit changed();
 }
 

@@ -294,6 +294,15 @@ Item {
             visible: panel.devicePicker === ""
             IconButton {
                 height: 30
+                icon: "configure-symbolic"
+                iconSize: 14
+                onClicked: {
+                    panel.close()
+                    ShellControl.ShowSettings()
+                }
+            }
+            IconButton {
+                height: 30
                 icon: "system-shutdown-symbolic"
                 iconSize: 14
                 onClicked: {

@@ -101,6 +101,10 @@ void ShellControl::Wallpaper(const QString& action) {
                        QStringLiteral("action must be pick or random"));
 }
 
+void ShellControl::ShowSettings() {
+    emit settingsRequested();
+}
+
 QStringList ShellControl::ListActivities() {
     QStringList names;
     for (const auto* a : ActivityRegistry::instance()->activities())

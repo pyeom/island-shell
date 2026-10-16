@@ -98,7 +98,21 @@ Binds that refreshed the old bar or notification daemon (for example
 `~/.config/waybar/refresh.sh`, `~/.config/swaync/refresh.sh`) can go. To
 reload island-shell's config, theme and activities: `islandctl reload`.
 
-## 4. Blur (optional)
+## 4. Settings window
+
+`islandctl settings` (or the gear in quick settings) opens a normal window.
+To make it float:
+
+```lua
+hl.window_rule({ name = "island-settings", match = { class = "island-shell" }, float = true, size = "860 620" })
+```
+
+```
+windowrule = float on, match:class island-shell
+windowrule = size 860 620, match:class island-shell
+```
+
+## 5. Blur (optional)
 
 With `[theme] style = "blur"`:
 
@@ -111,7 +125,7 @@ layerrule = blur on, match:namespace island-shell
 layerrule = ignore_alpha 0.01, match:namespace island-shell
 ```
 
-## 5. Config
+## 6. Config
 
 ```sh
 mkdir -p ~/.config/island-shell

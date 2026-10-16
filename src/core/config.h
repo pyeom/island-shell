@@ -24,6 +24,8 @@ class Config : public QObject {
 
     Q_PROPERTY(QString path READ path CONSTANT)
     Q_PROPERTY(QStringList errors READ errors NOTIFY changed)
+    // Bumped on every reload; bind to it to re-read Config.get(...) values.
+    Q_PROPERTY(int revision READ revision NOTIFY changed)
 
     Q_PROPERTY(int compactWidth READ compactWidth NOTIFY changed)
     Q_PROPERTY(int compactHeight READ compactHeight NOTIFY changed)
@@ -50,6 +52,7 @@ public:
 
     QString path() const { return m_watch.path(); }
     QStringList errors() const { return m_errors; }
+    int revision() const { return m_revision; }
     const ConfigData& data() const { return m_data; }
 
     int compactWidth() const { return m_data.island.compactWidth; }
@@ -72,6 +75,10 @@ public:
     //   Config.get("activities.weather.city", "Santiago")
     Q_INVOKABLE QVariant get(const QString& path, const QVariant& fallback = {}) const;
 
+    // Writes one value ("theme.style", "blur") into config.toml, editing only
+    // that line (comments and formatting are kept), then reloads.
+    Q_INVOKABLE bool set(const QString& path, const QVariant& value);
+
 public slots:
     void reload();
 
@@ -84,6 +91,7 @@ private:
     FileWatch m_watch;
     ConfigData m_data;
     QStringList m_errors;
+    int m_revision = 0;
 };
 
 } // namespace island

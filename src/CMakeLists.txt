@@ -2,6 +2,7 @@
 add_library(islandlogic STATIC
     core/configdata.h core/configdata.cpp
     core/pywal.h core/pywal.cpp
+    core/tomledit.h core/tomledit.cpp
     services/hyprland/hyprlandparse.h services/hyprland/hyprlandparse.cpp
     services/notifications/notificationrules.h services/notifications/notificationrules.cpp
     services/apps/desktopentry.h services/apps/desktopentry.cpp
@@ -36,6 +37,7 @@ qt_add_qml_module(islandapp
     QML_FILES
         app/Shell.qml
         app/Island.qml
+        app/Settings.qml
 )
 target_link_libraries(islandapp PUBLIC islandshell islandactivities)
 

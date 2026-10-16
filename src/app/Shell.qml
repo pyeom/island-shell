@@ -29,6 +29,28 @@ QtObject {
         EventForm {}
     ]
 
+    // Settings window, created on demand and destroyed when closed.
+    property Window settingsWindow: null
+    property Component settingsComponent: Component {
+        Settings {}
+    }
+    property Connections _settings: Connections {
+        target: ShellControl
+        function onSettingsRequested() {
+            if (!shell.settingsWindow) {
+                const win = shell.settingsComponent.createObject(shell) as Window
+                win.closing.connect(() => {
+                    shell.settingsWindow = null
+                    win.destroy()
+                })
+                shell.settingsWindow = win
+            }
+            shell.settingsWindow.show()
+            shell.settingsWindow.raise()
+            shell.settingsWindow.requestActivate()
+        }
+    }
+
     // One activity per live activity pushed over D-Bus / islandctl.
     property Instantiator liveActivities: Instantiator {
         model: LiveActivities

@@ -31,6 +31,8 @@
     <method name="Wallpaper">
       <arg name="action" type="s" direction="in"/>
     </method>
+    <!-- Open the settings window. -->
+    <method name="ShowSettings"/>
     <!-- Names of all registered activities. -->
     <method name="ListActivities">
       <arg name="names" type="as" direction="out"/>
