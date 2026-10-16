@@ -62,6 +62,43 @@ Item {
             }
         }
 
+        // Who is using the microphone, camera or screen.
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            visible: Privacy.any
+            spacing: 16
+            Repeater {
+                model: [
+                    { on: Privacy.microphone, color: "#ff9f0a", label: qsTr("Microphone"), detail: Privacy.microphoneApps.join(", ") },
+                    { on: Privacy.camera, color: "#30d158", label: qsTr("Camera"), detail: Privacy.cameraApps.join(", ") },
+                    { on: Privacy.screen, color: "#bf5af2", label: qsTr("Screen"), detail: qsTr("being shared") }
+                ].filter(i => i.on)
+                delegate: Row {
+                    id: use
+                    required property var modelData
+                    spacing: 6
+                    Rectangle {
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 8
+                        height: 8
+                        radius: 4
+                        color: use.modelData.color
+                    }
+                    Text {
+                        text: use.modelData.label
+                        color: Theme.foreground
+                        font.pixelSize: 12
+                        font.weight: Font.DemiBold
+                    }
+                    Text {
+                        text: use.modelData.detail
+                        color: Theme.secondaryForeground
+                        font.pixelSize: 12
+                    }
+                }
+            }
+        }
+
         SystemStatsRow {
             anchors.horizontalCenter: parent.horizontalCenter
         }
@@ -96,7 +133,7 @@ Item {
         NotificationHistory {
             id: history
             width: parent.width
-            maxHeight: Config.surfaceHeight - Config.topMargin - 330
+            maxHeight: Config.surfaceHeight - Config.topMargin - (Privacy.any ? 360 : 330)
         }
     }
 }

@@ -73,6 +73,9 @@ listed here.
 
 ### Changed
 - Default `[island] surface_height` is 560 so the richer expanded view fits.
+- Tapping the island while an app uses the microphone, camera or screen
+  opens the usual expanded view, with a line saying who uses what; the
+  short list is only shown for the alert when a device turns on.
 - The expanded view always shows the month. Without calendars, the first
   new event creates a local one in the last `[calendar] paths` folder.
 

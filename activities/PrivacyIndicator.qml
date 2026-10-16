@@ -30,7 +30,16 @@ Activity {
         if (!turnedOn || now - (_lastAlert[device] ?? 0) < 60000)
             return
         _lastAlert[device] = now
+        alerting = true
+        alertEnd.restart()
         alert(2500)
+    }
+    // During the alert the island shows just who uses what; tapped, the
+    // usual expanded view (clock, calendar, gauges) with that line in it.
+    property bool alerting: false
+    property Timer alertEnd: Timer {
+        interval: 3000 // past the alert's collapse animation
+        onTriggered: root.alerting = false
     }
     property Connections _privacy: Connections {
         target: Privacy
@@ -73,6 +82,16 @@ Activity {
     minimal: Component { Indicators { withIcons: false; spacing: 3 } }
 
     expanded: Component {
+        Loader {
+            sourceComponent: root.alerting ? root.details : home
+            Component {
+                id: home
+                IdleExpanded {}
+            }
+        }
+    }
+
+    property Component details: Component {
         Item {
             implicitWidth: 360
             implicitHeight: list.implicitHeight + 36

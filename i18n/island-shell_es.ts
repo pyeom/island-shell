@@ -115,12 +115,32 @@
         <translation>Sin eventos</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="77"/>
+        <location filename="../activities/IdleExpanded.qml" line="72"/>
+        <source>Microphone</source>
+        <translation>Micrófono</translation>
+    </message>
+    <message>
+        <location filename="../activities/IdleExpanded.qml" line="73"/>
+        <source>Camera</source>
+        <translation>Cámara</translation>
+    </message>
+    <message>
+        <location filename="../activities/IdleExpanded.qml" line="74"/>
+        <source>Screen</source>
+        <translation>Pantalla</translation>
+    </message>
+    <message>
+        <location filename="../activities/IdleExpanded.qml" line="74"/>
+        <source>being shared</source>
+        <translation>se está compartiendo</translation>
+    </message>
+    <message>
+        <location filename="../activities/IdleExpanded.qml" line="114"/>
         <source>Search apps</source>
         <translation>Buscar apps</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="82"/>
+        <location filename="../activities/IdleExpanded.qml" line="119"/>
         <source>Quick settings</source>
         <translation>Ajustes rápidos</translation>
     </message>
@@ -272,22 +292,22 @@
 <context>
     <name>PrivacyIndicator</name>
     <message>
-        <location filename="../activities/PrivacyIndicator.qml" line="114"/>
+        <location filename="../activities/PrivacyIndicator.qml" line="133"/>
         <source>Microphone</source>
         <translation>Micrófono</translation>
     </message>
     <message>
-        <location filename="../activities/PrivacyIndicator.qml" line="120"/>
+        <location filename="../activities/PrivacyIndicator.qml" line="139"/>
         <source>Camera</source>
         <translation>Cámara</translation>
     </message>
     <message>
-        <location filename="../activities/PrivacyIndicator.qml" line="126"/>
+        <location filename="../activities/PrivacyIndicator.qml" line="145"/>
         <source>Screen</source>
         <translation>Pantalla</translation>
     </message>
     <message>
-        <location filename="../activities/PrivacyIndicator.qml" line="127"/>
+        <location filename="../activities/PrivacyIndicator.qml" line="146"/>
         <source>being shared</source>
         <translation>se está compartiendo</translation>
     </message>
