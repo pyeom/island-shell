@@ -91,6 +91,16 @@ void ShellControl::Screenshot(const QString& mode) {
                                       "(or a screenshot is already in progress)"));
 }
 
+void ShellControl::Wallpaper(const QString& action) {
+    if (action == u"pick")
+        emit wallpaperPickRequested();
+    else if (action == u"random")
+        emit wallpaperRandomRequested();
+    else if (calledFromDBus())
+        sendErrorReply(QStringLiteral("org.islandshell.Error.InvalidArgs"),
+                       QStringLiteral("action must be pick or random"));
+}
+
 QStringList ShellControl::ListActivities() {
     QStringList names;
     for (const auto* a : ActivityRegistry::instance()->activities())

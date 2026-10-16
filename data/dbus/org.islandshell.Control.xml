@@ -27,6 +27,10 @@
     <method name="Screenshot">
       <arg name="mode" type="s" direction="in"/>
     </method>
+    <!-- Wallpapers: "pick" opens the picker, "random" applies a random one. -->
+    <method name="Wallpaper">
+      <arg name="action" type="s" direction="in"/>
+    </method>
     <!-- Names of all registered activities. -->
     <method name="ListActivities">
       <arg name="names" type="as" direction="out"/>

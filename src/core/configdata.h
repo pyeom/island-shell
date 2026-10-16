@@ -90,6 +90,13 @@ struct ScreenshotsConfig {
     std::string editor;    // command taking the file; empty: satty or swappy if installed
 };
 
+struct WallpaperConfig {
+    std::string directory = "~/.config/wallpapers";
+    // Shell command; %f is replaced by the quoted file. Empty: waypaper (or
+    // awww/swww/hyprpaper), then `wal` if installed.
+    std::string apply;
+};
+
 struct PowerConfig {
     std::string lockCommand = "hyprlock";
     int holdMs = 800; // press-and-hold time for shutdown and reboot
@@ -108,6 +115,7 @@ struct ConfigData {
     WeatherConfig weather;
     NightLightConfig nightLight;
     ScreenshotsConfig screenshots;
+    WallpaperConfig wallpaper;
     std::string iconTheme; // empty: platform default
     toml::table raw; // the whole document, for activity-specific settings
 };

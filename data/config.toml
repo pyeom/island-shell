@@ -116,6 +116,14 @@ directory = "~/Pictures/Screenshots"
 # if installed, else no Edit button.
 editor = ""
 
+[wallpaper]
+directory = "~/.config/wallpapers"
+# Command that applies a wallpaper; %f is the (quoted) file. Empty: waypaper
+# (or awww/swww/hyprpaper), then `wal` if installed. Example adding a kitty
+# theme refresh:
+#   apply = "waypaper --wallpaper %f && wal -q -n -i %f && cp ~/.cache/wal/colors-kitty.conf ~/.config/kitty/current-theme.conf"
+apply = ""
+
 [power]
 lock_command = "hyprlock"
 # Press-and-hold time for shut down and restart (ms).

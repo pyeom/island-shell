@@ -71,6 +71,8 @@ hl.bind("ALT + p",         hl.dsp.exec_cmd("islandctl expand media"))
 hl.bind("Print",        hl.dsp.exec_cmd("islandctl screenshot region"))
 hl.bind("CTRL + Print", hl.dsp.exec_cmd("islandctl screenshot window"))
 hl.bind("ALT + Print",  hl.dsp.exec_cmd("islandctl screenshot output"))
+-- Wallpaper picker (or "islandctl wallpaper random" for a random one):
+hl.bind("ALT + w", hl.dsp.exec_cmd("islandctl wallpaper"))
 -- Optional:
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("islandctl dnd toggle"))
 hl.bind(mainMod .. " + S", hl.dsp.exec_cmd("islandctl quick"))
@@ -85,6 +87,7 @@ bind = ALT, P, exec, islandctl expand media
 bind = , Print, exec, islandctl screenshot region
 bind = CTRL, Print, exec, islandctl screenshot window
 bind = ALT, Print, exec, islandctl screenshot output
+bind = ALT, W, exec, islandctl wallpaper
 bind = SUPER, N, exec, islandctl dnd toggle
 bind = SUPER, S, exec, islandctl quick
 ```

@@ -74,6 +74,7 @@ qt_add_qml_module(islandshell
         ${src}/services/weather/weather.h ${src}/services/weather/weather.cpp
         ${src}/services/nightlight/nightlight.h ${src}/services/nightlight/nightlight.cpp
         ${src}/services/screenshots/screenshots.h ${src}/services/screenshots/screenshots.cpp
+        ${src}/services/wallpaper/wallpapers.h ${src}/services/wallpaper/wallpapers.cpp
         ${src}/dbus/dbusutil.h
         ${src}/dbus/dbusproperties.h ${src}/dbus/dbusproperties.cpp
         ${src}/core/icons.h ${src}/core/icons.cpp
@@ -113,6 +114,7 @@ target_include_directories(islandshell PUBLIC
     ${src}/services/weather
     ${src}/services/nightlight
     ${src}/services/screenshots
+    ${src}/services/wallpaper
     ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(islandshell PUBLIC

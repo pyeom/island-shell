@@ -373,6 +373,24 @@
     </message>
 </context>
 <context>
+    <name>WallpaperPicker</name>
+    <message>
+        <location filename="../activities/WallpaperPicker.qml" line="54"/>
+        <source>Wallpaper</source>
+        <translation>Fondo de pantalla</translation>
+    </message>
+    <message>
+        <location filename="../activities/WallpaperPicker.qml" line="62"/>
+        <source>Random</source>
+        <translation>Aleatorio</translation>
+    </message>
+    <message>
+        <location filename="../activities/WallpaperPicker.qml" line="73"/>
+        <source>No images in %1</source>
+        <translation>No hay imágenes en %1</translation>
+    </message>
+</context>
+<context>
     <name>Weather</name>
     <message>
         <location filename="../src/services/weather/weather.cpp" line="195"/>

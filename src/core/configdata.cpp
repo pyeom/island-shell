@@ -204,6 +204,11 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
         readString(*t, "screenshots", "editor", cfg.screenshots.editor, {}, errors);
     }
 
+    if (const auto* t = cfg.raw["wallpaper"].as_table()) {
+        readString(*t, "wallpaper", "directory", cfg.wallpaper.directory, {}, errors);
+        readString(*t, "wallpaper", "apply", cfg.wallpaper.apply, {}, errors);
+    }
+
     if (const auto* t = cfg.raw["power"].as_table()) {
         readString(*t, "power", "lock_command", cfg.power.lockCommand, {}, errors);
         readInt(*t, "power", "hold_ms", cfg.power.holdMs, 0, 5000, errors);

@@ -33,6 +33,7 @@ qt_add_qml_module(islandactivities
         SystemHeat.qml
         RainAlert.qml
         ScreenshotActivity.qml
+        WallpaperPicker.qml
         PrivacyIndicator.qml
         CalendarMonth.qml
         EventList.qml

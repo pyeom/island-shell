@@ -47,6 +47,7 @@ public slots:
     void ShowPower();
     void ShowQuickSettings();
     void Screenshot(const QString& mode);
+    void Wallpaper(const QString& action);
     QStringList ListActivities();
 
 signals:
@@ -55,6 +56,8 @@ signals:
     void collapseRequested();
     void powerRequested();
     void quickSettingsRequested();
+    void wallpaperPickRequested();
+    void wallpaperRandomRequested();
     void reloadRequested();
     void dndChanged();
 
