@@ -174,6 +174,33 @@ dnd = 3
         QVERIFY(has("keybinds.dnd: expected a string"));
     }
 
+    void privacyAndPriorities() {
+        std::vector<std::string> errors;
+        auto cfg = parseConfig("", errors);
+        QVERIFY(cfg.privacy.microphone && cfg.privacy.camera && cfg.privacy.screen);
+        QVERIFY(cfg.priorities.empty());
+        cfg = parseConfig(R"(
+[privacy]
+microphone = false
+screen = "no"
+
+[priorities]
+privacy = 30
+live = 65
+battery-low = 99
+media = 150
+rain = "high"
+)", errors);
+        QVERIFY(!cfg.privacy.microphone);
+        QVERIFY(cfg.privacy.camera);
+        QVERIFY(cfg.privacy.screen); // invalid value keeps the default
+        QCOMPARE(cfg.priorities.size(), 3u);
+        QCOMPARE(cfg.priorities.at("privacy"), 30);
+        QCOMPARE(cfg.priorities.at("live"), 65);
+        QCOMPARE(cfg.priorities.at("battery-low"), 99);
+        QCOMPARE(errors.size(), 3u); // screen, media out of range, rain not a number
+    }
+
     void wallpaper() {
         std::vector<std::string> errors;
         auto cfg = parseConfig("", errors);

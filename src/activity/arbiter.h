@@ -36,6 +36,8 @@ signals:
 
 private:
     void update();
+    // The activity's priority, or its [priorities] override.
+    static int priority(const Activity* activity);
 
     bool m_focused = false;
     QPointer<Activity> m_primary;

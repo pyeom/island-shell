@@ -2,6 +2,7 @@
 
 #include "activity.h"
 #include "activityregistry.h"
+#include "config.h"
 #include "selection.h"
 
 #include <vector>
@@ -10,6 +11,7 @@ namespace island {
 
 Arbiter::Arbiter(QObject* parent) : QObject(parent) {
     connect(ActivityRegistry::instance(), &ActivityRegistry::changed, this, &Arbiter::update);
+    connect(Config::instance(), &Config::changed, this, &Arbiter::update);
     update();
 }
 
@@ -26,13 +28,26 @@ bool Arbiter::eligible(Activity* activity) const {
            (activity->scope() == Activity::AllScreens || m_focused);
 }
 
+int Arbiter::priority(const Activity* activity) {
+    // [priorities] cannot lower critical notifications or modals (>= 100).
+    const int own = activity->priority();
+    if (own >= 100)
+        return own;
+    const auto& overrides = Config::instance()->data().priorities;
+    const auto name = activity->name().toStdString();
+    auto it = overrides.find(name);
+    if (it == overrides.end())
+        it = overrides.find(name.substr(0, name.find(':'))); // "live:<id>" → "live"
+    return it != overrides.end() ? it->second : own;
+}
+
 void Arbiter::update() {
     const auto activities = ActivityRegistry::instance()->activities();
     std::vector<Candidate> candidates;
     candidates.reserve(activities.size());
     for (const auto* a : activities) {
         candidates.push_back({
-            .priority = a->priority(),
+            .priority = priority(a),
             .active = a->active(),
             .allScreens = a->scope() == Activity::AllScreens,
             .hasMinimal = a->minimal() != nullptr,

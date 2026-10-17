@@ -139,6 +139,21 @@ pywal = true
 #   apply = "awww img %f && wal -q -n -i %f && cp ~/.cache/wal/colors-kitty.conf ~/.config/kitty/current-theme.conf"
 apply = ""
 
+[privacy]
+# What the privacy indicator reports.
+microphone = true
+camera = true
+screen = true
+
+[priorities]
+# The active activity with the highest priority takes the pill, the next one
+# the bubble. Below 100; critical notifications and menus always come first.
+# "live" covers every live activity. Defaults:
+# notification = 70, osd = 80, screenshot = 75, privacy = 60, event = 55,
+# live = 50, rain = 45, media = 40, battery-low = 82, system-heat = 85,
+# errors = 90
+# privacy = 30
+
 [keybinds]
 # Bound in Hyprland while the island runs, replacing any other bind on the
 # same keys; "" or a missing line leaves the action unbound. Keys as in

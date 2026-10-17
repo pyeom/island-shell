@@ -285,6 +285,22 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
         }
     }
 
+    if (const auto* t = cfg.raw["privacy"].as_table()) {
+        readBool(*t, "privacy", "microphone", cfg.privacy.microphone, errors);
+        readBool(*t, "privacy", "camera", cfg.privacy.camera, errors);
+        readBool(*t, "privacy", "screen", cfg.privacy.screen, errors);
+    }
+
+    if (const auto* t = cfg.raw["priorities"].as_table()) {
+        for (const auto& [name, node] : *t) {
+            const std::string key(name.str());
+            int priority = -1;
+            readInt(*t, "priorities", key, priority, 0, 99, errors);
+            if (priority >= 0)
+                cfg.priorities[key] = priority;
+        }
+    }
+
     if (const auto* t = cfg.raw["power"].as_table()) {
         readString(*t, "power", "lock_command", cfg.power.lockCommand, {}, errors);
         readInt(*t, "power", "hold_ms", cfg.power.holdMs, 0, 5000, errors);

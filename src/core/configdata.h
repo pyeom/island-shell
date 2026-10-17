@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -112,6 +113,13 @@ struct WallpaperConfig {
     std::string apply;
 };
 
+// [privacy]: which devices the privacy indicator reports.
+struct PrivacyConfig {
+    bool microphone = true;
+    bool camera = true;
+    bool screen = true;
+};
+
 // [keybinds]: island actions bound in Hyprland while the island runs.
 struct Keybind {
     std::string action; // see hypr::keyActions()
@@ -138,6 +146,10 @@ struct ConfigData {
     ScreenshotsConfig screenshots;
     WallpaperConfig wallpaper;
     std::vector<Keybind> keybinds;
+    PrivacyConfig privacy;
+    // [priorities]: activity name → priority, replacing the activity's own
+    // below 100. "live" covers every live activity ("live:<id>").
+    std::map<std::string, int> priorities;
     std::string iconTheme; // empty: platform default
     toml::table raw; // the whole document, for activity-specific settings
 };

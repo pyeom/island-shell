@@ -279,6 +279,39 @@ or reads swaybg's command line, so it also notices changes made by other
 tools. After each change the island runs pywal's `wal` when it is installed
 (`pywal = false` turns this off).
 
+## Live Activities
+
+Scripts show progress or a status in the island with `islandctl`; every
+command takes the same `--id`:
+
+```bash
+islandctl push --id build --title "Building" --icon system-run --progress 0 \
+  --action "Cancel=pkill make"
+islandctl update --id build --progress 0.5
+islandctl update --id build --state success --title "Built"   # or --state error
+islandctl end build
+```
+
+`--ttl SECONDS` removes it on its own (30 minutes by default, 0 never) and
+`islandctl live` lists them. Other programs can use the D-Bus interface
+(`org.islandshell.LiveActivities`).
+
+## Priorities and privacy
+
+When several activities are active, the one with the highest priority takes
+the pill and the next one the bubble beside it. `[priorities]` changes
+them, for example to keep live activities above the microphone indicator:
+
+```toml
+[priorities]
+privacy = 30   # default 60
+live = 50
+```
+
+Critical notifications and menus always come first. `[privacy]` turns the
+microphone, camera and screen sharing indicators on or off one by one; both
+are also in the settings window.
+
 ## Fullscreen
 
 Over a fullscreen window, such as a game or a video, the island hides the

@@ -36,6 +36,9 @@ listed here.
   as well as copied.
 - `Hyprland.exec()`, `focusWorkspace()` and `focusWindow()`, which work with
   both hyprland.conf and hyprland.lua.
+- `[priorities]`: change which activity takes the pill (e.g. live
+  activities above the microphone indicator), and `[privacy]` microphone /
+  camera / screen switches; both in the settings window.
 - `[keybinds]`: island actions bound in Hyprland while the island runs,
   re-added after Hyprland reloads its config, and a Keybindings page in the
   settings window that records combinations. `Keybinds` in the public

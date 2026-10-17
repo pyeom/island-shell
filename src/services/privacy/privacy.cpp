@@ -1,5 +1,6 @@
 #include "privacy.h"
 
+#include "config.h"
 #include "hyprland.h"
 
 #include <QCoreApplication>
@@ -174,7 +175,20 @@ Privacy* Privacy::create(QQmlEngine*, QJSEngine*) {
 Privacy::Privacy(QObject* parent) : QObject(parent), d(std::make_unique<Private>()) {
     d->q = this;
     setupPipeWire();
-    setupCamera();
+    m_cameraEnabled = Config::instance()->data().privacy.camera;
+    if (m_cameraEnabled)
+        setupCamera();
+    connect(Config::instance(), &Config::changed, this, [this] {
+        const bool camera = Config::instance()->data().privacy.camera;
+        if (camera && !m_cameraWatched) {
+            setupCamera();
+        } else if (camera && !m_cameraEnabled) {
+            m_cameraActivity.overflowed(); // events were ignored meanwhile: look again
+            m_cameraScan.start();
+        }
+        m_cameraEnabled = camera;
+        emit changed(); // a device may have been turned on or off
+    });
 
     // "screencast>>1,0": state, owner (0 monitor, 1 window).
     connect(Hyprland::instance(), &Hyprland::event, this,
@@ -209,6 +223,18 @@ Privacy::~Privacy() {
     }
 }
 
+QStringList Privacy::microphoneApps() const {
+    return Config::instance()->data().privacy.microphone ? m_micApps : QStringList();
+}
+
+QStringList Privacy::cameraApps() const {
+    return Config::instance()->data().privacy.camera ? m_cameraApps : QStringList();
+}
+
+bool Privacy::screen() const {
+    return Config::instance()->data().privacy.screen && m_screen;
+}
+
 void Privacy::setMicrophoneApps(QStringList apps) {
     if (apps == m_micApps)
         return;
@@ -235,6 +261,7 @@ void Privacy::setupPipeWire() {
 }
 
 void Privacy::setupCamera() {
+    m_cameraWatched = true;
     const auto devices = QDir(QStringLiteral("/dev")).entryList({QStringLiteral("video*")},
                                                                 QDir::System);
     if (devices.isEmpty())
@@ -271,6 +298,8 @@ void Privacy::setupCamera() {
 }
 
 void Privacy::scanCamera() {
+    if (!Config::instance()->data().privacy.camera)
+        return;
     // Only after open/close events, and not for a probe that opened and
     // closed a camera nobody was using.
     if (!m_cameraActivity.needsScan(!m_cameraApps.isEmpty()) && m_cameraScanned)

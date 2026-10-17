@@ -22,6 +22,9 @@ namespace island {
 //   camera:     processes holding /dev/video* open (inotify + /proc), since
 //               many apps open V4L2 directly instead of through PipeWire
 //   screen:     Hyprland "screencast" events (portal sharing)
+//
+// [privacy] microphone / camera / screen = false hides a device (and, for
+// the camera, stops watching it).
 class Privacy : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -39,11 +42,11 @@ public:
     static Privacy* create(QQmlEngine*, QJSEngine*);
     ~Privacy() override;
 
-    bool microphone() const { return !m_micApps.isEmpty(); }
-    QStringList microphoneApps() const { return m_micApps; }
-    bool camera() const { return !m_cameraApps.isEmpty(); }
-    QStringList cameraApps() const { return m_cameraApps; }
-    bool screen() const { return m_screen; }
+    bool microphone() const { return !microphoneApps().isEmpty(); }
+    QStringList microphoneApps() const;
+    bool camera() const { return !cameraApps().isEmpty(); }
+    QStringList cameraApps() const;
+    bool screen() const;
     bool any() const { return microphone() || camera() || screen(); }
 
     struct Private;
@@ -68,6 +71,8 @@ private:
     QStringList m_micApps;
     QStringList m_cameraApps;
     bool m_screen = false;
+    bool m_cameraWatched = false;
+    bool m_cameraEnabled = true;
 };
 
 } // namespace island
