@@ -77,8 +77,16 @@ Item {
         if (!target || !target.expanded)
             return false
         root.expandTarget = activity
+        root._targeted = activity !== null
         root.mode = "expanded"
         return true
+    }
+    // Expanded on a given activity: when it goes away (a live activity that
+    // ended), collapse instead of showing the primary one.
+    property bool _targeted: false
+    onExpandTargetChanged: {
+        if (expanded && _targeted && !expandTarget && !modal)
+            collapse()
     }
 
     function collapse() {
@@ -87,12 +95,14 @@ Item {
             return
         }
         root.mode = "compact"
+        root._targeted = false
         holdTimer.stop()
     }
 
     onModalChanged: {
         holdTimer.stop()
         if (modal) {
+            _targeted = false
             expandTarget = null
             mode = "expanded"
         } else {

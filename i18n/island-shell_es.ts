@@ -2,6 +2,19 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es" sourcelanguage="en">
 <context>
+    <name>AppProgress</name>
+    <message>
+        <location filename="../src/services/live/appprogress.cpp" line="43"/>
+        <source>Done</source>
+        <translation>Listo</translation>
+    </message>
+    <message>
+        <location filename="../src/services/live/appprogress.cpp" line="61"/>
+        <source>In progress</source>
+        <translation>En curso</translation>
+    </message>
+</context>
+<context>
     <name>Batteries</name>
     <message>
         <location filename="../src/services/batteries/batteries.cpp" line="150"/>
@@ -43,6 +56,24 @@
         <location filename="../activities/BluetoothList.qml" line="60"/>
         <source>New</source>
         <translation>Nuevo</translation>
+    </message>
+</context>
+<context>
+    <name>DownloadWatch</name>
+    <message>
+        <location filename="../src/services/live/downloadwatch.cpp" line="75"/>
+        <source>Open</source>
+        <translation>Abrir</translation>
+    </message>
+    <message>
+        <location filename="../src/services/live/downloadwatch.cpp" line="76"/>
+        <source>Show in folder</source>
+        <translation>Mostrar en carpeta</translation>
+    </message>
+    <message>
+        <location filename="../src/services/live/downloadwatch.cpp" line="80"/>
+        <source>Downloaded · %1</source>
+        <translation>Descargado · %1</translation>
     </message>
 </context>
 <context>
@@ -579,7 +610,7 @@
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="48"/>
-        <location filename="../src/app/Settings.qml" line="101"/>
+        <location filename="../src/app/Settings.qml" line="108"/>
         <source>Notifications</source>
         <translation>Notificaciones</translation>
     </message>
@@ -600,7 +631,7 @@
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="52"/>
-        <location filename="../src/app/Settings.qml" line="111"/>
+        <location filename="../src/app/Settings.qml" line="118"/>
         <source>Launcher</source>
         <translation>Lanzador</translation>
     </message>
@@ -806,207 +837,238 @@
         <translation>El indicador de privacidad muestra qué apps usan estos dispositivos.</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="97"/>
+        <location filename="../src/app/Settings.qml" line="98"/>
+        <source>Show browser downloads</source>
+        <translation>Mostrar descargas del navegador</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="99"/>
+        <source>Downloads folder</source>
+        <translation>Carpeta de descargas</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="100"/>
+        <source>empty: your downloads folder</source>
+        <translation>vacío: tu carpeta de descargas</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="101"/>
+        <source>Show progress apps report</source>
+        <translation>Mostrar el progreso que informan las apps</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="102"/>
+        <source>Chromium downloads, file copies…</source>
+        <translation>Descargas de Chromium, copias de archivos…</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="103"/>
+        <source>island-dl URL downloads a file with its progress in the island; scripts can show their own with islandctl push.</source>
+        <translation>island-dl URL descarga un archivo mostrando el progreso en la isla; tus scripts pueden mostrar el suyo con islandctl push.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="104"/>
         <source>Priorities</source>
         <translation>Prioridades</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="98"/>
+        <location filename="../src/app/Settings.qml" line="105"/>
         <source>Privacy indicator</source>
         <translation>Indicador de privacidad</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="99"/>
+        <location filename="../src/app/Settings.qml" line="97"/>
+        <location filename="../src/app/Settings.qml" line="106"/>
         <source>Live activities</source>
         <translation>Live activities</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="100"/>
+        <location filename="../src/app/Settings.qml" line="107"/>
         <source>Media</source>
         <translation>Multimedia</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="102"/>
+        <location filename="../src/app/Settings.qml" line="109"/>
         <source>Upcoming event</source>
         <translation>Próximo evento</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="103"/>
+        <location filename="../src/app/Settings.qml" line="110"/>
         <source>Rain alert</source>
         <translation>Alerta de lluvia</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="104"/>
+        <location filename="../src/app/Settings.qml" line="111"/>
         <source>Screenshot</source>
         <translation>Captura de pantalla</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="105"/>
+        <location filename="../src/app/Settings.qml" line="112"/>
         <source>Volume and brightness</source>
         <translation>Volumen y brillo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="106"/>
+        <location filename="../src/app/Settings.qml" line="113"/>
         <source>Low battery</source>
         <translation>Batería baja</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="107"/>
+        <location filename="../src/app/Settings.qml" line="114"/>
         <source>Overheating</source>
         <translation>Temperatura alta</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="108"/>
+        <location filename="../src/app/Settings.qml" line="115"/>
         <source>Shell errors</source>
         <translation>Errores de la isla</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="109"/>
+        <location filename="../src/app/Settings.qml" line="116"/>
         <source>The highest priority takes the pill and the next one the bubble beside it. Critical notifications and menus always come first.</source>
         <translation>La de mayor prioridad ocupa la píldora y la siguiente, la burbuja de al lado. Las notificaciones críticas y los menús siempre van primero.</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="110"/>
+        <location filename="../src/app/Settings.qml" line="117"/>
         <source>Keybindings</source>
         <translation>Atajos de teclado</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="112"/>
+        <location filename="../src/app/Settings.qml" line="119"/>
         <source>Power menu</source>
         <translation>Menú de apagado</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="113"/>
+        <location filename="../src/app/Settings.qml" line="120"/>
         <source>Quick settings</source>
         <translation>Ajustes rápidos</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="114"/>
+        <location filename="../src/app/Settings.qml" line="121"/>
         <source>Media player</source>
         <translation>Reproductor</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="115"/>
+        <location filename="../src/app/Settings.qml" line="122"/>
         <source>Expand the island</source>
         <translation>Expandir la isla</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="116"/>
+        <location filename="../src/app/Settings.qml" line="123"/>
         <source>Collapse the island</source>
         <translation>Contraer la isla</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="117"/>
+        <location filename="../src/app/Settings.qml" line="124"/>
         <source>Wallpaper picker</source>
         <translation>Selector de fondos</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="118"/>
+        <location filename="../src/app/Settings.qml" line="125"/>
         <source>Random wallpaper</source>
         <translation>Fondo aleatorio</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="119"/>
+        <location filename="../src/app/Settings.qml" line="126"/>
         <source>Screenshot of a region</source>
         <translation>Captura de una región</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="120"/>
+        <location filename="../src/app/Settings.qml" line="127"/>
         <source>Screenshot of a window</source>
         <translation>Captura de una ventana</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="121"/>
+        <location filename="../src/app/Settings.qml" line="128"/>
         <source>Screenshot of the screen</source>
         <translation>Captura de la pantalla</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="122"/>
+        <location filename="../src/app/Settings.qml" line="129"/>
         <source>Do not disturb</source>
         <translation>No molestar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="123"/>
+        <location filename="../src/app/Settings.qml" line="130"/>
         <source>Clear notifications</source>
         <translation>Borrar notificaciones</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="124"/>
+        <location filename="../src/app/Settings.qml" line="131"/>
         <source>Settings</source>
         <translation>Ajustes</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="125"/>
+        <location filename="../src/app/Settings.qml" line="132"/>
         <source>Reload the island</source>
         <translation>Recargar la isla</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="126"/>
+        <location filename="../src/app/Settings.qml" line="133"/>
         <source>The island adds these binds to Hyprland while it runs; any other bind on the same keys is replaced. Recording pauses Hyprland&apos;s binds until you press a key, or Esc to cancel.</source>
         <translation>La isla registra estos atajos en Hyprland mientras está abierta y reemplaza cualquier otro atajo en las mismas teclas. Al grabar, los atajos de Hyprland se pausan hasta que presiones una combinación, o Esc para cancelar.</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="127"/>
+        <location filename="../src/app/Settings.qml" line="134"/>
         <source>Power</source>
         <translation>Energía</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="128"/>
+        <location filename="../src/app/Settings.qml" line="135"/>
         <source>Lock command</source>
         <translation>Comando de bloqueo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="129"/>
+        <location filename="../src/app/Settings.qml" line="136"/>
         <source>Hold to confirm (ms)</source>
         <translation>Mantener para confirmar (ms)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="207"/>
+        <location filename="../src/app/Settings.qml" line="214"/>
         <source>Hyprland is not running: these keys are not bound.</source>
         <translation>Hyprland no está corriendo: estos atajos no están registrados.</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="208"/>
+        <location filename="../src/app/Settings.qml" line="215"/>
         <source>Hyprland refused some binds:</source>
         <translation>Hyprland rechazó algunos atajos:</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="219"/>
+        <location filename="../src/app/Settings.qml" line="226"/>
         <source>Replaces a bind from your Hyprland config</source>
         <translation>Reemplaza un atajo de tu config de Hyprland</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="332"/>
+        <location filename="../src/app/Settings.qml" line="339"/>
         <source>Press the keys…</source>
         <translation>Presiona las teclas…</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="334"/>
+        <location filename="../src/app/Settings.qml" line="341"/>
         <source>Not set</source>
         <translation>Sin asignar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="350"/>
+        <location filename="../src/app/Settings.qml" line="357"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="350"/>
+        <location filename="../src/app/Settings.qml" line="357"/>
         <source>Record</source>
         <translation>Grabar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="366"/>
+        <location filename="../src/app/Settings.qml" line="373"/>
         <source>Remove</source>
         <translation>Quitar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="374"/>
+        <location filename="../src/app/Settings.qml" line="381"/>
         <source>comma separated</source>
         <translation>separadas por comas</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="395"/>
+        <location filename="../src/app/Settings.qml" line="402"/>
         <source>Open config.toml</source>
         <translation>Abrir config.toml</translation>
     </message>

@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+# island-dl: download a file with its progress in the island.
+#
+#   island-dl URL [FILE]
+#
+# Saves to FILE, or to your downloads folder under the URL's file name.
+# Uses aria2c when installed (faster, resumes, also magnets and torrents),
+# else curl. The island shows the progress, a Cancel button, and Open /
+# Show in folder when it is done.
+
+set -uo pipefail
+
+usage() {
+    sed -n '2,10s/^# \{0,1\}//p' "$0"
+    exit "${1:-0}"
+}
+
+[[ $# -ge 1 && $# -le 2 ]] || usage 2
+[[ $1 == -h || $1 == --help ]] && usage 0
+
+url=$1
+if [[ $# -eq 2 ]]; then
+    out=$2
+else
+    dir=$(xdg-user-dir DOWNLOAD 2>/dev/null || true)
+    [[ -n $dir && -d $dir ]] || dir="$HOME/Downloads"
+    name=${url%%[?#]*}
+    name=${name##*/}
+    [[ -n $name ]] || name=download
+    out="$dir/$name"
+fi
+mkdir -p "$(dirname "$out")"
+name=$(basename "$out")
+id="dl-$$"
+ctl=islandctl
+command -v "$ctl" >/dev/null || ctl=true # no island: just download
+
+# Texts in the island: Spanish or English.
+if [[ ${LC_ALL:-${LC_MESSAGES:-${LANG:-}}} == es* ]]; then
+    t_start="Iniciando…" t_cancel="Cancelar" t_done="Descargado" t_failed="La descarga falló"
+    t_open="Abrir" t_folder="Mostrar en carpeta"
+else
+    t_start="Starting…" t_cancel="Cancel" t_done="Downloaded" t_failed="Download failed"
+    t_open="Open" t_folder="Show in folder"
+fi
+
+human() { numfmt --to=si --suffix=B "$1" 2>/dev/null || echo "$1 B"; }
+
+"$ctl" push --id "$id" --title "$name" --subtitle "$t_start" --icon folder-download \
+    --progress 0 --ttl 0 --action "$t_cancel=kill $$" >/dev/null 2>&1
+
+finish() {
+    local status=$1
+    if [[ $status -eq 0 && -f $out ]]; then
+        "$ctl" update --id "$id" --state success --progress 1 \
+            --subtitle "$t_done · $(human "$(stat -c %s "$out")")" --ttl 30 \
+            --action "$t_open=xdg-open '${out//\'/\'\\\'\'}'" \
+            --action "$t_folder=xdg-open '$(dirname "${out//\'/\'\\\'\'}")'" >/dev/null 2>&1
+        echo "$out"
+    else
+        "$ctl" update --id "$id" --state error --subtitle "$t_failed" --ttl 60 >/dev/null 2>&1
+    fi
+    exit "$status"
+}
+trap 'kill "$child" 2>/dev/null; "$ctl" end "$id" >/dev/null 2>&1; exit 130' INT TERM
+
+# Reads progress lines on stdin, ending in $1 (default newline), and updates
+# the island at most once a second.
+report() {
+    local delim=${1:-$'\n'} last=0 now pct
+    while IFS= read -r -d "$delim" line; do
+        [[ $line =~ ([0-9]+([.,][0-9]+)?)% ]] || continue
+        pct=${BASH_REMATCH[1]/,/.}
+        [[ ${pct%.*} -lt 100 ]] || continue # finish() reports the end
+        now=$(date +%s)
+        ((now > last)) || continue
+        last=$now
+        "$ctl" update --id "$id" --progress "$(awk -v p="$pct" 'BEGIN { printf "%.3f", p / 100 }')" \
+            --subtitle "${pct%.*}%" >/dev/null 2>&1
+    done
+}
+
+# In the background, so the Cancel button's kill reaches the trap right away;
+# `wait` returns the downloader's own status.
+if command -v aria2c >/dev/null; then
+    aria2c --summary-interval=1 --console-log-level=warn --download-result=hide \
+        --allow-overwrite=true -d "$(dirname "$out")" -o "$name" "$url" > >(report) 2>&1 &
+else
+    curl -fL --progress-bar -o "$out" "$url" 2> >(report $'\r') &
+fi
+child=$!
+wait "$child"
+finish $?

@@ -9,6 +9,8 @@
 #include <QVariantList>
 #include <QtQml/qqmlregistration.h>
 
+#include <algorithm>
+
 class QQmlEngine;
 class QJSEngine;
 
@@ -51,6 +53,11 @@ public:
     // Icon for a window's app_id/class: StartupWMClass, then desktop file
     // name, then the class itself as an icon name.
     Q_INVOKABLE QString iconForClass(const QString& windowClass) const;
+    // By desktop file ID ("firefox.desktop"); nullptr if not installed.
+    const DesktopEntry* entry(const QString& id) const {
+        const auto it = std::ranges::find(m_entries, id, &DesktopEntry::id);
+        return it == m_entries.end() ? nullptr : &*it;
+    }
 
 signals:
     void changed();

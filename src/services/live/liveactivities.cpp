@@ -12,6 +12,9 @@
 #include <QLoggingCategory>
 #include <QProcess>
 
+#include <algorithm>
+#include <utility>
+
 #include "icons.h"
 
 Q_LOGGING_CATEGORY(lcLive, "island.live")
@@ -186,6 +189,39 @@ void LiveActivities::Push(const QString& id, const QVariantMap& props) {
     }
     if (item.expires.isValid())
         m_ttlTimer.start();
+}
+
+void LiveActivities::set(const QString& id, const QVariantMap& props, const QString& owner) {
+    const int row = indexOf(id);
+    if (row >= 0) {
+        Update(id, props);
+        return;
+    }
+    Item item;
+    item.id = id;
+    QString error;
+    if (!apply(item, props, &error)) {
+        qCWarning(lcLive).noquote() << id << error;
+        return;
+    }
+    item.owner = owner;
+    if (!owner.isEmpty())
+        m_watcher.addWatchedService(owner);
+    item.alertSerial = 1;
+    beginInsertRows({}, static_cast<int>(m_items.size()), static_cast<int>(m_items.size()));
+    m_items.append(item);
+    endInsertRows();
+    if (item.expires.isValid())
+        m_ttlTimer.start();
+}
+
+void LiveActivities::disown(const QString& id) {
+    const int row = indexOf(id);
+    if (row < 0)
+        return;
+    const auto owner = std::exchange(m_items[row].owner, QString());
+    if (!owner.isEmpty() && std::ranges::none_of(m_items, [&](const Item& i) { return i.owner == owner; }))
+        m_watcher.removeWatchedService(owner);
 }
 
 void LiveActivities::Update(const QString& id, const QVariantMap& props) {

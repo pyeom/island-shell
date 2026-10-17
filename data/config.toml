@@ -139,6 +139,15 @@ pywal = true
 #   apply = "awww img %f && wal -q -n -i %f && cp ~/.cache/wal/colors-kitty.conf ~/.config/kitty/current-theme.conf"
 apply = ""
 
+[live]
+# Live activities the island creates on its own: browser downloads (.part
+# and .crdownload files in downloads_directory, "" = your downloads folder)
+# and the progress apps report for their taskbar icon (Chromium downloads,
+# file copies).
+downloads = true
+downloads_directory = ""
+app_progress = true
+
 [privacy]
 # What the privacy indicator reports.
 microphone = true

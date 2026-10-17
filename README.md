@@ -296,6 +296,17 @@ islandctl end build
 `islandctl live` lists them. Other programs can use the D-Bus interface
 (`org.islandshell.LiveActivities`).
 
+Some show up on their own (`[live]`):
+
+- Browser downloads: a `.part` (Firefox) or `.crdownload` (Chromium) file in
+  your downloads folder, with its size and speed, then Open and Show in
+  folder.
+- Progress apps report for their taskbar icon (the Unity LauncherEntry
+  signal): Chromium downloads, some file managers and installers.
+
+`island-dl URL [FILE]` downloads a file with aria2c (or curl) and its
+progress, a Cancel button and Open when it is done.
+
 ## Priorities and privacy
 
 When several activities are active, the one with the highest priority takes

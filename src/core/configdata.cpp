@@ -285,6 +285,12 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
         }
     }
 
+    if (const auto* t = cfg.raw["live"].as_table()) {
+        readBool(*t, "live", "app_progress", cfg.live.appProgress, errors);
+        readBool(*t, "live", "downloads", cfg.live.downloads, errors);
+        readString(*t, "live", "downloads_directory", cfg.live.downloadsDirectory, {}, errors);
+    }
+
     if (const auto* t = cfg.raw["privacy"].as_table()) {
         readBool(*t, "privacy", "microphone", cfg.privacy.microphone, errors);
         readBool(*t, "privacy", "camera", cfg.privacy.camera, errors);

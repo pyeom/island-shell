@@ -45,6 +45,14 @@ public:
 
     void registerOnBus();
 
+    // For the island's own sources (app progress, downloads): creates `id`
+    // or updates it, same props as Push. With `owner` (a unique bus name),
+    // it ends when that client leaves the bus.
+    void set(const QString& id, const QVariantMap& props, const QString& owner = {});
+    bool contains(const QString& id) const { return indexOf(id) >= 0; }
+    // Keeps `id` when its owner leaves (a finished one, until its ttl).
+    void disown(const QString& id);
+
 public slots:
     // org.islandshell.LiveActivities
     void Push(const QString& id, const QVariantMap& props);

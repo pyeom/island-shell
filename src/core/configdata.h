@@ -113,6 +113,15 @@ struct WallpaperConfig {
     std::string apply;
 };
 
+// [live]: live activities the island creates on its own.
+struct LiveConfig {
+    // Progress apps report for their taskbar icon (Chromium downloads...).
+    bool appProgress = true;
+    // Browser downloads (.part, .crdownload) in downloads_directory.
+    bool downloads = true;
+    std::string downloadsDirectory; // empty: XDG download dir
+};
+
 // [privacy]: which devices the privacy indicator reports.
 struct PrivacyConfig {
     bool microphone = true;
@@ -147,6 +156,7 @@ struct ConfigData {
     WallpaperConfig wallpaper;
     std::vector<Keybind> keybinds;
     PrivacyConfig privacy;
+    LiveConfig live;
     // [priorities]: activity name → priority, replacing the activity's own
     // below 100. "live" covers every live activity ("live:<id>").
     std::map<std::string, int> priorities;

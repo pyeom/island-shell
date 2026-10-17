@@ -56,7 +56,7 @@ if(ISLAND_BUILD_TESTS)
 endif()
 
 # Data, docs and helpers.
-install(PROGRAMS data/island-shell-run DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(PROGRAMS data/island-shell-run data/island-dl DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(FILES data/config.toml DESTINATION ${CMAKE_INSTALL_DATADIR}/island-shell)
 install(DIRECTORY examples/activities DESTINATION ${CMAKE_INSTALL_DATADIR}/island-shell/examples)
 install(FILES

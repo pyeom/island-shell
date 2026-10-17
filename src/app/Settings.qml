@@ -94,6 +94,13 @@ Window {
             { key: "privacy.camera", label: qsTr("Show camera use"), kind: "bool", def: true },
             { key: "privacy.screen", label: qsTr("Show screen sharing"), kind: "bool", def: true },
         ], note: qsTr("The privacy indicator shows which apps use these devices.") },
+        { title: qsTr("Live activities"), icon: "folder-download-symbolic", options: [
+            { key: "live.downloads", label: qsTr("Show browser downloads"), kind: "bool", def: true },
+            { key: "live.downloads_directory", label: qsTr("Downloads folder"), kind: "text", def: "",
+              hint: qsTr("empty: your downloads folder") },
+            { key: "live.app_progress", label: qsTr("Show progress apps report"), kind: "bool", def: true,
+              hint: qsTr("Chromium downloads, file copies…") },
+        ], note: qsTr("island-dl URL downloads a file with its progress in the island; scripts can show their own with islandctl push.") },
         { title: qsTr("Priorities"), icon: "view-sort-descending-symbolic", options: [
             { key: "priorities.privacy", label: qsTr("Privacy indicator"), kind: "int", def: 60, from: 0, to: 99 },
             { key: "priorities.live", label: qsTr("Live activities"), kind: "int", def: 50, from: 0, to: 99 },

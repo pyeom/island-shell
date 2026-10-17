@@ -36,6 +36,12 @@ listed here.
   as well as copied.
 - `Hyprland.exec()`, `focusWorkspace()` and `focusWindow()`, which work with
   both hyprland.conf and hyprland.lua.
+- Live activities for browser downloads (`.part`, `.crdownload` in the
+  downloads folder) and for the progress apps report over the Unity
+  LauncherEntry signal (`[live]`); `island-dl URL` downloads with aria2c or
+  curl showing its progress.
+- An island expanded on a live activity collapses when the activity ends,
+  instead of showing the idle view.
 - `[priorities]`: change which activity takes the pill (e.g. live
   activities above the microphone indicator), and `[privacy]` microphone /
   camera / screen switches; both in the settings window.

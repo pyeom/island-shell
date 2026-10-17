@@ -11,6 +11,7 @@ add_library(islandlogic STATIC
     services/calendar/quickevent.h services/calendar/quickevent.cpp
     services/power/nesteddetect.h services/power/nesteddetect.cpp
     services/privacy/camerascan.h services/privacy/camerascan.cpp
+    services/live/progressparse.h services/live/progressparse.cpp
     services/launcher/calc.h services/launcher/calc.cpp
     services/system/sysparse.h services/system/sysparse.cpp
     services/weather/weatherparse.h services/weather/weatherparse.cpp
@@ -27,9 +28,10 @@ target_include_directories(islandlogic PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/services/calendar
     ${CMAKE_CURRENT_SOURCE_DIR}/services/power
     ${CMAKE_CURRENT_SOURCE_DIR}/services/privacy
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/live
     ${CMAKE_CURRENT_SOURCE_DIR}/services/launcher
     ${CMAKE_CURRENT_SOURCE_DIR}/services/wallpaper)
-target_link_libraries(islandlogic PUBLIC Qt6::Core Qt6::Gui tomlplusplus::tomlplusplus
+target_link_libraries(islandlogic PUBLIC Qt6::Core Qt6::Gui Qt6::DBus tomlplusplus::tomlplusplus
     PkgConfig::LIBICAL PkgConfig::XKBCOMMON)
 
 # Internal module: the shell root and the island itself.

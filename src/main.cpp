@@ -1,4 +1,6 @@
 #include "config.h"
+#include "appprogress.h"
+#include "downloadwatch.h"
 #include "icons.h"
 #include "keybinds.h"
 #include "liveactivities.h"
@@ -78,6 +80,8 @@ int main(int argc, char* argv[]) {
         island::LiveActivities::instance()->registerOnBus();
         // Only the instance that owns the bus: the binds call islandctl.
         island::Keybinds::instance();
+        island::AppProgress::instance();
+        island::DownloadWatch::instance();
         break;
     }
 
