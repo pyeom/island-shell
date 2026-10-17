@@ -47,6 +47,15 @@ QString stripFieldCodes(const QString& exec);
 // Quotes one argument for sh: it's -> 'it'\''s'.
 QString shellQuote(const QString& arg);
 
+// The program a shell command runs: "FOO=1 env /usr/bin/firefox -P x" →
+// "firefox". Empty for an empty command.
+QString commandProgram(const QString& command);
+
+// Whether `command` starts a graphical app, i.e. a program some entry runs
+// without Terminal=true. Entries that go through a wrapper (flatpak, sh,
+// env...) say nothing about the wrapper itself.
+bool isGraphicalCommand(const QString& command, const QList<DesktopEntry>& entries);
+
 // Fuzzy subsequence score of `query` in `text`; -1 when not all characters
 // match in order. Rewards prefix, word-start and consecutive matches.
 int fuzzyScore(QStringView query, QStringView text);

@@ -94,6 +94,9 @@ listed here.
 - Tapping the island while an app uses the microphone, camera or screen
   opens the usual expanded view, with a line saying who uses what; the
   short list is only shown for the alert when a device turns on.
+- `>command` in the launcher runs terminal programs (yay, htop, scripts) in
+  a terminal on Enter; they used to run hidden and exit at once. Graphical
+  apps still start on their own; Shift+Enter swaps the two.
 - The expanded view always shows the month. Without calendars, the first
   new event creates a local one in the last `[calendar] paths` folder.
 

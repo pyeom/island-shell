@@ -240,7 +240,7 @@ apps and open windows. A query that looks like math, such as `2*(3+4)` or
 | Prefix | Does |
 |---|---|
 | `=` | calculator; Enter copies the result |
-| `>` | run a shell command; Shift+Enter runs it in a terminal |
+| `>` | run a shell command: apps on their own, anything else (yay, htop, scripts) in a terminal; Shift+Enter the other way |
 | `?` | search the web in the default browser (`[launcher] search_engine`) |
 | `:` | emoji; Enter types it into the focused window (with `wtype` installed) and copies it |
 | `+` | new calendar event, in English or Spanish: `+ tomorrow 3pm dentist 1h`, `+ fri 9 meeting`, `+ mañana 15:00 dentista` |

@@ -40,6 +40,8 @@ public:
     Q_INVOKABLE void run(const QString& command);
     // Runs a shell command in the configured terminal.
     Q_INVOKABLE void runInTerminal(const QString& command);
+    // Whether `command` starts one of the installed graphical apps.
+    bool isGraphical(const QString& command) const { return isGraphicalCommand(command, m_entries); }
     Q_INVOKABLE void openUrl(const QString& url);
     // Through wl-copy (survives the launcher closing), else QClipboard.
     Q_INVOKABLE void copyText(const QString& text);

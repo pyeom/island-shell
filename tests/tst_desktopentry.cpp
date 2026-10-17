@@ -30,6 +30,31 @@ class TestDesktopEntry : public QObject {
     Q_OBJECT
 
 private slots:
+    void commandPrograms() {
+        QCOMPARE(commandProgram(QStringLiteral("yay -Syu")), QStringLiteral("yay"));
+        QCOMPARE(commandProgram(QStringLiteral("GTK_THEME=Adwaita env /usr/bin/firefox -P x")), QStringLiteral("firefox"));
+        QCOMPARE(commandProgram(QStringLiteral("  ")), QString());
+    }
+
+    void graphicalCommands() {
+        auto entry = [](const char* exec, bool terminal) {
+            DesktopEntry e;
+            e.exec = QString::fromUtf8(exec);
+            e.terminal = terminal;
+            return e;
+        };
+        const QList<DesktopEntry> entries{entry("/usr/lib/firefox/firefox %u", false),
+                                          entry("htop", true),
+                                          entry("flatpak run org.gimp.GIMP %U", false),
+                                          entry("env GDK_BACKEND=x11 steam %U", false)};
+        QVERIFY(isGraphicalCommand(QStringLiteral("firefox --new-window"), entries));
+        QVERIFY(isGraphicalCommand(QStringLiteral("steam"), entries));
+        QVERIFY(!isGraphicalCommand(QStringLiteral("yay"), entries));
+        QVERIFY(!isGraphicalCommand(QStringLiteral("htop"), entries));          // Terminal=true
+        QVERIFY(!isGraphicalCommand(QStringLiteral("flatpak update"), entries)); // a wrapper
+        QVERIFY(!isGraphicalCommand(QString(), entries));
+    }
+
     void parsesEntry() {
         const auto e = parseDesktopEntry(kFirefox, QStringLiteral("en_US"));
         QVERIFY(e);

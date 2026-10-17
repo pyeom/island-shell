@@ -151,10 +151,12 @@ QVariantList LauncherSearch::query(const QString& text, int limit) const {
     if (t.startsWith(u'>')) {
         if (rest.isEmpty())
             return {item("error", QCoreApplication::translate("LauncherSearch", "Type a command"),
-                         QCoreApplication::translate("LauncherSearch", "Enter runs it, Shift+Enter in a terminal"),
+                         QCoreApplication::translate("LauncherSearch", "Enter runs it (in a terminal unless it is an app), Shift+Enter the other way"),
                          Icons::source(QStringLiteral("utilities-terminal")), {})};
         return {item("command", rest,
-                     QCoreApplication::translate("LauncherSearch", "Run command · Shift+Enter: in a terminal"),
+                     Apps::instance()->isGraphical(rest)
+                         ? QCoreApplication::translate("LauncherSearch", "Run · Shift+Enter: in a terminal")
+                         : QCoreApplication::translate("LauncherSearch", "Run in a terminal · Shift+Enter: without one"),
                      Icons::source(QStringLiteral("utilities-terminal")), rest)};
     }
     if (t.startsWith(u'?')) {
@@ -234,7 +236,11 @@ void LauncherSearch::activate(const QVariantMap& it, int action) {
         apps->copyText(value);
         apps->typeText(value);
     } else if (kind == u"command") {
-        if (action == 1)
+        // Enter: graphical apps on their own, anything else (yay, htop, a
+        // script) in a terminal, where it can ask and show its output.
+        // Shift+Enter: the other way round.
+        const bool graphical = apps->isGraphical(value);
+        if (graphical == (action == 1))
             apps->runInTerminal(value);
         else
             apps->run(value);

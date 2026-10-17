@@ -1,8 +1,13 @@
 #include "desktopentry.h"
 
 #include <QHash>
+#include <QRegularExpression>
+#include <QSet>
 
+#include <algorithm>
 #include <cmath>
+
+using namespace Qt::StringLiterals;
 
 namespace island {
 
@@ -233,6 +238,32 @@ int rankEntry(const DesktopEntry& entry, QStringView query, int launches) {
     const auto program = stripFieldCodes(entry.exec).section(u' ', 0, 0).section(u'/', -1);
     consider(program, 2);
     return best < 0 ? -1 : best + usage;
+}
+
+QString commandProgram(const QString& command) {
+    static const QRegularExpression assignment(QStringLiteral("^[A-Za-z_][A-Za-z0-9_]*="));
+    const auto words = command.split(u' ', Qt::SkipEmptyParts);
+    for (const auto& word : words) {
+        if (assignment.match(word).hasMatch() || word == u"env")
+            continue;
+        auto program = word;
+        program.remove(u'"').remove(u'\'');
+        return program.section(u'/', -1);
+    }
+    return {};
+}
+
+bool isGraphicalCommand(const QString& command, const QList<DesktopEntry>& entries) {
+    static const QSet<QString> wrappers{u"flatpak"_s, u"sh"_s, u"bash"_s, u"zsh"_s, u"env"_s,
+                                        u"gtk-launch"_s, u"kioclient"_s, u"kioclient5"_s,
+                                        u"xdg-open"_s, u"snap"_s};
+    const auto program = commandProgram(command);
+    if (program.isEmpty())
+        return false;
+    return std::ranges::any_of(entries, [&](const DesktopEntry& e) {
+        const auto runs = commandProgram(stripFieldCodes(e.exec));
+        return !e.terminal && runs == program && !wrappers.contains(runs);
+    });
 }
 
 } // namespace island

@@ -187,32 +187,37 @@
     </message>
     <message>
         <location filename="../src/services/launcher/launchersearch.cpp" line="154"/>
-        <source>Enter runs it, Shift+Enter in a terminal</source>
-        <translation>Enter lo ejecuta, Shift+Enter en una terminal</translation>
+        <source>Enter runs it (in a terminal unless it is an app), Shift+Enter the other way</source>
+        <translation>Enter lo ejecuta (en una terminal salvo que sea una app); Shift+Enter, al revés</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="157"/>
-        <source>Run command · Shift+Enter: in a terminal</source>
-        <translation>Ejecutar comando · Shift+Enter: en una terminal</translation>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="158"/>
+        <source>Run · Shift+Enter: in a terminal</source>
+        <translation>Ejecutar · Shift+Enter: en una terminal</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="163"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="159"/>
+        <source>Run in a terminal · Shift+Enter: without one</source>
+        <translation>Ejecutar en una terminal · Shift+Enter: sin terminal</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="165"/>
         <source>Search the web for “%1”</source>
         <translation>Buscar “%1” en la web</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="173"/>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="178"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="175"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="180"/>
         <source>New event</source>
         <translation>Nuevo evento</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="174"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="176"/>
         <source>e.g. + tomorrow 15:00 dentist 1h</source>
         <translation>ej.: + mañana 15:00 dentista 1h</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="190"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="192"/>
         <source>Enter adds it</source>
         <translation>Enter lo agrega</translation>
     </message>
