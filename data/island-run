@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# island-run: run a command with its state in the island.
+#
+#   island-run CMD [ARGS...]
+#
+# While it runs, the island shows the command and a button that focuses the
+# terminal it runs in; then a check mark or the exit code, and how long it
+# took. The command keeps the terminal: prompts, colors and Ctrl+C work as
+# usual.
+#
+# For shell hooks (see /usr/share/island-shell/island-shell.zsh):
+#   island-run --begin ID TITLE [SUBTITLE]   show a running command
+#   island-run --end ID STATUS SECONDS [TITLE]   show how it ended
+
+set -u
+
+ctl=islandctl
+command -v "$ctl" >/dev/null || ctl=true # no island: just run
+
+if [[ ${LC_ALL:-${LC_MESSAGES:-${LANG:-}}} == es* ]]; then
+    t_running="En curso" t_done="Listo" t_failed="Falló (%s)" t_terminal="Ir a la terminal"
+else
+    t_running="Running" t_done="Done" t_failed="Failed (%s)" t_terminal="Show terminal"
+fi
+
+# "12 s", "2 min 13 s", "1 h 5 min"
+duration() {
+    local s=$1
+    if ((s < 60)); then
+        printf '%d s' "$s"
+    elif ((s < 3600)); then
+        printf '%d min %d s' $((s / 60)) $((s % 60))
+    else
+        printf '%d h %d min' $((s / 3600)) $((s % 3600 / 60))
+    fi
+}
+
+# A command that focuses the window that is focused now (the terminal), in
+# hyprland.conf or Lua syntax; empty outside Hyprland.
+focus_command() {
+    local address
+    address=$(hyprctl activewindow -j 2>/dev/null | sed -n 's/^ *"address": "\(0x[0-9a-f]*\)".*/\1/p')
+    [[ -n $address ]] || return
+    printf "hyprctl dispatch focuswindow address:%s | grep -q '^ok' || hyprctl dispatch 'hl.dsp.focus({ window = \"address:%s\" })'" \
+        "$address" "$address"
+}
+
+begin() { # ID TITLE [SUBTITLE]
+    local focus args=(--id "$1" --title "$2" --subtitle "${3:-$t_running}" --icon utilities-terminal --ttl 0)
+    focus=$(focus_command)
+    [[ -n $focus ]] && args+=(--action "$t_terminal=$focus")
+    "$ctl" push "${args[@]}" >/dev/null 2>&1
+}
+
+end() { # ID STATUS SECONDS [TITLE]
+    local id=$1 status=$2 took
+    took=$(duration "$3")
+    # The hook may report a command it did not show while running.
+    if ! "$ctl" live 2>/dev/null | grep -qxF "$id"; then
+        [[ -n ${4:-} ]] || return 0
+        begin "$id" "$4"
+    fi
+    if ((status == 0)); then
+        "$ctl" update --id "$id" --state success --subtitle "$t_done · $took" --ttl 15 >/dev/null 2>&1
+    else
+        # shellcheck disable=SC2059
+        "$ctl" update --id "$id" --state error --subtitle "$(printf "$t_failed" "$status") · $took" --ttl 60 >/dev/null 2>&1
+    fi
+}
+
+case ${1:-} in
+"" | -h | --help)
+    sed -n '2,14s/^# \{0,1\}//p' "$0"
+    [[ -n ${1:-} ]]
+    exit $?
+    ;;
+--begin)
+    [[ $# -ge 3 ]] || exit 2
+    begin "$2" "$3" "${4:-}"
+    exit 0
+    ;;
+--end)
+    [[ $# -ge 4 ]] || exit 2
+    end "$2" "$3" "$4" "${5:-}"
+    exit 0
+    ;;
+esac
+
+id="run-$$"
+begin "$id" "$(basename "$1")" "${*:2}"
+start=$SECONDS
+# Ctrl+C reaches the command too; report it as interrupted.
+trap ':' INT
+"$@"
+status=$?
+trap - INT
+end "$id" "$status" $((SECONDS - start))
+exit "$status"

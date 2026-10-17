@@ -40,6 +40,9 @@ listed here.
   downloads folder) and for the progress apps report over the Unity
   LauncherEntry signal (`[live]`); `island-dl URL` downloads with aria2c or
   curl showing its progress.
+- `island-run CMD` and a zsh hook (`/usr/share/island-shell/island-shell.zsh`)
+  that show terminal commands in the island: yay, make and the like while
+  they run, anything else that took 30 s when it ends.
 - An island expanded on a live activity collapses when the activity ends,
   instead of showing the idle view.
 - `[priorities]`: change which activity takes the pill (e.g. live

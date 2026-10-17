@@ -307,6 +307,17 @@ Some show up on their own (`[live]`):
 `island-dl URL [FILE]` downloads a file with aria2c (or curl) and its
 progress, a Cancel button and Open when it is done.
 
+Commands from a terminal:
+
+- `island-run CMD [ARGS...]` shows the command while it runs, with a button
+  that focuses its terminal, then a check mark or the exit code and how long
+  it took.
+- For zsh, `source /usr/share/island-shell/island-shell.zsh` in `~/.zshrc`
+  does it on its own: programs in `ISLAND_WATCH` (yay, pacman, make,
+  cargo, rsync...) show once they run for 2 s, and any other command that
+  takes `ISLAND_NOTIFY_AFTER` seconds (30) shows how it ended. Editors,
+  pagers and ssh (`ISLAND_IGNORE`) never show.
+
 ## Priorities and privacy
 
 When several activities are active, the one with the highest priority takes
