@@ -8,8 +8,8 @@ import IslandShell
 Column {
     id: root
 
-    property date shown: new Date(Clock.now.getFullYear(), Clock.now.getMonth(), 1)
-    property date selected: Clock.now
+    property date shown: new Date(Clock.minute.getFullYear(), Clock.minute.getMonth(), 1)
+    property date selected: Clock.minute
 
     readonly property int year: shown.getFullYear()
     readonly property int month: shown.getMonth() // 0-based
@@ -92,7 +92,7 @@ Column {
                 readonly property int number: index - root.offset + 1
                 readonly property bool inMonth: number >= 1 && number <= root.daysInMonth
                 readonly property date value: new Date(root.year, root.month, number)
-                readonly property bool today: inMonth && root.sameDay(value, Clock.now)
+                readonly property bool today: inMonth && root.sameDay(value, Clock.minute)
                 readonly property bool isSelected: inMonth && root.sameDay(value, root.selected)
 
                 width: root.cell

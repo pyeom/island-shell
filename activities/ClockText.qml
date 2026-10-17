@@ -11,7 +11,7 @@ Row {
     }
     Text {
         anchors.verticalCenter: parent.verticalCenter
-        text: Qt.formatTime(Clock.now, Config.clockFormat)
+        text: Qt.formatTime(Clock.formatHasSeconds ? Clock.now : Clock.minute, Config.clockFormat)
         color: Theme.foreground
         font.pixelSize: 14
         font.weight: Font.DemiBold

@@ -12,7 +12,10 @@ Item {
     implicitHeight: column.implicitHeight + 36
 
     focus: true
-    Component.onCompleted: forceActiveFocus()
+    Component.onCompleted: {
+        forceActiveFocus()
+        NightLight.refresh()
+    }
     Keys.onEscapePressed: panel.close()
 
     component Tile: Rectangle {

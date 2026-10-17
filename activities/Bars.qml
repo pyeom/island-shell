@@ -3,7 +3,10 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import IslandShell
 
-// Small equalizer-style bars; they move while `playing`.
+// Small equalizer-style bars; they move while `playing`. They step 8 times
+// a second without animating in between, like a level meter: smooth motion
+// would make the island draw a frame on every refresh (144 Hz monitors) for
+// as long as music plays.
 Row {
     id: root
 
@@ -13,11 +16,27 @@ Row {
     spacing: 2
     height: 14
 
+    Timer {
+        id: tick
+        running: root.playing && root.visible
+        repeat: true
+        interval: 125
+        onTriggered: {
+            for (let i = 0; i < bars.count; ++i)
+                (bars.itemAt(i) as Rectangle).level = 0.25 + Math.random() * 0.75
+        }
+        onRunningChanged: {
+            if (running)
+                return
+            for (let i = 0; i < bars.count; ++i)
+                (bars.itemAt(i) as Rectangle).level = 0.3
+        }
+    }
+
     Repeater {
+        id: bars
         model: 4
         delegate: Rectangle {
-            id: bar
-            required property int index
             property real level: 0.3
 
             anchors.bottom: parent.bottom
@@ -25,16 +44,6 @@ Row {
             height: Math.max(3, root.height * level)
             radius: 1.5
             color: root.color
-
-            Behavior on height { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
-
-            Timer {
-                running: root.playing && root.visible
-                repeat: true
-                interval: 160 + bar.index * 35
-                onTriggered: bar.level = 0.25 + Math.random() * 0.75
-                onRunningChanged: if (!running) bar.level = 0.3
-            }
         }
     }
 }

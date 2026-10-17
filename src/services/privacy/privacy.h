@@ -1,5 +1,7 @@
 #pragma once
 
+#include "camerascan.h"
+
 #include <QObject>
 #include <QSocketNotifier>
 #include <QStringList>
@@ -61,6 +63,8 @@ private:
     int m_inotify = -1;
     QSocketNotifier* m_inotifyNotifier = nullptr;
     QTimer m_cameraScan;
+    CameraActivity m_cameraActivity;
+    bool m_cameraScanned = false; // the first scan always runs
     QStringList m_micApps;
     QStringList m_cameraApps;
     bool m_screen = false;

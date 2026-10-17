@@ -28,6 +28,8 @@ public:
     bool available() const;
 
     Q_INVOKABLE void setRunning(bool on);
+    // Looks for wlsunset now (quick settings calls it when it opens).
+    Q_INVOKABLE void refresh() { scan(); }
 
 signals:
     void changed();
@@ -35,11 +37,13 @@ signals:
 private:
     explicit NightLight(QObject* parent = nullptr);
     void scan();
+    void poll();
     QString command() const;
     QString statePath() const;
 
     qint64 m_pid = 0;
     QTimer m_poll;
+    int m_idlePolls = 0;
 };
 
 } // namespace island

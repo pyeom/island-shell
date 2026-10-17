@@ -15,7 +15,7 @@ Column {
     function timeLabel(e: var): string {
         if (e.allDay)
             return qsTr("All day")
-        const sameDay = e.start.toDateString() === Clock.now.toDateString()
+        const sameDay = e.start.toDateString() === Clock.minute.toDateString()
         const time = Qt.formatTime(e.start, Config.clockFormat)
         return sameDay ? time : e.start.toLocaleDateString(Qt.locale(), "ddd d") + "  " + time
     }

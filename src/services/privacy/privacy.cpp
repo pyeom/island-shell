@@ -5,7 +5,6 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
-#include <QFileInfo>
 #include <QHash>
 #include <QJSEngine>
 #include <QSet>
@@ -159,11 +158,6 @@ const pw_registry_events kRegistryEvents = [] {
     return e;
 }();
 
-QString processName(const QString& pid) {
-    QFile f(QStringLiteral("/proc/%1/comm").arg(pid));
-    return f.open(QIODevice::ReadOnly) ? QString::fromUtf8(f.readAll()).trimmed() : QString();
-}
-
 } // namespace
 
 Privacy* Privacy::instance() {
@@ -257,8 +251,19 @@ void Privacy::setupCamera() {
     connect(&m_cameraScan, &QTimer::timeout, this, &Privacy::scanCamera);
     m_inotifyNotifier = new QSocketNotifier(m_inotify, QSocketNotifier::Read, this);
     connect(m_inotifyNotifier, &QSocketNotifier::activated, this, [this] {
-        char buf[4096];
-        while (::read(m_inotify, buf, sizeof(buf)) > 0) {
+        alignas(inotify_event) char buf[4096];
+        ssize_t n;
+        while ((n = ::read(m_inotify, buf, sizeof(buf))) > 0) {
+            for (ssize_t i = 0; i < n;) {
+                const auto* ev = reinterpret_cast<const inotify_event*>(buf + i);
+                if (ev->mask & IN_Q_OVERFLOW)
+                    m_cameraActivity.overflowed();
+                if (ev->mask & IN_OPEN)
+                    m_cameraActivity.opened();
+                if (ev->mask & IN_CLOSE)
+                    m_cameraActivity.closed();
+                i += static_cast<ssize_t>(sizeof(inotify_event)) + ev->len;
+            }
         }
         m_cameraScan.start();
     });
@@ -266,24 +271,13 @@ void Privacy::setupCamera() {
 }
 
 void Privacy::scanCamera() {
-    // Who holds /dev/video* open? Only runs after open/close events.
-    QSet<QString> apps;
-    const QDir proc(QStringLiteral("/proc"));
-    const auto self = QString::number(QCoreApplication::applicationPid());
-    for (const auto& pid : proc.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
-        if (pid == self || !pid.front().isDigit())
-            continue;
-        const QDir fds(QStringLiteral("/proc/%1/fd").arg(pid));
-        for (const auto& fd : fds.entryList(QDir::System | QDir::NoDotAndDotDot)) {
-            const auto target = QFileInfo(fds.filePath(fd)).symLinkTarget();
-            if (target.startsWith(QLatin1String("/dev/video"))) {
-                apps.insert(processName(pid));
-                break;
-            }
-        }
-    }
-    QStringList list(apps.begin(), apps.end());
-    list.sort(Qt::CaseInsensitive);
+    // Only after open/close events, and not for a probe that opened and
+    // closed a camera nobody was using.
+    if (!m_cameraActivity.needsScan(!m_cameraApps.isEmpty()) && m_cameraScanned)
+        return;
+    m_cameraActivity.scanned();
+    m_cameraScanned = true;
+    const auto list = cameraUsers(QStringLiteral("/proc"), QCoreApplication::applicationPid());
     if (list != m_cameraApps) {
         m_cameraApps = list;
         emit changed();

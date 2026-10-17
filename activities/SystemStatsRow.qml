@@ -9,6 +9,10 @@ Row {
 
     spacing: 10
 
+    // 2 s updates only while the gauges are on screen.
+    Component.onCompleted: SystemStats.addViewer()
+    Component.onDestruction: SystemStats.removeViewer()
+
     component Gauge: Column {
         id: gauge
         property string label

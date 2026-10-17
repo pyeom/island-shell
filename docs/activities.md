@@ -112,7 +112,7 @@ Activity {
 | `Activity` | The type above. |
 | `Config` | Settings. `Config.get("activities.pomodoro.minutes", 25)` reads any key; also `Config.clockFormat`, sizes. |
 | `Theme` | `background`, `foreground`, `secondaryForeground`, `accent`, `danger`, `blur`. |
-| `Clock.now` | A `date` that updates every second. |
+| `Clock.now`, `Clock.minute` | A `date` that updates every second; the same without seconds, changing once a minute (bind to it unless you show seconds). `Clock.formatHasSeconds`. |
 | `Hyprland` | `monitors`, `workspaces`, `focusedMonitor`, `dispatch("workspace 3")`, `event(name, data)` signal. |
 | `Keybinds` | `available`, `replaced`, `errors`, `recording`, `startRecording()`, `stopRecording()`, `combo(modifiers, nativeScanCode)`. |
 | `IslandScreen` | Attached: `IslandScreen.name`, `IslandScreen.focused` for the monitor a presentation is drawn on. |

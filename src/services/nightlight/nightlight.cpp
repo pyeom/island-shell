@@ -31,7 +31,7 @@ NightLight* NightLight::create(QQmlEngine*, QJSEngine*) {
 NightLight::NightLight(QObject* parent) : QObject(parent) {
     // wlsunset can be started or killed outside the island too.
     m_poll.setInterval(3000);
-    connect(&m_poll, &QTimer::timeout, this, &NightLight::scan);
+    connect(&m_poll, &QTimer::timeout, this, &NightLight::poll);
     m_poll.start();
     scan();
 }
@@ -44,6 +44,17 @@ bool NightLight::available() const {
 QString NightLight::statePath() const {
     return QStandardPaths::writableLocation(QStandardPaths::GenericStateLocation) +
            QLatin1String("/island-shell/nightlight-command");
+}
+
+void NightLight::poll() {
+    // The wlsunset we know about: one read instead of all of /proc.
+    if (m_pid > 0 && readFile(QStringLiteral("/proc/%1/comm").arg(m_pid)).trimmed() == "wlsunset")
+        return;
+    // Not running: started from elsewhere is rarer, look every 30 s.
+    if (m_pid > 0 || ++m_idlePolls >= 10) {
+        m_idlePolls = 0;
+        scan();
+    }
 }
 
 void NightLight::scan() {

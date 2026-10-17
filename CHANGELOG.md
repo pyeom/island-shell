@@ -71,6 +71,21 @@ listed here.
   it. It now asks the backend, so it follows awww, swww, hyprpaper, swaybg
   and changes made outside the island.
 
+- Idle CPU use: 2–5% down to ~0. Something on the desktop opening and
+  closing /dev/video0 every 3 s made the camera indicator scan every file
+  descriptor of every process each time; probes (opened and closed again
+  while nobody used the camera) no longer trigger a scan, and the scan uses
+  plain readlinkat. The night light check reads the known wlsunset's
+  /proc entry instead of all of /proc every 3 s.
+- `SystemStats` samples every 2 s only while gauges are shown
+  (`addViewer()`/`removeViewer()`), else temperatures every 10 s for the
+  heat alert, and only notifies when a value changed.
+- `Clock.minute` (and `Clock.formatHasSeconds`): the built-in clocks,
+  calendar and event lists no longer re-evaluate every second.
+- The media bars step 8 times a second instead of animating continuously,
+  which kept the island drawing at the monitor's refresh rate while music
+  played (1.7% → 0.3% CPU).
+
 ### Changed
 - Default `[island] surface_height` is 560 so the richer expanded view fits.
 - Tapping the island while an app uses the microphone, camera or screen

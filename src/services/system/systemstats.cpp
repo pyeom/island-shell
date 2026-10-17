@@ -3,9 +3,13 @@
 #include "config.h"
 
 #include <QCoreApplication>
+#include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QJSEngine>
+
+#include <algorithm>
+#include <iterator>
 
 namespace island {
 
@@ -57,10 +61,8 @@ SystemStats::SystemStats(QObject* parent) : QObject(parent) {
     findSensors();
     if (auto t = sys::parseProcStat(readFile(QStringLiteral("/proc/stat"))))
         m_lastCpu = *t;
-    m_timer.setInterval(2000);
     connect(&m_timer, &QTimer::timeout, this, &SystemStats::sample);
-    m_timer.start();
-    sample();
+    sample(); // starts the timer
 }
 
 void SystemStats::findSensors() {
@@ -81,25 +83,53 @@ void SystemStats::findSensors() {
     }
 }
 
-void SystemStats::sample() {
-    if (auto t = sys::parseProcStat(readFile(QStringLiteral("/proc/stat")))) {
-        m_cpuUsage = sys::cpuUsage(m_lastCpu, *t);
-        m_lastCpu = *t;
+void SystemStats::addViewer() {
+    if (m_viewers++ == 0) {
+        sample(); // fresh values right away, not up to 10 s old
+        updateInterval();
     }
-    if (auto m = sys::parseMeminfo(readFile(QStringLiteral("/proc/meminfo"))))
-        m_memoryUsage = m->usedFraction();
+}
+
+void SystemStats::removeViewer() {
+    m_viewers = std::max(0, m_viewers - 1);
+    updateInterval();
+}
+
+void SystemStats::updateInterval() {
+    // Fast while shown, or while a temperature is over its limit (the alert
+    // needs 10 s of it) or the alert is on (it shows the temperature).
+    const int interval = m_viewers > 0 || !m_candidate.isEmpty() || hot() ? 2000 : 10000;
+    if (m_timer.interval() != interval)
+        m_timer.start(interval);
+}
+
+void SystemStats::sample() {
+    const qreal before[] = {m_cpuUsage, m_memoryUsage, m_gpuUsage, m_vramUsage,
+                            m_cpuTemp,  m_gpuTemp,     m_nvmeTemp};
     m_cpuTemp = readNumber(m_cpuTempPath, 1000);
     m_gpuTemp = readNumber(m_gpuTempPath, 1000);
     m_nvmeTemp = readNumber(m_nvmeTempPath, 1000);
-    if (!m_gpuDir.isEmpty()) {
-        const qreal busy = readNumber(m_gpuDir + QLatin1String("/gpu_busy_percent"));
-        m_gpuUsage = busy >= 0 ? busy / 100 : -1;
-        const qreal used = readNumber(m_gpuDir + QLatin1String("/mem_info_vram_used"));
-        const qreal total = readNumber(m_gpuDir + QLatin1String("/mem_info_vram_total"));
-        m_vramUsage = used >= 0 && total > 0 ? used / total : -1;
+    if (m_viewers > 0) {
+        if (auto t = sys::parseProcStat(readFile(QStringLiteral("/proc/stat")))) {
+            m_cpuUsage = sys::cpuUsage(m_lastCpu, *t);
+            m_lastCpu = *t;
+        }
+        if (auto m = sys::parseMeminfo(readFile(QStringLiteral("/proc/meminfo"))))
+            m_memoryUsage = m->usedFraction();
+        if (!m_gpuDir.isEmpty()) {
+            const qreal busy = readNumber(m_gpuDir + QLatin1String("/gpu_busy_percent"));
+            m_gpuUsage = busy >= 0 ? busy / 100 : -1;
+            const qreal used = readNumber(m_gpuDir + QLatin1String("/mem_info_vram_used"));
+            const qreal total = readNumber(m_gpuDir + QLatin1String("/mem_info_vram_total"));
+            m_vramUsage = used >= 0 && total > 0 ? used / total : -1;
+        }
     }
-    emit changed();
+    const qreal after[] = {m_cpuUsage, m_memoryUsage, m_gpuUsage, m_vramUsage,
+                           m_cpuTemp,  m_gpuTemp,     m_nvmeTemp};
+    if (!std::equal(std::begin(before), std::end(before), std::begin(after)))
+        emit changed();
     checkHeat();
+    updateInterval();
 }
 
 qreal SystemStats::hotTemp() const {
@@ -138,16 +168,16 @@ void SystemStats::checkHeat() {
             over = QLatin1String(s.name);
             break;
         }
+    const auto now = QDateTime::currentMSecsSinceEpoch();
     if (over.isEmpty() || over != m_candidate) {
         m_candidate = over;
-        m_candidateSamples = over.isEmpty() ? 0 : 1;
+        m_candidateSince = now;
         return;
     }
-    // 5 samples × 2 s = sustained for 10 s.
-    if (++m_candidateSamples >= 5) {
+    // Sustained for 10 s.
+    if (now - m_candidateSince >= 10000) {
         m_hotSensor = over;
         m_candidate.clear();
-        m_candidateSamples = 0;
         emit hotChanged();
     }
 }

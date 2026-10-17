@@ -12,8 +12,9 @@ class QJSEngine;
 
 namespace island {
 
-// CPU, GPU (amdgpu sysfs), RAM and temperatures (hwmon), sampled every 2 s.
-// Missing sensors read as -1. `hot` turns on when a temperature stays at or
+// CPU, GPU (amdgpu sysfs), RAM and temperatures (hwmon), sampled every 2 s
+// while something shows them (addViewer), else only the temperatures, every
+// 10 s, for the heat alert. Missing sensors read as -1. `hot` turns on when a temperature stays at or
 // above its [system] threshold for 10 s, and off 5 °C below it.
 class SystemStats : public QObject {
     Q_OBJECT
@@ -46,6 +47,10 @@ public:
     QString hotSensor() const { return m_hotSensor; }
     qreal hotTemp() const;
 
+    // Gauges call these while they are on screen, for 2 s updates.
+    Q_INVOKABLE void addViewer();
+    Q_INVOKABLE void removeViewer();
+
 signals:
     void changed();
     void hotChanged();
@@ -55,6 +60,7 @@ private:
     void findSensors();
     void sample();
     void checkHeat();
+    void updateInterval();
 
     QString m_cpuTempPath;
     QString m_gpuTempPath;
@@ -73,7 +79,8 @@ private:
 
     QString m_hotSensor;
     QString m_candidate;
-    int m_candidateSamples = 0;
+    qint64 m_candidateSince = 0; // ms since epoch
+    int m_viewers = 0;
 };
 
 } // namespace island

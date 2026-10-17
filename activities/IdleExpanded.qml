@@ -26,14 +26,14 @@ Item {
                 spacing: 4
 
                 Text {
-                    text: Qt.formatTime(Clock.now, Config.clockFormat)
+                    text: Qt.formatTime(Clock.formatHasSeconds ? Clock.now : Clock.minute, Config.clockFormat)
                     color: Theme.foreground
                     font.pixelSize: 48
                     font.weight: Font.Bold
                     font.features: { "tnum": 1 }
                 }
                 Text {
-                    text: Clock.now.toLocaleDateString(Qt.locale(), "dddd d MMMM yyyy")
+                    text: Clock.minute.toLocaleDateString(Qt.locale(), "dddd d MMMM yyyy")
                     color: Theme.secondaryForeground
                     font.pixelSize: 14
                 }
@@ -48,7 +48,7 @@ Item {
                 Item { width: 1; height: 10 }
                 EventList {
                     width: parent.width
-                    readonly property bool isToday: month.selected.toDateString() === Clock.now.toDateString()
+                    readonly property bool isToday: month.selected.toDateString() === Clock.minute.toDateString()
                     // Calendar.revision: re-evaluate when calendars reload.
                     events: Calendar.revision < 0 ? []
                           : isToday ? Calendar.upcoming(3)
