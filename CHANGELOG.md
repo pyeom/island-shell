@@ -99,6 +99,7 @@ listed here.
   played (1.7% → 0.3% CPU).
 
 ### Changed
+- Settings: each page groups its options in titled sections.
 - Default `[island] surface_height` is 560 so the richer expanded view fits.
 - Tapping the island while an app uses the microphone, camera or screen
   opens the usual expanded view, with a line saying who uses what; the
