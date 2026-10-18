@@ -32,13 +32,15 @@ int usage(int code) {
 
 commands:
   launcher toggle         open or close the launcher
-  expand [activity]       expand the island (current activity if omitted)
+  expand [activity]       expand the island (what a click opens if omitted)
   collapse                collapse the island
   power                   open the power menu
   quick                   open quick settings
   settings                open the settings window
   screenshot MODE         region | window | output | active
   wallpaper [random]      open the wallpaper picker, or apply a random one
+  media ACTION            play-pause | next | previous, on the player the island shows
+  volume ACTION           up | down (5%) | +N | -N | N (percent) | mute | mic-mute
   dnd on|off|toggle       set do-not-disturb
   dnd                     print do-not-disturb state
   activities              list registered activities
@@ -245,6 +247,10 @@ int main(int argc, char* argv[]) {
         return args.isEmpty() ? usage(2) : check(shell.Screenshot(args.first()));
     if (cmd == u"reload")
         return check(shell.Reload());
+    if (cmd == u"media")
+        return args.isEmpty() ? usage(2) : check(shell.Media(args.first()));
+    if (cmd == u"volume")
+        return args.isEmpty() ? usage(2) : check(shell.Volume(args.first()));
     if (cmd == u"activities") {
         auto reply = shell.ListActivities();
         if (int rc = check(reply))

@@ -40,11 +40,19 @@ XkbNames parseMainKeyboard(QByteArrayView devicesJson);
 // and unknown keycodes.
 QString keycodeName(const XkbNames& layout, uint32_t keycode);
 
+struct BindFlags {
+    bool repeat = false; // keeps firing while held (volume)
+    bool locked = false; // also works on the lock screen (media, volume)
+};
+
 // Statements that replace every bind on `combo` with one running `command`.
 // Lua config (for `eval`):
-QString luaBind(const KeyCombo& combo, const QString& command, const QString& description);
+QString luaBind(const KeyCombo& combo, const QString& command, const QString& description,
+                BindFlags flags = {});
 QString luaUnbind(const KeyCombo& combo);
-// hyprland.conf (`keyword` arguments): "bindd" and "unbind" values.
+// hyprland.conf (`keyword` arguments): the bind keyword ("bindd", "bindeld"),
+// its value, and the "unbind" value.
+QString confBindKeyword(BindFlags flags);
 QString confBind(const KeyCombo& combo, const QString& command, const QString& description);
 QString confUnbind(const KeyCombo& combo);
 
@@ -63,6 +71,7 @@ bool sameKeys(const BoundKey& bound, const KeyCombo& combo);
 struct KeyAction {
     std::string_view name;
     std::string_view args;
+    BindFlags flags = {};
 };
 std::span<const KeyAction> keyActions();
 std::optional<KeyAction> keyAction(std::string_view name);

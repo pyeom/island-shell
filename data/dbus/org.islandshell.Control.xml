@@ -8,8 +8,10 @@
   <interface name="org.islandshell.Control">
     <!-- Open or close the launcher on the focused monitor. -->
     <method name="ToggleLauncher"/>
-    <!-- Expand the island on the focused monitor. An empty name expands the
-         current primary activity. Fails with org.islandshell.Error.UnknownActivity. -->
+    <!-- Expand the island on the focused monitor. An empty name opens what a
+         click on the pill opens: the dashboard, or the activity in the pill
+         if it is not background information (music, privacy). Fails with
+         org.islandshell.Error.UnknownActivity. -->
     <method name="Expand">
       <arg name="activity" type="s" direction="in"/>
     </method>
@@ -33,6 +35,16 @@
     </method>
     <!-- Open the settings window. -->
     <method name="ShowSettings"/>
+    <!-- The player the island shows: play-pause | next | previous. Fails
+         with org.islandshell.Error.NoPlayer when nothing is playing. -->
+    <method name="Media">
+      <arg name="action" type="s" direction="in"/>
+    </method>
+    <!-- Default output: up | down (5%), +N | -N (points), N (percent),
+         mute (toggle); mic-mute toggles the default input. Shows the OSD. -->
+    <method name="Volume">
+      <arg name="action" type="s" direction="in"/>
+    </method>
     <!-- Names of all registered activities. -->
     <method name="ListActivities">
       <arg name="names" type="as" direction="out"/>

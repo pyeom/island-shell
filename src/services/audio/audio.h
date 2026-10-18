@@ -45,6 +45,9 @@ public:
 
     bool available() const;
     qreal volume() const;
+    // The volume about to be set, else the current one: what keys that step
+    // the volume start from while presses are still being sent.
+    qreal targetVolume() const { return m_pendingVolume >= 0 ? m_pendingVolume : volume(); }
     bool muted() const;
     QString sinkDescription() const;
     bool hasMicrophone() const;

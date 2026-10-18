@@ -185,6 +185,15 @@ Window {
                 { key: "keybinds.wallpaper", label: qsTr("Wallpaper picker"), kind: "key" },
                 { key: "keybinds.wallpaper_random", label: qsTr("Random wallpaper"), kind: "key" },
             ]},
+            { title: qsTr("Media and volume"), options: [
+                { key: "keybinds.media_play_pause", label: qsTr("Play or pause"), kind: "key", hint: "XF86AudioPlay" },
+                { key: "keybinds.media_next", label: qsTr("Next track"), kind: "key", hint: "XF86AudioNext" },
+                { key: "keybinds.media_previous", label: qsTr("Previous track"), kind: "key", hint: "XF86AudioPrev" },
+                { key: "keybinds.volume_up", label: qsTr("Volume up"), kind: "key", hint: "XF86AudioRaiseVolume" },
+                { key: "keybinds.volume_down", label: qsTr("Volume down"), kind: "key", hint: "XF86AudioLowerVolume" },
+                { key: "keybinds.volume_mute", label: qsTr("Mute"), kind: "key", hint: "XF86AudioMute" },
+                { key: "keybinds.mic_mute", label: qsTr("Mute the microphone"), kind: "key", hint: "XF86AudioMicMute" },
+            ]},
             { title: qsTr("Notifications"), options: [
                 { key: "keybinds.dnd", label: qsTr("Do not disturb"), kind: "key" },
                 { key: "keybinds.notifications_clear", label: qsTr("Clear notifications"), kind: "key" },

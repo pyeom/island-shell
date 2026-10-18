@@ -2,11 +2,14 @@
 
 #include "activity.h"
 #include "activityregistry.h"
+#include "audio.h"
 #include "config.h"
 #include "screenshots.h"
 #include "controladaptor.h"
+#include "mpris.h"
 #include "theme.h"
 #include "useractivities.h"
+#include "volumestep.h"
 
 #include <QCoreApplication>
 #include <QDBusConnection>
@@ -103,6 +106,49 @@ void ShellControl::Wallpaper(const QString& action) {
 
 void ShellControl::ShowSettings() {
     emit settingsRequested();
+}
+
+void ShellControl::Media(const QString& action) {
+    // The player the island shows, so keys and the pill agree.
+    auto* player = Mpris::instance()->current();
+    const bool known = action == u"play-pause" || action == u"next" || action == u"previous";
+    if (!known || !player) {
+        if (calledFromDBus())
+            sendErrorReply(known ? QStringLiteral("org.islandshell.Error.NoPlayer")
+                                 : QStringLiteral("org.islandshell.Error.InvalidArgs"),
+                           known ? QStringLiteral("Nothing is playing")
+                                 : QStringLiteral("action must be play-pause, next or previous"));
+        return;
+    }
+    if (action == u"play-pause")
+        player->playPause();
+    else if (action == u"next")
+        player->next();
+    else
+        player->previous();
+}
+
+void ShellControl::Volume(const QString& action) {
+    auto* audio = Audio::instance();
+    if (action == u"mute") {
+        audio->setMuted(!audio->muted());
+        return;
+    }
+    if (action == u"mic-mute") {
+        audio->setMicMuted(!audio->micMuted());
+        return;
+    }
+    const auto target = volumeTarget(action, audio->targetVolume());
+    if (!target) {
+        if (calledFromDBus())
+            sendErrorReply(QStringLiteral("org.islandshell.Error.InvalidArgs"),
+                           QStringLiteral("action must be up, down, mute, mic-mute, +N, -N or N"));
+        return;
+    }
+    // Changing the volume unmutes, as volume keys usually do.
+    if (audio->muted())
+        audio->setMuted(false);
+    audio->setVolume(*target);
 }
 
 QStringList ShellControl::ListActivities() {

@@ -49,6 +49,8 @@ public slots:
     void Screenshot(const QString& mode);
     void Wallpaper(const QString& action);
     void ShowSettings();
+    void Media(const QString& action);
+    void Volume(const QString& action);
     QStringList ListActivities();
 
 signals:

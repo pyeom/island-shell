@@ -169,11 +169,21 @@ screen = true
 # hl.bind: "SUPER + SHIFT + R", "ALT + TAB", "Print", "XF86AudioPlay".
 # Actions: launcher, power, quick_settings, settings, expand, collapse, media,
 # wallpaper, wallpaper_random, screenshot_region, screenshot_window,
-# screenshot_output, dnd, notifications_clear, reload.
+# screenshot_output, dnd, notifications_clear, reload, media_play_pause,
+# media_next, media_previous, volume_up, volume_down, volume_mute, mic_mute.
+# Media keys control the player the island shows; volume keys repeat while
+# held, and media and volume keys also work on the lock screen.
 # launcher = "SUPER + R"
 # power = "ALT + TAB"
 # media = "ALT + P"
 # screenshot_region = "Print"
+# media_play_pause = "XF86AudioPlay"
+# media_next = "XF86AudioNext"
+# media_previous = "XF86AudioPrev"
+# volume_up = "XF86AudioRaiseVolume"
+# volume_down = "XF86AudioLowerVolume"
+# volume_mute = "XF86AudioMute"
+# mic_mute = "XF86AudioMicMute"
 
 [power]
 lock_command = "hyprlock"

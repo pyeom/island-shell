@@ -52,6 +52,10 @@ listed here.
   re-added after Hyprland reloads its config, and a Keybindings page in the
   settings window that records combinations. `Keybinds` in the public
   module.
+- Media and volume keys: `islandctl media play-pause|next|previous` (on the
+  player the island shows) and `islandctl volume up|down|+N|-N|N|mute|mic-mute`,
+  with `[keybinds]` actions for each; volume binds repeat while held, media
+  and volume binds work on the lock screen.
 
 ### Fixed
 - Privacy indicator no longer flickers and re-alerts while a voice chat

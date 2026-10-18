@@ -167,6 +167,8 @@ launcher = "SUPER + R"
 power = "ALT + TAB"
 media = "ALT + P"
 screenshot_region = "Print"
+media_play_pause = "XF86AudioPlay"
+volume_up = "XF86AudioRaiseVolume"
 ```
 
 The island adds these binds to Hyprland while it runs (with `hyprctl eval`
@@ -176,7 +178,11 @@ keys, so it can stay in your Hyprland config as a fallback. Actions:
 `launcher`, `power`, `quick_settings`, `settings`, `expand`, `collapse`,
 `media`, `wallpaper`, `wallpaper_random`, `screenshot_region`,
 `screenshot_window`, `screenshot_output`, `dnd`, `notifications_clear`,
-`reload`.
+`reload`, `media_play_pause`, `media_next`, `media_previous`, `volume_up`,
+`volume_down`, `volume_mute`, `mic_mute`. Media keys control the player the
+island shows (not whichever one `playerctl` picks); volume keys repeat while
+held and show the volume in the pill; media and volume keys also work on the
+lock screen.
 
 Anything else can be bound in Hyprland to an `islandctl` command:
 

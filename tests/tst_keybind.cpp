@@ -47,6 +47,18 @@ private slots:
         QCOMPARE(confBind(c, QStringLiteral("islandctl a, b"), QStringLiteral("x, y")),
                  QStringLiteral("SUPER SHIFT,R,x  y,exec,islandctl a, b"));
         QCOMPARE(confUnbind(*parseKeyCombo(u"Print")), QStringLiteral(",Print"));
+        QCOMPARE(confBindKeyword({}), QStringLiteral("bindd"));
+    }
+
+    void bindFlags() {
+        const auto c = *parseKeyCombo(u"XF86AudioRaiseVolume");
+        QCOMPARE(c.key, QStringLiteral("XF86AudioRaiseVolume"));
+        QCOMPARE(luaBind(c, QStringLiteral("islandctl volume up"), QStringLiteral("d"), {.repeat = true, .locked = true}),
+                 QStringLiteral("hl.unbind([[XF86AudioRaiseVolume]])\n"
+                                "hl.bind([[XF86AudioRaiseVolume]], hl.dsp.exec_cmd([[islandctl volume up]]), "
+                                "{ description = [[d]], repeating = true, locked = true })"));
+        QCOMPARE(confBindKeyword({.repeat = true, .locked = true}), QStringLiteral("bindeld"));
+        QCOMPARE(confBindKeyword({.locked = true}), QStringLiteral("bindld"));
     }
 
     void boundKeys() {
@@ -77,6 +89,7 @@ private slots:
         QCOMPARE(keycodeName(us, 2 + 8), QStringLiteral("1")); // not "exclam" with Shift down
         QCOMPARE(keycodeName(us, 57 + 8), QStringLiteral("space"));
         QCOMPARE(keycodeName(us, 99 + 8), QStringLiteral("Print"));
+        QCOMPARE(keycodeName(us, 164 + 8), QStringLiteral("XF86AudioPlay"));
         QVERIFY(keycodeName(us, 42 + 8).isEmpty());  // Shift_L
         QVERIFY(keycodeName(us, 125 + 8).isEmpty()); // Super_L
         const XkbNames latam{{}, {}, QStringLiteral("latam"), {}, {}};
@@ -87,6 +100,12 @@ private slots:
         QVERIFY(keyAction("launcher"));
         QCOMPARE(keyAction("launcher")->args, "launcher toggle");
         QVERIFY(!keyAction("nope"));
+        QVERIFY(!keyAction("launcher")->flags.locked);
+        QCOMPARE(keyAction("media_play_pause")->args, "media play-pause");
+        QVERIFY(keyAction("media_play_pause")->flags.locked);
+        QVERIFY(!keyAction("media_play_pause")->flags.repeat);
+        QVERIFY(keyAction("volume_up")->flags.repeat);
+        QCOMPARE(keyAction("mic_mute")->args, "volume mic-mute");
     }
 };
 

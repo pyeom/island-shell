@@ -170,13 +170,23 @@ QString keycodeName(const XkbNames& layout, uint32_t keycode) {
     return keysymName(syms[0]);
 }
 
-QString luaBind(const KeyCombo& combo, const QString& command, const QString& description) {
+QString luaBind(const KeyCombo& combo, const QString& command, const QString& description,
+                BindFlags flags) {
+    QString options = u"description = "_s + luaString(description);
+    if (flags.repeat)
+        options += u", repeating = true"_s;
+    if (flags.locked)
+        options += u", locked = true"_s;
     return luaUnbind(combo) + u"\nhl.bind("_s + luaString(comboText(combo)) + u", hl.dsp.exec_cmd("_s +
-           luaString(command) + u"), { description = "_s + luaString(description) + u" })"_s;
+           luaString(command) + u"), { "_s + options + u" })"_s;
 }
 
 QString luaUnbind(const KeyCombo& combo) {
     return u"hl.unbind("_s + luaString(comboText(combo)) + u')';
+}
+
+QString confBindKeyword(BindFlags flags) {
+    return u"bind"_s + (flags.repeat ? u"e"_s : QString()) + (flags.locked ? u"l"_s : QString()) + u'd';
 }
 
 QString confBind(const KeyCombo& combo, const QString& command, const QString& description) {
@@ -221,6 +231,13 @@ std::span<const KeyAction> keyActions() {
         KeyAction{"dnd", "dnd toggle"},
         KeyAction{"notifications_clear", "notifications clear"},
         KeyAction{"reload", "reload"},
+        KeyAction{"media_play_pause", "media play-pause", {.locked = true}},
+        KeyAction{"media_next", "media next", {.locked = true}},
+        KeyAction{"media_previous", "media previous", {.locked = true}},
+        KeyAction{"volume_up", "volume up", {.repeat = true, .locked = true}},
+        KeyAction{"volume_down", "volume down", {.repeat = true, .locked = true}},
+        KeyAction{"volume_mute", "volume mute", {.locked = true}},
+        KeyAction{"mic_mute", "volume mic-mute", {.locked = true}},
     };
     return kActions;
 }

@@ -119,6 +119,7 @@ void Keybinds::bind(bool lua, const QList<std::pair<QString, hypr::KeyCombo>>& w
     const auto commandFor = [&](const QString& action) {
         return ctl + u' ' + QString::fromUtf8(hypr::keyAction(action.toStdString())->args);
     };
+    const auto flagsFor = [](const QString& action) { return hypr::keyAction(action.toStdString())->flags; };
     const auto setErrors = [this](QStringList errors) {
         if (errors != m_errors) {
             m_errors = std::move(errors);
@@ -133,7 +134,8 @@ void Keybinds::bind(bool lua, const QList<std::pair<QString, hypr::KeyCombo>>& w
         for (const auto& combo : stale)
             script.append(hypr::luaUnbind(combo));
         for (const auto& [action, combo] : wanted)
-            script.append(hypr::luaBind(combo, commandFor(action), QLatin1String(kDescriptionPrefix) + action));
+            script.append(hypr::luaBind(combo, commandFor(action), QLatin1String(kDescriptionPrefix) + action,
+                                        flagsFor(action)));
         if (script.isEmpty())
             return;
         hypr->request("eval " + script.join(u'\n').toUtf8(), [setErrors](const QByteArray& reply) {
@@ -158,7 +160,7 @@ void Keybinds::bind(bool lua, const QList<std::pair<QString, hypr::KeyCombo>>& w
         keyword(u"unbind "_s + hypr::confUnbind(combo));
     for (const auto& [action, combo] : wanted) {
         keyword(u"unbind "_s + hypr::confUnbind(combo));
-        keyword(u"bindd "_s + hypr::confBind(combo, commandFor(action), QLatin1String(kDescriptionPrefix) + action));
+        keyword(hypr::confBindKeyword(flagsFor(action)) + u' ' + hypr::confBind(combo, commandFor(action), QLatin1String(kDescriptionPrefix) + action));
     }
 }
 

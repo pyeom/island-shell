@@ -5,6 +5,7 @@ add_library(islandlogic STATIC
     core/tomledit.h core/tomledit.cpp
     services/hyprland/hyprlandparse.h services/hyprland/hyprlandparse.cpp
     services/hyprland/keybind.h services/hyprland/keybind.cpp
+    services/audio/volumestep.h services/audio/volumestep.cpp
     services/notifications/notificationrules.h services/notifications/notificationrules.cpp
     services/apps/desktopentry.h services/apps/desktopentry.cpp
     services/calendar/calendarparse.h services/calendar/calendarparse.cpp
@@ -23,6 +24,7 @@ target_include_directories(islandlogic PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/core
     ${CMAKE_CURRENT_SOURCE_DIR}/activity
     ${CMAKE_CURRENT_SOURCE_DIR}/services/hyprland
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/audio
     ${CMAKE_CURRENT_SOURCE_DIR}/services/notifications
     ${CMAKE_CURRENT_SOURCE_DIR}/services/apps
     ${CMAKE_CURRENT_SOURCE_DIR}/services/calendar

@@ -642,7 +642,7 @@
     <message>
         <location filename="../src/app/Settings.qml" line="61"/>
         <location filename="../src/app/Settings.qml" line="158"/>
-        <location filename="../src/app/Settings.qml" line="188"/>
+        <location filename="../src/app/Settings.qml" line="197"/>
         <source>Notifications</source>
         <translation>Notificaciones</translation>
     </message>
@@ -1024,7 +1024,7 @@
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="171"/>
-        <location filename="../src/app/Settings.qml" line="197"/>
+        <location filename="../src/app/Settings.qml" line="206"/>
         <source>Power menu</source>
         <translation>Menú de apagado</translation>
     </message>
@@ -1074,12 +1074,12 @@
         <translation>Captura de la pantalla</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="189"/>
+        <location filename="../src/app/Settings.qml" line="198"/>
         <source>Do not disturb</source>
         <translation>No molestar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="190"/>
+        <location filename="../src/app/Settings.qml" line="199"/>
         <source>Clear notifications</source>
         <translation>Borrar notificaciones</translation>
     </message>
@@ -1134,77 +1134,117 @@
         <translation>Recargar la isla</translation>
     </message>
     <message>
+        <location filename="../src/app/Settings.qml" line="188"/>
+        <source>Media and volume</source>
+        <translation>Multimedia y volumen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="189"/>
+        <source>Play or pause</source>
+        <translation>Reproducir o pausar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="190"/>
+        <source>Next track</source>
+        <translation>Pista siguiente</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="191"/>
+        <source>Previous track</source>
+        <translation>Pista anterior</translation>
+    </message>
+    <message>
         <location filename="../src/app/Settings.qml" line="192"/>
+        <source>Volume up</source>
+        <translation>Subir volumen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="193"/>
+        <source>Volume down</source>
+        <translation>Bajar volumen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="194"/>
+        <source>Mute</source>
+        <translation>Silenciar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="195"/>
+        <source>Mute the microphone</source>
+        <translation>Silenciar el micrófono</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="201"/>
         <source>The island adds these binds to Hyprland while it runs; any other bind on the same keys is replaced. Recording pauses Hyprland&apos;s binds until you press a key, or Esc to cancel.</source>
         <translation>La isla registra estos atajos en Hyprland mientras está abierta y reemplaza cualquier otro atajo en las mismas teclas. Al grabar, los atajos de Hyprland se pausan hasta que presiones una combinación, o Esc para cancelar.</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="193"/>
+        <location filename="../src/app/Settings.qml" line="202"/>
         <source>Power</source>
         <translation>Energía</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="194"/>
+        <location filename="../src/app/Settings.qml" line="203"/>
         <source>Lock</source>
         <translation>Bloqueo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="195"/>
+        <location filename="../src/app/Settings.qml" line="204"/>
         <source>Lock command</source>
         <translation>Comando de bloqueo</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="198"/>
+        <location filename="../src/app/Settings.qml" line="207"/>
         <source>Hold to confirm (ms)</source>
         <translation>Mantener para confirmar (ms)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="277"/>
+        <location filename="../src/app/Settings.qml" line="286"/>
         <source>Hyprland is not running: these keys are not bound.</source>
         <translation>Hyprland no está corriendo: estos atajos no están registrados.</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="278"/>
+        <location filename="../src/app/Settings.qml" line="287"/>
         <source>Hyprland refused some binds:</source>
         <translation>Hyprland rechazó algunos atajos:</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="319"/>
+        <location filename="../src/app/Settings.qml" line="328"/>
         <source>Replaces a bind from your Hyprland config</source>
         <translation>Reemplaza un atajo de tu config de Hyprland</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="445"/>
+        <location filename="../src/app/Settings.qml" line="454"/>
         <source>Press the keys…</source>
         <translation>Presiona las teclas…</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="447"/>
+        <location filename="../src/app/Settings.qml" line="456"/>
         <source>Not set</source>
         <translation>Sin asignar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="463"/>
+        <location filename="../src/app/Settings.qml" line="472"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="463"/>
+        <location filename="../src/app/Settings.qml" line="472"/>
         <source>Record</source>
         <translation>Grabar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="479"/>
+        <location filename="../src/app/Settings.qml" line="488"/>
         <source>Remove</source>
         <translation>Quitar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="487"/>
+        <location filename="../src/app/Settings.qml" line="496"/>
         <source>comma separated</source>
         <translation>separadas por comas</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="522"/>
+        <location filename="../src/app/Settings.qml" line="531"/>
         <source>Open config.toml</source>
         <translation>Abrir config.toml</translation>
     </message>
