@@ -1,10 +1,12 @@
 import QtQuick
 import IslandShell
 
-// Clock, workspaces, the month and upcoming events; notification history
-// below.
+// The dashboard: clock, workspaces, the month and upcoming events, what is
+// playing; notification history below.
 Item {
     id: root
+
+    readonly property Activity media: ActivityRegistry.find("media")
 
     implicitWidth: 540
     implicitHeight: Math.max(Config.expandedHeight, column.implicitHeight + 36)
@@ -99,6 +101,96 @@ Item {
             }
         }
 
+        // Now playing; tap for the full player.
+        Rectangle {
+            id: nowPlaying
+            readonly property var player: Mpris.current
+            width: parent.width
+            height: 56
+            radius: 14
+            visible: root.media?.active ?? false
+            color: playingArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : Qt.rgba(1, 1, 1, 0.06)
+
+            MouseArea {
+                id: playingArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: ShellControl.Expand("media")
+            }
+
+            Row {
+                anchors.fill: parent
+                anchors.margins: 8
+                spacing: 12
+
+                Rectangle {
+                    width: 40
+                    height: 40
+                    radius: 10
+                    color: Qt.rgba(1, 1, 1, 0.08)
+                    RoundedImage {
+                        id: art
+                        anchors.fill: parent
+                        radius: parent.radius
+                        source: nowPlaying.player?.artUrl ?? ""
+                        sourceSize: Qt.size(80, 80)
+                        fillMode: Image.PreserveAspectCrop
+                        asynchronous: true
+                    }
+                    IconImage {
+                        anchors.centerIn: parent
+                        visible: art.status !== Image.Ready
+                        source: Icons.source(nowPlaying.player?.desktopEntry ?? "", "audio-x-generic-symbolic")
+                        size: 24
+                    }
+                }
+
+                Column {
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: parent.width - 40 - controls.width - 24
+                    Text {
+                        width: parent.width
+                        text: nowPlaying.player?.title || qsTr("Nothing playing")
+                        color: Theme.foreground
+                        font.pixelSize: 13
+                        font.weight: Font.DemiBold
+                        elide: Text.ElideRight
+                    }
+                    Text {
+                        width: parent.width
+                        text: nowPlaying.player?.artist || nowPlaying.player?.identity || ""
+                        color: Theme.secondaryForeground
+                        font.pixelSize: 12
+                        elide: Text.ElideRight
+                    }
+                }
+
+                Row {
+                    id: controls
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 4
+                    IconButton {
+                        icon: "media-skip-backward-symbolic"
+                        enabled: nowPlaying.player?.canGoPrevious ?? false
+                        opacity: enabled ? 1 : 0.4
+                        onClicked: nowPlaying.player.previous()
+                    }
+                    IconButton {
+                        icon: nowPlaying.player?.playing ? "media-playback-pause-symbolic"
+                                                         : "media-playback-start-symbolic"
+                        onClicked: nowPlaying.player.playPause()
+                    }
+                    IconButton {
+                        icon: "media-skip-forward-symbolic"
+                        enabled: nowPlaying.player?.canGoNext ?? false
+                        opacity: enabled ? 1 : 0.4
+                        onClicked: nowPlaying.player.next()
+                    }
+                }
+            }
+        }
+
         SystemStatsRow {
             anchors.horizontalCenter: parent.horizontalCenter
         }
@@ -133,7 +225,7 @@ Item {
         NotificationHistory {
             id: history
             width: parent.width
-            maxHeight: Config.surfaceHeight - Config.topMargin - (Privacy.any ? 360 : 330)
+            maxHeight: Config.surfaceHeight - Config.topMargin - (Privacy.any ? 360 : 330) - (nowPlaying.visible ? 70 : 0)
         }
     }
 }

@@ -101,9 +101,11 @@ listed here.
 ### Changed
 - Settings: each page groups its options in titled sections.
 - Default `[island] surface_height` is 560 so the richer expanded view fits.
-- Tapping the island while an app uses the microphone, camera or screen
-  opens the usual expanded view, with a line saying who uses what; the
-  short list is only shown for the alert when a device turns on.
+- Tapping the island over background information (music, microphone,
+  camera or screen in use) opens the dashboard: calendar, gauges, a line
+  saying who uses what and a now-playing card with controls; tapping the
+  card opens the full player. The short privacy list is only shown for the
+  alert when a device turns on.
 - `>command` in the launcher runs terminal programs (yay, htop, scripts) in
   a terminal on Enter; they used to run hidden and exit at once. Graphical
   apps still start on their own; Shift+Enter swaps the two.

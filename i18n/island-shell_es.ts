@@ -136,42 +136,47 @@
 <context>
     <name>IdleExpanded</name>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="56"/>
+        <location filename="../activities/IdleExpanded.qml" line="58"/>
         <source>No upcoming events</source>
         <translation>Sin próximos eventos</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="56"/>
+        <location filename="../activities/IdleExpanded.qml" line="58"/>
         <source>No events</source>
         <translation>Sin eventos</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="72"/>
+        <location filename="../activities/IdleExpanded.qml" line="74"/>
         <source>Microphone</source>
         <translation>Micrófono</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="73"/>
+        <location filename="../activities/IdleExpanded.qml" line="75"/>
         <source>Camera</source>
         <translation>Cámara</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="74"/>
+        <location filename="../activities/IdleExpanded.qml" line="76"/>
         <source>Screen</source>
         <translation>Pantalla</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="74"/>
+        <location filename="../activities/IdleExpanded.qml" line="76"/>
         <source>being shared</source>
         <translation>se está compartiendo</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="114"/>
+        <location filename="../activities/IdleExpanded.qml" line="154"/>
+        <source>Nothing playing</source>
+        <translation>Nada en reproducción</translation>
+    </message>
+    <message>
+        <location filename="../activities/IdleExpanded.qml" line="206"/>
         <source>Search apps</source>
         <translation>Buscar apps</translation>
     </message>
     <message>
-        <location filename="../activities/IdleExpanded.qml" line="119"/>
+        <location filename="../activities/IdleExpanded.qml" line="211"/>
         <source>Quick settings</source>
         <translation>Ajustes rápidos</translation>
     </message>

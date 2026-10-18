@@ -79,8 +79,9 @@ Version 0.1. The design notes and roadmap are in
 </tr>
 </table>
 
-The expanded view: clock, weather, calendar, upcoming events and system
-gauges.
+Clicking the pill opens the dashboard: clock, weather, calendar, upcoming
+events, what is playing and system gauges, even while music plays. Alerts,
+live activities and `islandctl expand media` open their own view.
 
 <p align="center"><img src="docs/images/expanded.png" width="560" alt="Expanded island with clock, weather forecast, month calendar, upcoming events, CPU, GPU, RAM and SSD gauges and buttons for apps and quick settings"></p>
 

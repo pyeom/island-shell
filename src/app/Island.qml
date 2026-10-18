@@ -73,10 +73,14 @@ Item {
     function expand(activity: Activity): bool {
         if (root.modal)
             return false
-        const target = activity ?? root.primary
+        // Over background information (music, privacy) the pill opens the
+        // dashboard; that activity's own view is for when it is asked for
+        // by name or alerts.
+        const dashboard = !activity && (!root.primary || root.primary.ambient)
+        const target = dashboard ? ActivityRegistry.find("idle") : activity ?? root.primary
         if (!target || !target.expanded)
             return false
-        root.expandTarget = activity
+        root.expandTarget = dashboard ? target : activity
         root._targeted = activity !== null
         root.mode = "expanded"
         return true
