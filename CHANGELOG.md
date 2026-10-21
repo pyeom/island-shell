@@ -58,6 +58,9 @@ listed here.
   and volume binds work on the lock screen.
 
 ### Fixed
+- Screenshots use grim and slurp directly instead of hyprshot. Without
+  hyprshot installed, the first screenshot failed and every later one was
+  refused as "already in progress".
 - Privacy indicator no longer flickers and re-alerts while a voice chat
   toggles capture.
 - Fuzzy search ranks literal matches first (`fire` → 🔥, not 🇮🇪).

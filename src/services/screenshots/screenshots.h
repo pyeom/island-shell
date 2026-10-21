@@ -10,8 +10,8 @@ class QJSEngine;
 
 namespace island {
 
-// Screenshots through hyprshot: saved to [screenshots] directory and copied
-// to the clipboard. The island hides while capturing and then offers the
+// Screenshots with grim (slurp to select a region or window): saved to
+// [screenshots] directory and copied to the clipboard. The island hides while capturing and then offers the
 // result (screenshot activity).
 class Screenshots : public QObject {
     Q_OBJECT

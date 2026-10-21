@@ -15,6 +15,7 @@ add_library(islandlogic STATIC
     services/live/progressparse.h services/live/progressparse.cpp
     services/launcher/calc.h services/launcher/calc.cpp
     services/system/sysparse.h services/system/sysparse.cpp
+    services/screenshots/shotgeometry.h services/screenshots/shotgeometry.cpp
     services/weather/weatherparse.h services/weather/weatherparse.cpp
     services/wallpaper/wallpaperbackend.h services/wallpaper/wallpaperbackend.cpp
     activity/selection.h
@@ -32,6 +33,7 @@ target_include_directories(islandlogic PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/services/privacy
     ${CMAKE_CURRENT_SOURCE_DIR}/services/live
     ${CMAKE_CURRENT_SOURCE_DIR}/services/launcher
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/screenshots
     ${CMAKE_CURRENT_SOURCE_DIR}/services/wallpaper)
 target_link_libraries(islandlogic PUBLIC Qt6::Core Qt6::Gui Qt6::DBus tomlplusplus::tomlplusplus
     PkgConfig::LIBICAL PkgConfig::XKBCOMMON)

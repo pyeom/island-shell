@@ -31,6 +31,8 @@ optdepends=(
     'wtype: type emoji from the launcher into the focused window'
     'aria2: faster downloads with island-dl (curl otherwise)'
     'wl-clipboard: copy from the launcher and screenshots'
+    'grim: screenshots'
+    'slurp: select a region or window to screenshot'
 )
 provides=("$_name")
 conflicts=("$_name")
