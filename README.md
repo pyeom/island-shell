@@ -24,7 +24,8 @@ Version 0.1. The design notes and roadmap are in
   emoji and new calendar events.
 - Calendar from local `.ics` folders, synced with vdirsyncer.
 - Quick settings for Wi-Fi, Bluetooth, night light, audio devices, per-app
-  volume, brightness and power profile.
+  volume, brightness, power profile and pending updates (pacman, paru,
+  yay).
 - Microphone, camera and screen sharing indicators.
 - CPU, GPU, RAM and SSD gauges with temperatures, and an alert when
   something stays hot.

@@ -8,6 +8,8 @@ listed here.
 ### Added
 - Per-app volume in quick settings, under the output devices
   (`Audio.streams`, `AudioStream`, `setStreamVolume`, `setStreamMuted`).
+- Pending updates in quick settings (checkupdates, plus paru or yay for the
+  AUR); the button runs the upgrade in the terminal (`[updates]`, `Updates`).
 - Default apps page in the settings window, through xdg-mime
   (`DefaultApps`).
 - Hide over fullscreen windows (`[island] fullscreen`), with an empty input

@@ -354,26 +354,55 @@ Item {
             }
         }
 
-        Row {
-            anchors.right: parent.right
-            spacing: 8
+        Item {
+            width: column.width
+            height: 30
             visible: panel.devicePicker === ""
+
+            // Pending updates: click to upgrade in the terminal, or to check
+            // again when there are none.
             IconButton {
+                anchors.left: parent.left
                 height: 30
-                icon: "configure-symbolic"
+                visible: Updates.available
+                icon: "system-software-update-symbolic"
                 iconSize: 14
+                highlighted: Updates.count > 0
+                text: Updates.checking ? qsTr("Checking…")
+                    : Updates.count > 0 ? qsTr("%n update(s)", "", Updates.count)
+                    : Updates.failed ? qsTr("Couldn't check")
+                    : Updates.checked ? qsTr("Up to date")
+                    : qsTr("Check for updates")
                 onClicked: {
-                    panel.close()
-                    ShellControl.ShowSettings()
+                    if (Updates.count > 0 && !Updates.checking) {
+                        panel.close()
+                        Updates.upgrade()
+                    } else {
+                        Updates.check()
+                    }
                 }
             }
-            IconButton {
-                height: 30
-                icon: "system-shutdown-symbolic"
-                iconSize: 14
-                onClicked: {
-                    panel.close()
-                    ShellControl.ShowPower()
+
+            Row {
+                anchors.right: parent.right
+                spacing: 8
+                IconButton {
+                    height: 30
+                    icon: "configure-symbolic"
+                    iconSize: 14
+                    onClicked: {
+                        panel.close()
+                        ShellControl.ShowSettings()
+                    }
+                }
+                IconButton {
+                    height: 30
+                    icon: "system-shutdown-symbolic"
+                    iconSize: 14
+                    onClicked: {
+                        panel.close()
+                        ShellControl.ShowPower()
+                    }
                 }
             }
         }

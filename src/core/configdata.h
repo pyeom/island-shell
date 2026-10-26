@@ -89,6 +89,13 @@ struct WeatherConfig {
     int rainAlert = 60;         // % chance within 2 hours to alert; 0 disables
 };
 
+struct UpdatesConfig {
+    // Upgrade command run in the terminal; empty: paru, yay, then
+    // sudo pacman -Syu.
+    std::string command;
+    int interval = 60; // minutes between checks; 0 disables them
+};
+
 struct NightLightConfig {
     // Command that starts the night light; empty: reuse the arguments of the
     // last wlsunset that was running.
@@ -151,6 +158,7 @@ struct ConfigData {
     CalendarConfig calendar;
     SystemConfig system;
     WeatherConfig weather;
+    UpdatesConfig updates;
     NightLightConfig nightLight;
     ScreenshotsConfig screenshots;
     WallpaperConfig wallpaper;

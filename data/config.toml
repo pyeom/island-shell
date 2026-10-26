@@ -109,6 +109,12 @@ units = "metric"          # metric | imperial
 # Alert when rain is at least this likely within 2 hours (%, 0 disables).
 rain_alert = 60
 
+[updates]
+# Upgrade command for the updates button in quick settings, run in the
+# terminal. Empty: paru -Syu, yay -Syu, else sudo pacman -Syu.
+command = ""
+interval = 60             # minutes between checks for updates (0 disables)
+
 [night_light]
 # Command that starts the night light. Empty: turning it off remembers how
 # wlsunset was running (with your coordinates) and reuses that.

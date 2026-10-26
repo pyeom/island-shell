@@ -131,6 +131,7 @@ Activity {
 | `Network` | `connected`, `primaryType`, `ssid`, `strength`, `iconName`, `wifiEnabled`, `setWifiEnabled(b)`. |
 | `Bluetooth` | `available`, `powered`, `connectedDevices`, `setPowered(b)`. |
 | `PowerProfiles` | `active`, `profiles`, `setActive(name)`. |
+| `Updates` | Pending pacman/AUR updates: `available`, `count`, `aurCount`, `packages`, `checking`, `checked`, `failed`, `check()`, `upgrade()` (in the terminal). |
 | `DefaultApps` | `categories` (`key`, `current`, `candidates`), `setDefault(key, desktopId)`, `refresh()`; through xdg-mime. |
 | `Privacy` | `microphone`, `microphoneApps`, `camera`, `cameraApps`, `screen`, `any`. |
 | `Calendar` | `eventsOn(date)`, `upcoming(n)`, `busyDays(year, month)`, `soon`, `revision` (bind to it to refresh). |

@@ -6,6 +6,7 @@
 #include "liveactivities.h"
 #include "notifications.h"
 #include "shellcontrol.h"
+#include "updates.h"
 #include "useractivities.h"
 
 #include <QCommandLineParser>
@@ -82,6 +83,8 @@ int main(int argc, char* argv[]) {
         island::Keybinds::instance();
         island::AppProgress::instance();
         island::DownloadWatch::instance();
+        // Checks on its own schedule, not when quick settings first opens.
+        island::Updates::instance();
         break;
     }
 

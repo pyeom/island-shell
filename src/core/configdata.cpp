@@ -237,6 +237,11 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
         readInt(*t, "weather", "rain_alert", cfg.weather.rainAlert, 0, 100, errors);
     }
 
+    if (const auto* t = cfg.raw["updates"].as_table()) {
+        readString(*t, "updates", "command", cfg.updates.command, {}, errors);
+        readInt(*t, "updates", "interval", cfg.updates.interval, 0, 10080, errors);
+    }
+
     if (const auto* t = cfg.raw["night_light"].as_table())
         readString(*t, "night_light", "command", cfg.nightLight.command, {}, errors);
 
