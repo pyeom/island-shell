@@ -96,7 +96,7 @@ Window {
                 { category: "pdf", label: qsTr("PDF documents"), kind: "app" },
             ]},
         ]},
-        { title: qsTr("Calendar"), icon: "x-office-calendar-symbolic", groups: [
+        { key: "calendar", view: "calendar", title: qsTr("Calendar"), icon: "x-office-calendar-symbolic", groups: [
             { title: qsTr("Calendars"), options: [
                 { key: "calendar.paths", label: qsTr("Calendar folders"), kind: "list", def: ["~/.calendars", "~/.local/share/calendars"] },
                 { key: "calendar.default", label: qsTr("New events go to"), kind: "text", def: "", hint: qsTr("empty: first calendar") },
@@ -231,10 +231,25 @@ Window {
         ]},
     ]
     property int page: 0
+    // Arguments of the page opened with openPage().
+    property var pageArgs: ({})
+
+    // Shows the page with `key` (pages[].key), e.g. an event in the calendar.
+    function openPage(key: string, args: var) {
+        const index = pages.findIndex(p => p.key === key)
+        if (index < 0)
+            return
+        page = index
+        pageArgs = args ?? {}
+    }
     // Config key of the keybinding being recorded, if any.
     property string recordingKey: ""
 
-    onPageChanged: Keybinds.stopRecording()
+    onPageChanged: {
+        Keybinds.stopRecording()
+        flick.contentY = 0
+        pageArgs = {}
+    }
     onVisibleChanged: {
         if (!visible)
             Keybinds.stopRecording()
@@ -280,6 +295,7 @@ Window {
 
         // Groups of options of the selected page.
         Flickable {
+            id: flick
             Layout.fillWidth: true
             Layout.fillHeight: true
             contentHeight: content.implicitHeight + 48
@@ -314,6 +330,22 @@ Window {
                     color: Theme.danger
                     text: !Keybinds.available ? qsTr("Hyprland is not running: these keys are not bound.")
                                               : qsTr("Hyprland refused some binds:") + "\n" + Keybinds.errors.join("\n")
+                }
+
+                // Pages with their own view above the options.
+                Loader {
+                    Layout.fillWidth: true
+                    active: win.pages[win.page].view === "calendar"
+                    visible: active
+                    sourceComponent: SettingsCalendar {
+                        args: win.pageArgs
+                        onReveal: target => {
+                            const y = target.mapToItem(content, 0, 0).y + content.y
+                            const bottom = y + target.height + 24
+                            if (bottom > flick.contentY + flick.height)
+                                flick.contentY = Math.min(y - 24, bottom - flick.height)
+                        }
+                    }
                 }
 
                 // One card per group.

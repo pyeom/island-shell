@@ -50,6 +50,7 @@ qt_add_qml_module(islandapp
         app/Shell.qml
         app/Island.qml
         app/Settings.qml
+        app/SettingsCalendar.qml
 )
 target_link_libraries(islandapp PUBLIC islandshell islandactivities)
 

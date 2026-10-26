@@ -35,6 +35,10 @@
     </method>
     <!-- Open the settings window. -->
     <method name="ShowSettings"/>
+    <!-- Open the settings window on a page: "calendar". -->
+    <method name="ShowSettingsPage">
+      <arg name="page" type="s" direction="in"/>
+    </method>
     <!-- The player the island shows: play-pause | next | previous. Fails
          with org.islandshell.Error.NoPlayer when nothing is playing. -->
     <method name="Media">

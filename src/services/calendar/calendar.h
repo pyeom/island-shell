@@ -44,8 +44,13 @@ public:
     Q_INVOKABLE bool addEvent(const QString& summary, const QDateTime& start, const QDateTime& end,
                               bool allDay, const QString& collectionPath = {});
 
-    // [{ summary, location, start, end, allDay, calendar, color }]
+    // [{ uid, path, summary, location, description, start, end, allDay,
+    // calendar, color }]
     Q_INVOKABLE QVariantList eventsOn(const QDate& day) const;
+    // Events overlapping [from, to), any range (the settings window's month).
+    Q_INVOKABLE QVariantList eventsBetween(const QDateTime& from, const QDateTime& to) const;
+    // The occurrence of event `uid` starting at `start`, or {}.
+    Q_INVOKABLE QVariantMap findEvent(const QString& uid, const QDateTime& start) const;
     // Events from now on (ongoing included), up to `limit`.
     Q_INVOKABLE QVariantList upcoming(int limit = 5) const;
     // Days of the month that have events.
@@ -70,7 +75,17 @@ private:
 
     QString defaultCollection() const;
 
-    QList<CalendarEvent> m_events;
+    struct Source {
+        QString path;
+        QByteArray ics;
+        QString calendar;
+        QString color;
+    };
+
+    QList<CalendarEvent> m_events; // m_from..m_to
+    QList<Source> m_sources;
+    QDateTime m_from;
+    QDateTime m_to;
     QVariantList m_collections;
     QStringList m_files;
     QFileSystemWatcher m_watcher;

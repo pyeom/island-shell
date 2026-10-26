@@ -36,20 +36,27 @@ QtObject {
     property Component settingsComponent: Component {
         Settings {}
     }
+    function showSettings(): var {
+        if (!shell.settingsWindow) {
+            const win = shell.settingsComponent.createObject(shell) as Window
+            win.closing.connect(() => {
+                shell.settingsWindow = null
+                win.destroy()
+            })
+            shell.settingsWindow = win
+        }
+        shell.settingsWindow.show()
+        shell.settingsWindow.raise()
+        shell.settingsWindow.requestActivate()
+        return shell.settingsWindow
+    }
     property Connections _settings: Connections {
         target: ShellControl
         function onSettingsRequested() {
-            if (!shell.settingsWindow) {
-                const win = shell.settingsComponent.createObject(shell) as Window
-                win.closing.connect(() => {
-                    shell.settingsWindow = null
-                    win.destroy()
-                })
-                shell.settingsWindow = win
-            }
-            shell.settingsWindow.show()
-            shell.settingsWindow.raise()
-            shell.settingsWindow.requestActivate()
+            shell.showSettings()
+        }
+        function onSettingsPageRequested(page: string, args: var) {
+            shell.showSettings().openPage(page, args)
         }
     }
 

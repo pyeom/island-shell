@@ -4,6 +4,7 @@ import QtQuick
 import IslandShell
 
 // A short list of events: either one day's, or the next upcoming ones.
+// Clicking one opens it in the settings window's calendar.
 Column {
     id: root
 
@@ -29,34 +30,48 @@ Column {
 
     Repeater {
         model: root.events
-        delegate: Row {
+        delegate: Item {
             id: item
             required property var modelData
             width: root.width
-            spacing: 8
+            height: line.implicitHeight
 
-            Rectangle {
-                width: 3
-                height: 30
-                radius: 1.5
-                color: item.modelData.color || Theme.accent
-            }
-            Column {
-                width: parent.width - 11
-                Text {
-                    width: parent.width
-                    text: item.modelData.summary
-                    elide: Text.ElideRight
-                    color: Theme.foreground
-                    font.pixelSize: 12
-                    font.weight: Font.Medium
+            Row {
+                id: line
+                width: parent.width
+                spacing: 8
+
+                Rectangle {
+                    width: 3
+                    height: 30
+                    radius: 1.5
+                    color: item.modelData.color || Theme.accent
                 }
-                Text {
-                    width: parent.width
-                    text: root.timeLabel(item.modelData) + (item.modelData.location ? "  ·  " + item.modelData.location : "")
-                    elide: Text.ElideRight
-                    color: Theme.secondaryForeground
-                    font.pixelSize: 11
+                Column {
+                    width: parent.width - 11
+                    Text {
+                        width: parent.width
+                        text: item.modelData.summary
+                        elide: Text.ElideRight
+                        color: Theme.foreground
+                        font.pixelSize: 12
+                        font.weight: Font.Medium
+                    }
+                    Text {
+                        width: parent.width
+                        text: root.timeLabel(item.modelData) + (item.modelData.location ? "  ·  " + item.modelData.location : "")
+                        elide: Text.ElideRight
+                        color: Theme.secondaryForeground
+                        font.pixelSize: 11
+                    }
+                }
+            }
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    ShellControl.Collapse()
+                    ShellControl.showSettingsPage("calendar", { uid: item.modelData.uid, start: item.modelData.start })
                 }
             }
         }

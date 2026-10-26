@@ -125,7 +125,7 @@
 <context>
     <name>EventList</name>
     <message>
-        <location filename="../activities/EventList.qml" line="17"/>
+        <location filename="../activities/EventList.qml" line="18"/>
         <source>All day</source>
         <translation>Todo el día</translation>
     </message>
@@ -1355,70 +1355,150 @@
         <translation>Mantener para confirmar (ms)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="315"/>
+        <location filename="../src/app/Settings.qml" line="331"/>
         <source>Hyprland is not running: these keys are not bound.</source>
         <translation>Hyprland no está corriendo: estos atajos no están registrados.</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="316"/>
+        <location filename="../src/app/Settings.qml" line="332"/>
         <source>Hyprland refused some binds:</source>
         <translation>Hyprland rechazó algunos atajos:</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="357"/>
+        <location filename="../src/app/Settings.qml" line="389"/>
         <source>Replaces a bind from your Hyprland config</source>
         <translation>Reemplaza un atajo de tu config de Hyprland</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="485"/>
+        <location filename="../src/app/Settings.qml" line="517"/>
         <source>Press the keys…</source>
         <translation>Presiona las teclas…</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="487"/>
-        <location filename="../src/app/Settings.qml" line="573"/>
+        <location filename="../src/app/Settings.qml" line="519"/>
+        <location filename="../src/app/Settings.qml" line="605"/>
         <source>Not set</source>
         <translation>Sin asignar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="503"/>
+        <location filename="../src/app/Settings.qml" line="535"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="503"/>
+        <location filename="../src/app/Settings.qml" line="535"/>
         <source>Record</source>
         <translation>Grabar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="519"/>
+        <location filename="../src/app/Settings.qml" line="551"/>
         <source>Remove</source>
         <translation>Quitar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="531"/>
+        <location filename="../src/app/Settings.qml" line="563"/>
         <source>None</source>
         <translation>Ninguno</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="557"/>
+        <location filename="../src/app/Settings.qml" line="589"/>
         <source>Play</source>
         <translation>Reproducir</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="572"/>
+        <location filename="../src/app/Settings.qml" line="604"/>
         <source>No apps installed</source>
         <translation>Ninguna app instalada</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="591"/>
+        <location filename="../src/app/Settings.qml" line="623"/>
         <source>comma separated</source>
         <translation>separadas por comas</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="626"/>
+        <location filename="../src/app/Settings.qml" line="658"/>
         <source>Open config.toml</source>
         <translation>Abrir config.toml</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsCalendar</name>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="55"/>
+        <location filename="../src/app/SettingsCalendar.qml" line="427"/>
+        <source>All day</source>
+        <translation>Todo el día</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="56"/>
+        <source>All day, until %1</source>
+        <translation>Todo el día, hasta el %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="93"/>
+        <source>Today</source>
+        <translation>Hoy</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="102"/>
+        <location filename="../src/app/SettingsCalendar.qml" line="385"/>
+        <source>New event</source>
+        <translation>Nuevo evento</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="192"/>
+        <source>+%1 more</source>
+        <translation>+%1 más</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="227"/>
+        <source>No events. Double-click a day to add one.</source>
+        <translation>Sin eventos. Haz doble clic en un día para agregar uno.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="340"/>
+        <source>Open the .ics file</source>
+        <translation>Abrir el archivo .ics</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="398"/>
+        <source>Title</source>
+        <translation>Título</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="433"/>
+        <source>Calendar</source>
+        <translation>Calendario</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="437"/>
+        <source>Local</source>
+        <translation>Local</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="451"/>
+        <source>Cancel</source>
+        <translation>Cancelar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="457"/>
+        <source>Add</source>
+        <translation>Agregar</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="469"/>
+        <source>The event needs a title.</source>
+        <translation>El evento necesita un título.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="474"/>
+        <source>Check the date and times.</source>
+        <translation>Revisa la fecha y las horas.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/SettingsCalendar.qml" line="480"/>
+        <source>Could not save the event.</source>
+        <translation>No se pudo guardar el evento.</translation>
     </message>
 </context>
 <context>

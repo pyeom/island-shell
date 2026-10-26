@@ -3,6 +3,7 @@
 #include <QDBusContext>
 #include <QObject>
 #include <QStringList>
+#include <QVariantMap>
 #include <QtQml/qqmlregistration.h>
 
 class QQmlEngine;
@@ -37,6 +38,12 @@ public:
     bool dnd() const { return m_dnd; }
     QString version() const;
 
+    // Opens the settings window on a page ("calendar"), with page-specific
+    // arguments (calendar: { uid, start } of an event to show).
+    Q_INVOKABLE void showSettingsPage(const QString& page, const QVariantMap& args = {}) {
+        emit settingsPageRequested(page, args);
+    }
+
 public slots:
     // D-Bus methods.
     void ToggleLauncher();
@@ -49,6 +56,7 @@ public slots:
     void Screenshot(const QString& mode);
     void Wallpaper(const QString& action);
     void ShowSettings();
+    void ShowSettingsPage(const QString& page) { emit settingsPageRequested(page, {}); }
     void Media(const QString& action);
     void Volume(const QString& action);
     QStringList ListActivities();
@@ -61,6 +69,7 @@ signals:
     void quickSettingsRequested();
     void wallpaperPickRequested();
     void settingsRequested();
+    void settingsPageRequested(const QString& page, const QVariantMap& args);
     void wallpaperRandomRequested();
     void reloadRequested();
     void dndChanged();

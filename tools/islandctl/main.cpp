@@ -36,7 +36,7 @@ commands:
   collapse                collapse the island
   power                   open the power menu
   quick                   open quick settings
-  settings                open the settings window
+  settings [calendar]     open the settings window (on a page)
   screenshot MODE         region | window | output | active
   wallpaper [random]      open the wallpaper picker, or apply a random one
   media ACTION            play-pause | next | previous, on the player the island shows
@@ -240,7 +240,7 @@ int main(int argc, char* argv[]) {
     if (cmd == u"quick")
         return check(shell.ShowQuickSettings());
     if (cmd == u"settings")
-        return check(shell.ShowSettings());
+        return check(args.isEmpty() ? shell.ShowSettings() : shell.ShowSettingsPage(args.value(0)));
     if (cmd == u"wallpaper")
         return check(shell.Wallpaper(args.value(0, QStringLiteral("pick"))));
     if (cmd == u"screenshot")

@@ -6,6 +6,9 @@ listed here.
 ## Unreleased
 
 ### Added
+- Calendar in the settings window (`islandctl settings calendar`): the
+  month with its events, an event in detail, and a form for new events.
+  Clicking an event in the expanded island opens it there.
 - Timers from the launcher: `15 min`, `15'`, `90''`, `1 h`, `1h30`,
   `timer 5 pasta`. The pill counts down; a finished timer rings, expands
   the island and stays until dismissed (`Timers`). Its sound and volume

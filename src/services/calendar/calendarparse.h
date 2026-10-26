@@ -16,6 +16,7 @@ struct CalendarEvent {
     bool allDay = false;
     QString calendar; // collection display name
     QString color;    // collection color, may be empty
+    QString path;     // the .ics file
 };
 
 // Every occurrence of every VEVENT in `ics` that overlaps [from, to), with

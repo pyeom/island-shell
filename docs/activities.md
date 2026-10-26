@@ -118,7 +118,7 @@ Activity {
 | `Hyprland` | `monitors`, `workspaces`, `focusedMonitor`, `dispatch("workspace 3")`, `event(name, data)` signal. |
 | `Keybinds` | `available`, `replaced`, `errors`, `recording`, `startRecording()`, `stopRecording()`, `combo(modifiers, nativeScanCode)`. |
 | `IslandScreen` | Attached: `IslandScreen.name`, `IslandScreen.focused` for the monitor a presentation is drawn on. |
-| `ShellControl` | `dnd` and the requests coming from `islandctl`. |
+| `ShellControl` | `dnd`, the requests coming from `islandctl`, `showSettingsPage(page, args)` (`"calendar"`, `{ uid, start }` to show an event). |
 | `ActivityRegistry` | `activities`, `find(name)`. |
 | `Spring` | Spring animation: `Spring { id: s; target: x }` then use `s.value`. |
 | `Notifications` | `current` popup, `history` model, `invokeAction(id, key)`, `reply(id, text)`, `dismiss(id)`, `clearHistory()`. |
@@ -137,7 +137,7 @@ Activity {
 | `Updates` | Pending pacman/AUR updates: `available`, `count`, `aurCount`, `packages`, `checking`, `checked`, `failed`, `check()`, `upgrade()` (in the terminal). |
 | `DefaultApps` | `categories` (`key`, `current`, `candidates`), `setDefault(key, desktopId)`, `refresh()`; through xdg-mime. |
 | `Privacy` | `microphone`, `microphoneApps`, `camera`, `cameraApps`, `screen`, `any`. |
-| `Calendar` | `eventsOn(date)`, `upcoming(n)`, `busyDays(year, month)`, `soon`, `revision` (bind to it to refresh). |
+| `Calendar` | `eventsOn(date)`, `eventsBetween(from, to)`, `findEvent(uid, start)`, `upcoming(n)`, `busyDays(year, month)`, `soon`, `revision` (bind to it to refresh). |
 | `IconImage`, `IconButton`, `ProgressRing`, `IslandSlider`, `RoundedImage` | Small components used by the built-in activities. |
 
 ## islandctl
@@ -148,6 +148,7 @@ islandctl collapse
 islandctl launcher toggle
 islandctl power
 islandctl quick               quick settings (also: right click on the island)
+islandctl settings [calendar] the settings window, optionally on a page
 islandctl activities          list names
 islandctl reload              reload config, theme and activities
 islandctl dnd on|off|toggle

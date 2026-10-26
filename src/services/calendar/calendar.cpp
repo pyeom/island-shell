@@ -63,6 +63,7 @@ void Calendar::reload() {
     const QDateTime to = QDate::currentDate().addDays(cfg.days + 1).startOfDay();
 
     QList<CalendarEvent> events;
+    QList<Source> sources;
     QStringList files;
     QStringList dirs;
     for (const auto& configured : cfg.paths) {
@@ -83,17 +84,23 @@ void Calendar::reload() {
             if (name.isEmpty())
                 name = QFileInfo(collection).fileName();
             const auto color = readMeta(collection, "color");
-            for (auto& ev : expandEvents(f.readAll(), from, to)) {
+            Source source{path, f.readAll(), name, color};
+            for (auto& ev : expandEvents(source.ics, from, to)) {
                 ev.calendar = name;
                 ev.color = color;
+                ev.path = path;
                 events.append(std::move(ev));
             }
+            sources.append(std::move(source));
             if (!dirs.contains(collection))
                 dirs.append(collection);
         }
     }
     std::ranges::stable_sort(events, {}, &CalendarEvent::start);
     m_events = std::move(events);
+    m_sources = std::move(sources);
+    m_from = from;
+    m_to = to;
 
     // Collections: folders with a displayname or .ics files (vdir layout),
     // including empty ones vdirsyncer just created.
@@ -146,6 +153,8 @@ void Calendar::scheduleMidnight() {
 
 QVariantMap Calendar::toMap(const CalendarEvent& e) {
     return {
+        {QStringLiteral("uid"), e.uid},
+        {QStringLiteral("path"), e.path},
         {QStringLiteral("summary"), e.summary},
         {QStringLiteral("location"), e.location},
         {QStringLiteral("description"), e.description},
@@ -165,6 +174,42 @@ QVariantList Calendar::eventsOn(const QDate& day) const {
         if (e.start < end && e.end > start)
             out.append(toMap(e));
     return out;
+}
+
+QVariantList Calendar::eventsBetween(const QDateTime& from, const QDateTime& to) const {
+    QVariantList out;
+    if (from >= m_from && to <= m_to) {
+        for (const auto& e : m_events)
+            if (e.start < to && e.end > from)
+                out.append(toMap(e));
+        return out;
+    }
+    // Outside the range kept in memory: expand the files again.
+    QList<CalendarEvent> events;
+    for (const auto& source : m_sources) {
+        for (auto& ev : expandEvents(source.ics, from, to)) {
+            ev.calendar = source.calendar;
+            ev.color = source.color;
+            ev.path = source.path;
+            events.append(std::move(ev));
+        }
+    }
+    std::ranges::stable_sort(events, {}, &CalendarEvent::start);
+    for (const auto& e : events)
+        out.append(toMap(e));
+    return out;
+}
+
+QVariantMap Calendar::findEvent(const QString& uid, const QDateTime& start) const {
+    // One occurrence of a recurring event: same UID, same start.
+    const auto from = start.addDays(-1);
+    const auto to = start.addDays(1);
+    for (const auto& v : eventsBetween(from, to)) {
+        const auto m = v.toMap();
+        if (m.value(QStringLiteral("uid")).toString() == uid && m.value(QStringLiteral("start")).toDateTime() == start)
+            return m;
+    }
+    return {};
 }
 
 QVariantList Calendar::upcoming(int limit) const {
