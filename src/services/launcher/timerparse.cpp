@@ -77,7 +77,7 @@ struct Cursor {
 std::optional<TimerRequest> parseTimer(QStringView text) {
     Cursor c{text.trimmed()};
     bool prefixed = false;
-    for (const auto prefix : {u"timer"_s, u"temporizador"_s}) {
+    for (const auto& prefix : {u"timer"_s, u"temporizador"_s}) {
         if (c.s.startsWith(prefix, Qt::CaseInsensitive) &&
             (c.s.size() == prefix.size() || c.s[prefix.size()].isSpace())) {
             c.i = prefix.size();
