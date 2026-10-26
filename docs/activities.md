@@ -120,7 +120,7 @@ Activity {
 | `ActivityRegistry` | `activities`, `find(name)`. |
 | `Spring` | Spring animation: `Spring { id: s; target: x }` then use `s.value`. |
 | `Notifications` | `current` popup, `history` model, `invokeAction(id, key)`, `reply(id, text)`, `dismiss(id)`, `clearHistory()`. |
-| `Audio` | Output `volume` (1.0 = 100%), `muted`, `sinks`; microphone `micVolume`, `micMuted`, `sources`; `setDefault(id)`, `setVolume`, `setMicMuted`...; `changed` / `micMuteChanged` signals. |
+| `Audio` | Output `volume` (1.0 = 100%), `muted`, `sinks`; microphone `micVolume`, `micMuted`, `sources`; apps playing audio `streams` (`AudioStream`: `id`, `name`, `title`, `iconName`, `volume`, `muted`); `setDefault(id)`, `setVolume`, `setMicMuted`, `setStreamVolume(id, v)`, `setStreamMuted(id, b)`...; `changed` / `micMuteChanged` signals. |
 | `Brightness` | Backlight `level` 0..1, `available`, `changed` signal. |
 | `Mpris` | `players`, `current` (title, artist, artUrl, position, length, playPause(), next(), previous(), seekTo(s)). |
 | `LiveActivities` | Model of pushed live activities; `invoke(id, key)`. |

@@ -15,6 +15,19 @@
     </message>
 </context>
 <context>
+    <name>AudioStreamList</name>
+    <message>
+        <location filename="../activities/AudioStreamList.qml" line="14"/>
+        <source>Apps</source>
+        <translation>Apps</translation>
+    </message>
+    <message>
+        <location filename="../activities/AudioStreamList.qml" line="76"/>
+        <source>Mute</source>
+        <translation>Silencio</translation>
+    </message>
+</context>
+<context>
     <name>Batteries</name>
     <message>
         <location filename="../src/services/batteries/batteries.cpp" line="150"/>
@@ -415,22 +428,22 @@
     </message>
     <message>
         <location filename="../activities/QuickSettingsPanel.qml" line="226"/>
-        <location filename="../activities/QuickSettingsPanel.qml" line="282"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="287"/>
         <source>Mute</source>
         <translation>Silencio</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="335"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="340"/>
         <source>Power saver</source>
         <translation>Ahorro de energía</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="336"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="341"/>
         <source>Performance</source>
         <translation>Rendimiento</translation>
     </message>
     <message>
-        <location filename="../activities/QuickSettingsPanel.qml" line="337"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="342"/>
         <source>Balanced</source>
         <translation>Equilibrado</translation>
     </message>

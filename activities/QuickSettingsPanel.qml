@@ -224,7 +224,7 @@ Item {
             icon: Audio.muted ? "audio-volume-muted-symbolic" : "audio-volume-high-symbolic"
             value: Audio.muted ? 0 : Math.min(Audio.volume, 1)
             label: Audio.muted ? qsTr("Mute") : Math.round(Audio.volume * 100) + "%"
-            expandable: Audio.sinks.length > 1
+            expandable: Audio.sinks.length > 1 || Audio.streams.length > 0
             expanded: panel.devicePicker === "sinks"
             onIconClicked: Audio.setMuted(!Audio.muted)
             onExpandClicked: panel.devicePicker = expanded ? "" : "sinks"
@@ -269,10 +269,15 @@ Item {
         }
 
         AudioDeviceList {
-            visible: panel.devicePicker === "sinks"
+            visible: panel.devicePicker === "sinks" && Audio.sinks.length > 1
             width: column.width
             devices: Audio.sinks
             icon: "audio-speakers-symbolic"
+        }
+
+        AudioStreamList {
+            visible: panel.devicePicker === "sinks" && Audio.streams.length > 0
+            width: column.width
         }
 
         SliderRow {

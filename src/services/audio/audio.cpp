@@ -20,6 +20,7 @@
 #include <cmath>
 #include <cstring>
 #include <optional>
+#include <utility>
 
 Q_LOGGING_CATEGORY(lcAudio, "island.audio")
 
@@ -47,6 +48,14 @@ struct Device {
     bool isSource = false;
 };
 
+// A bound output stream, published as an AudioStream.
+struct Stream {
+    Audio::Private* d = nullptr;
+    pw_node* node = nullptr;
+    spa_hook listener{};
+    AudioStream* object = nullptr;
+};
+
 } // namespace
 
 struct Audio::Private {
@@ -63,6 +72,7 @@ struct Audio::Private {
     spa_hook metadataListener{};
 
     QHash<uint32_t, Device> devices;
+    QHash<uint32_t, Stream*> streams;
     Followed sink;
     Followed source;
     bool connected = false;
@@ -70,9 +80,36 @@ struct Audio::Private {
     void follow(Followed& f);
     void unbind(Followed& f);
     void onParam(Followed& f, const spa_pod* param);
+    void dropStream(uint32_t id);
 };
 
 namespace {
+
+// Volume (as pactl shows it) and mute from a Props param.
+void readProps(const spa_pod* param, std::optional<qreal>& volume, std::optional<bool>& muted) {
+    if (!param || !spa_pod_is_object(param))
+        return;
+    const auto* obj = reinterpret_cast<const spa_pod_object*>(param);
+    const spa_pod_prop* prop = nullptr;
+    SPA_POD_OBJECT_FOREACH(obj, prop) {
+        if (prop->key == SPA_PROP_channelVolumes) {
+            float values[SPA_AUDIO_MAX_CHANNELS];
+            const uint32_t n = spa_pod_copy_array(&prop->value, SPA_TYPE_Float, values,
+                                                  SPA_AUDIO_MAX_CHANNELS);
+            if (n > 0) {
+                float max = 0.0F;
+                for (uint32_t i = 0; i < n; ++i)
+                    max = std::max(max, values[i]);
+                // Props hold linear volume; pactl and most UIs show the cube root.
+                volume = std::cbrt(static_cast<double>(max));
+            }
+        } else if (prop->key == SPA_PROP_mute) {
+            bool m = false;
+            if (spa_pod_get_bool(&prop->value, &m) == 0)
+                muted = m;
+        }
+    }
+}
 
 void onCoreError(void* data, uint32_t id, int /*seq*/, int res, const char* message) {
     auto* d = static_cast<Audio::Private*>(data);
@@ -132,6 +169,59 @@ const pw_metadata_events kMetadataEvents = [] {
     return e;
 }();
 
+void onStreamInfo(void* data, const pw_node_info* info) {
+    auto* st = static_cast<Stream*>(data);
+    // Later events carry an empty dict unless the props actually changed.
+    if (!(info->change_mask & PW_NODE_CHANGE_MASK_PROPS) || !info->props)
+        return;
+    const auto prop = [info](const char* key) {
+        return QString::fromUtf8(spa_dict_lookup(info->props, key));
+    };
+    const auto binary = prop(PW_KEY_APP_PROCESS_BINARY);
+    auto name = prop(PW_KEY_APP_NAME);
+    // Audio libraries name themselves, not the app: the binary ("Discord")
+    // says more than "WEBRTC VoiceEngine".
+    static const QStringList libraries = {QStringLiteral("WEBRTC VoiceEngine"), QStringLiteral("Chromium"),
+                                          QStringLiteral("ALSA plug-in"), QStringLiteral("PipeWire ALSA")};
+    if (name.isEmpty() || std::ranges::any_of(libraries, [&](const QString& l) { return name.startsWith(l); }))
+        name = binary.isEmpty() ? name : binary;
+    if (name.isEmpty())
+        name = prop(PW_KEY_NODE_DESCRIPTION);
+    if (name.isEmpty())
+        name = prop(PW_KEY_NODE_NAME);
+    auto title = prop(PW_KEY_MEDIA_NAME);
+    // Generic stream names say nothing ("Playback", "audio stream", the app name).
+    if (title.compare(name, Qt::CaseInsensitive) == 0 ||
+        title.contains(QLatin1String("stream"), Qt::CaseInsensitive) ||
+        title.compare(QLatin1String("Playback"), Qt::CaseInsensitive) == 0)
+        title.clear();
+    auto icon = prop(PW_KEY_APP_ICON_NAME);
+    if (icon.isEmpty())
+        icon = binary.isEmpty() ? name.toLower() : binary;
+    st->object->setInfo(name, title, icon);
+}
+
+void onStreamParam(void* data, int /*seq*/, uint32_t id, uint32_t /*index*/, uint32_t /*next*/,
+                   const spa_pod* param) {
+    auto* st = static_cast<Stream*>(data);
+    if (id != SPA_PARAM_Props)
+        return;
+    std::optional<qreal> volume;
+    std::optional<bool> muted;
+    readProps(param, volume, muted);
+    if (volume || muted)
+        st->object->setVolume(volume.value_or(st->object->volume()),
+                              muted.value_or(st->object->muted()));
+}
+
+const pw_node_events kStreamEvents = [] {
+    pw_node_events e{};
+    e.version = PW_VERSION_NODE_EVENTS;
+    e.info = onStreamInfo;
+    e.param = onStreamParam;
+    return e;
+}();
+
 void onGlobal(void* data, uint32_t id, uint32_t /*permissions*/, const char* type,
               uint32_t /*version*/, const spa_dict* props) {
     auto* d = static_cast<Audio::Private*>(data);
@@ -148,6 +238,24 @@ void onGlobal(void* data, uint32_t id, uint32_t /*permissions*/, const char* typ
         const char* mediaClass = spa_dict_lookup(props, PW_KEY_MEDIA_CLASS);
         if (!mediaClass)
             return;
+        if (std::strcmp(mediaClass, "Stream/Output/Audio") == 0) {
+            auto* st = new Stream;
+            st->d = d;
+            st->object = new AudioStream(static_cast<int>(id), d->q);
+            st->node = static_cast<pw_node*>(
+                pw_registry_bind(d->registry, id, PW_TYPE_INTERFACE_Node, PW_VERSION_NODE, 0));
+            pw_node_add_listener(st->node, &st->listener, &kStreamEvents, st);
+            uint32_t ids[] = {SPA_PARAM_Props};
+            pw_node_subscribe_params(st->node, ids, 1);
+            d->streams.insert(id, st);
+            // Listed once it has a name, so the mixer never shows a blank row.
+            QObject::connect(st->object, &AudioStream::changed, d->q,
+                             [q = d->q, o = st->object, listed = false]() mutable {
+                if (!o->name().isEmpty() && !std::exchange(listed, true))
+                    emit q->streamsChanged();
+            });
+            return;
+        }
         const bool sink = std::strcmp(mediaClass, "Audio/Sink") == 0;
         const bool source = std::strcmp(mediaClass, "Audio/Source") == 0;
         if (!sink && !source)
@@ -163,6 +271,11 @@ void onGlobal(void* data, uint32_t id, uint32_t /*permissions*/, const char* typ
 
 void onGlobalRemove(void* data, uint32_t id) {
     auto* d = static_cast<Audio::Private*>(data);
+    if (d->streams.contains(id)) {
+        d->dropStream(id);
+        emit d->q->streamsChanged();
+        return;
+    }
     if (d->devices.remove(id) == 0)
         return;
     for (Followed* f : {&d->sink, &d->source}) {
@@ -194,6 +307,16 @@ void Audio::Private::unbind(Followed& f) {
     f.id = SPA_ID_INVALID;
 }
 
+void Audio::Private::dropStream(uint32_t id) {
+    Stream* st = streams.take(id);
+    if (!st)
+        return;
+    spa_hook_remove(&st->listener);
+    pw_proxy_destroy(reinterpret_cast<pw_proxy*>(st->node));
+    st->object->deleteLater();
+    delete st;
+}
+
 void Audio::Private::follow(Followed& f) {
     for (auto it = devices.cbegin(); it != devices.cend(); ++it) {
         if (it->isSource != f.isSource || it->name != f.defaultName)
@@ -216,30 +339,9 @@ void Audio::Private::follow(Followed& f) {
 }
 
 void Audio::Private::onParam(Followed& f, const spa_pod* param) {
-    if (!param || !spa_pod_is_object(param))
-        return;
-    const auto* obj = reinterpret_cast<const spa_pod_object*>(param);
     std::optional<qreal> newVolume;
     std::optional<bool> newMuted;
-    const spa_pod_prop* prop = nullptr;
-    SPA_POD_OBJECT_FOREACH(obj, prop) {
-        if (prop->key == SPA_PROP_channelVolumes) {
-            float values[SPA_AUDIO_MAX_CHANNELS];
-            const uint32_t n = spa_pod_copy_array(&prop->value, SPA_TYPE_Float, values,
-                                                  SPA_AUDIO_MAX_CHANNELS);
-            if (n > 0) {
-                float max = 0.0F;
-                for (uint32_t i = 0; i < n; ++i)
-                    max = std::max(max, values[i]);
-                // Props hold linear volume; pactl and most UIs show the cube root.
-                newVolume = std::cbrt(static_cast<double>(max));
-            }
-        } else if (prop->key == SPA_PROP_mute) {
-            bool m = false;
-            if (spa_pod_get_bool(&prop->value, &m) == 0)
-                newMuted = m;
-        }
-    }
+    readProps(param, newVolume, newMuted);
     if (!newVolume && !newMuted)
         return;
     const qreal v = newVolume.value_or(f.volume);
@@ -307,6 +409,8 @@ Audio::~Audio() {
         m_notifier->setEnabled(false);
     d->unbind(d->sink);
     d->unbind(d->source);
+    for (const auto id : d->streams.keys())
+        d->dropStream(id);
     if (d->metadata) {
         spa_hook_remove(&d->metadataListener);
         pw_proxy_destroy(reinterpret_cast<pw_proxy*>(d->metadata));
@@ -344,6 +448,21 @@ void Audio::setMicVolume(qreal volume) {
         m_volumeThrottle.start();
 }
 
+void Audio::setStreamVolume(int id, qreal volume) {
+    if (!d->streams.contains(static_cast<uint32_t>(id)))
+        return;
+    m_pendingStreamVolumes.insert(id, std::clamp(volume, 0.0, 1.5));
+    if (!m_volumeThrottle.isActive())
+        m_volumeThrottle.start();
+}
+
+void Audio::setStreamMuted(int id, bool muted) {
+    if (!d->streams.contains(static_cast<uint32_t>(id)))
+        return;
+    wpctl({QStringLiteral("set-mute"), QString::number(id),
+           muted ? QStringLiteral("1") : QStringLiteral("0")});
+}
+
 void Audio::flushVolumes() {
     if (m_pendingVolume >= 0)
         wpctl({QStringLiteral("set-volume"), QStringLiteral("@DEFAULT_AUDIO_SINK@"),
@@ -351,6 +470,10 @@ void Audio::flushVolumes() {
     if (m_pendingMicVolume >= 0)
         wpctl({QStringLiteral("set-volume"), QStringLiteral("@DEFAULT_AUDIO_SOURCE@"),
                QString::number(m_pendingMicVolume, 'f', 3)});
+    for (auto it = m_pendingStreamVolumes.cbegin(); it != m_pendingStreamVolumes.cend(); ++it)
+        wpctl({QStringLiteral("set-volume"), QString::number(it.key()),
+               QString::number(it.value(), 'f', 3)});
+    m_pendingStreamVolumes.clear();
     m_pendingVolume = m_pendingMicVolume = -1;
 }
 
@@ -403,6 +526,37 @@ QVariantList deviceList(const QHash<uint32_t, Device>& devices, bool sources,
     return out;
 }
 } // namespace
+
+QList<AudioStream*> Audio::streams() const {
+    QList<AudioStream*> out;
+    for (const auto* st : std::as_const(d->streams)) {
+        const auto name = st->object->name();
+        // speech-dispatcher's dummy output never plays anything.
+        if (!name.isEmpty() && name != QLatin1String("speech-dispatcher-dummy"))
+            out.append(st->object);
+    }
+    std::ranges::sort(out, [](const AudioStream* a, const AudioStream* b) {
+        return QString::localeAwareCompare(a->name(), b->name()) < 0;
+    });
+    return out;
+}
+
+void AudioStream::setInfo(const QString& name, const QString& title, const QString& iconName) {
+    if (name == m_name && title == m_title && iconName == m_iconName)
+        return;
+    m_name = name;
+    m_title = title;
+    m_iconName = iconName;
+    emit changed();
+}
+
+void AudioStream::setVolume(qreal volume, bool muted) {
+    if (std::abs(volume - m_volume) <= 0.004 && muted == m_muted)
+        return;
+    m_volume = volume;
+    m_muted = muted;
+    emit changed();
+}
 
 QVariantList Audio::sinks() const { return deviceList(d->devices, false, d->sink.defaultName); }
 QVariantList Audio::sources() const { return deviceList(d->devices, true, d->source.defaultName); }

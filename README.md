@@ -23,8 +23,8 @@ Version 0.1. The design notes and roadmap are in
 - Launcher for apps, open windows, a calculator, shell commands, web search,
   emoji and new calendar events.
 - Calendar from local `.ics` folders, synced with vdirsyncer.
-- Quick settings for Wi-Fi, Bluetooth, night light, audio devices,
-  brightness and power profile.
+- Quick settings for Wi-Fi, Bluetooth, night light, audio devices, per-app
+  volume, brightness and power profile.
 - Microphone, camera and screen sharing indicators.
 - CPU, GPU, RAM and SSD gauges with temperatures, and an alert when
   something stays hot.

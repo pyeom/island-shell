@@ -6,6 +6,8 @@ listed here.
 ## Unreleased
 
 ### Added
+- Per-app volume in quick settings, under the output devices
+  (`Audio.streams`, `AudioStream`, `setStreamVolume`, `setStreamMuted`).
 - Hide over fullscreen windows (`[island] fullscreen`), with an empty input
   region so the island never blocks the fullscreen window;
   `Activity.ambient`.
