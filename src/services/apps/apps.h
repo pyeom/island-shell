@@ -53,6 +53,7 @@ public:
     // Icon for a window's app_id/class: StartupWMClass, then desktop file
     // name, then the class itself as an icon name.
     Q_INVOKABLE QString iconForClass(const QString& windowClass) const;
+    const QList<DesktopEntry>& entries() const { return m_entries; }
     // By desktop file ID ("firefox.desktop"); nullptr if not installed.
     const DesktopEntry* entry(const QString& id) const {
         const auto it = std::ranges::find(m_entries, id, &DesktopEntry::id);

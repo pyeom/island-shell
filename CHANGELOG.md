@@ -8,6 +8,8 @@ listed here.
 ### Added
 - Per-app volume in quick settings, under the output devices
   (`Audio.streams`, `AudioStream`, `setStreamVolume`, `setStreamMuted`).
+- Default apps page in the settings window, through xdg-mime
+  (`DefaultApps`).
 - Hide over fullscreen windows (`[island] fullscreen`), with an empty input
   region so the island never blocks the fullscreen window;
   `Activity.ambient`.

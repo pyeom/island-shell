@@ -23,7 +23,8 @@ Window {
 
     // Each page holds groups, each group its options: section.key, label,
     // kind, default, extra.
-    // kind: text | int | double | bool | choice | color | list | key
+    // kind: text | int | double | bool | choice | color | list | key | app
+    // (app: the default application for `category`, see DefaultApps)
     readonly property var pages: [
         { title: qsTr("General"), icon: "preferences-system-symbolic", groups: [
             { title: qsTr("Behavior"), options: [
@@ -77,6 +78,18 @@ Window {
                             ["startpage", "Startpage"], ["ecosia", "Ecosia"], ["kagi", "Kagi"], ["custom", qsTr("Custom URL")]] },
                 { key: "launcher.search_url", label: qsTr("Custom search URL"), kind: "text", def: "",
                   hint: qsTr("%s = query; with Custom URL") },
+            ]},
+        ]},
+        { title: qsTr("Default apps"), icon: "preferences-desktop-default-applications", groups: [
+            { title: qsTr("Open with"), note: qsTr("Saved in ~/.config/mimeapps.list, which xdg-open and most apps follow."), options: [
+                { category: "browser", label: qsTr("Web browser"), kind: "app" },
+                { category: "files", label: qsTr("File manager"), kind: "app" },
+                { category: "mail", label: qsTr("Email"), kind: "app" },
+                { category: "text", label: qsTr("Text editor"), kind: "app" },
+                { category: "images", label: qsTr("Images"), kind: "app" },
+                { category: "video", label: qsTr("Video"), kind: "app" },
+                { category: "music", label: qsTr("Music"), kind: "app" },
+                { category: "pdf", label: qsTr("PDF documents"), kind: "app" },
             ]},
         ]},
         { title: qsTr("Calendar"), icon: "x-office-calendar-symbolic", groups: [
@@ -213,9 +226,16 @@ Window {
     property string recordingKey: ""
 
     onPageChanged: Keybinds.stopRecording()
-    onVisibleChanged: if (!visible) Keybinds.stopRecording()
+    onVisibleChanged: {
+        if (!visible)
+            Keybinds.stopRecording()
+        else
+            DefaultApps.refresh()
+    }
 
     function value(option: var): var {
+        if (option.kind === "app")
+            return undefined
         const v = Config.get(option.key, option.def)
         return v === undefined ? option.def : v
     }
@@ -371,6 +391,7 @@ Window {
                                                                : row.modelData.kind === "list" ? listEditor
                                                                : row.modelData.kind === "bool" ? boolEditor
                                                                : row.modelData.kind === "key" ? keyEditor
+                                                               : row.modelData.kind === "app" ? appEditor
                                                                : textEditor
 
                                                 Component {
@@ -486,6 +507,32 @@ Window {
                                                             onClicked: Config.set(row.modelData.key, "")
                                                             ToolTip.visible: hovered
                                                             ToolTip.text: qsTr("Remove")
+                                                        }
+                                                    }
+                                                }
+                                                Component {
+                                                    id: appEditor
+                                                    ComboBox {
+                                                        readonly property var category: DefaultApps.categories
+                                                            .find(c => c.key === row.modelData.category)
+                                                        readonly property var apps: category ? category.candidates : []
+                                                        model: apps
+                                                        textRole: "name"
+                                                        enabled: DefaultApps.available && apps.length > 0
+                                                        currentIndex: category ? apps.findIndex(a => a.id === category.current) : -1
+                                                        displayText: currentIndex >= 0 ? currentText
+                                                                   : apps.length === 0 ? qsTr("No apps installed")
+                                                                   : qsTr("Not set")
+                                                        onActivated: index => DefaultApps.setDefault(row.modelData.category, apps[index].id)
+                                                        delegate: ItemDelegate {
+                                                            id: appItem
+                                                            required property var modelData
+                                                            required property int index
+                                                            width: ListView.view.width
+                                                            text: modelData.name
+                                                            icon.source: modelData.icon
+                                                            icon.color: "transparent"
+                                                            highlighted: ListView.view.currentIndex === index
                                                         }
                                                     }
                                                 }

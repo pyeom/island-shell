@@ -134,6 +134,7 @@ std::optional<DesktopEntry> parseDesktopEntry(const QString& text, const QString
     e.noDisplay = isTrue(g.value(QStringLiteral("NoDisplay")));
     e.hidden = isTrue(g.value(QStringLiteral("Hidden")));
     e.onlyShowIn = splitList(g.value(QStringLiteral("OnlyShowIn")));
+    e.mimeTypes = splitList(g.value(QStringLiteral("MimeType")));
     e.notShowIn = splitList(g.value(QStringLiteral("NotShowIn")));
 
     for (const auto& id : splitList(g.value(QStringLiteral("Actions")))) {

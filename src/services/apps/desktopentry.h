@@ -30,6 +30,7 @@ struct DesktopEntry {
     bool hidden = false;
     QStringList onlyShowIn;
     QStringList notShowIn;
+    QStringList mimeTypes;
     QList<DesktopAction> actions;
 
     // Whether it belongs in the launcher for `desktops` ($XDG_CURRENT_DESKTOP).

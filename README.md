@@ -30,7 +30,8 @@ Version 0.1. The design notes and roadmap are in
   something stays hot.
 - Weather from Open-Meteo, with no account, and a rain alert.
 - Screenshot results (open, copy, edit, delete) and a wallpaper picker.
-- A settings window that edits `config.toml` and keeps its comments.
+- A settings window that edits `config.toml` and keeps its comments, and
+  picks the default apps (browser, file manager, viewers...).
 - Your own activities in QML, reloaded on save, and Live Activities over
   D-Bus from any script.
 

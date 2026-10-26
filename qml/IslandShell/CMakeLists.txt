@@ -65,6 +65,7 @@ qt_add_qml_module(islandshell
         ${src}/services/live/appprogress.h ${src}/services/live/appprogress.cpp
         ${src}/services/live/downloadwatch.h ${src}/services/live/downloadwatch.cpp
         ${src}/services/apps/apps.h ${src}/services/apps/apps.cpp
+        ${src}/services/apps/defaultapps.h ${src}/services/apps/defaultapps.cpp
         ${src}/services/power/power.h ${src}/services/power/power.cpp
         ${src}/services/brightness/brightness.h ${src}/services/brightness/brightness.cpp
         ${src}/services/network/network.h ${src}/services/network/network.cpp
