@@ -14,7 +14,8 @@ echo $! >/tmp/ish-fake-system.pid
 for _ in $(seq 1 20); do grep -q ready /tmp/ish-fake-system.log 2>/dev/null && break; sleep 0.2; done
 
 t=/tmp/ish-test
-hyprctl dispatch exec "pkill -x island-shell; sleep 0.5; DBUS_SYSTEM_BUS_ADDRESS=$address ISLAND_SHELL_BACKLIGHT=$t/backlight XDG_STATE_HOME=$t/state XDG_CACHE_HOME=$t/cache ISLAND_SHELL_DRY_RUN=1 ISLAND_SHELL_CONFIG=$t/config.toml ISLAND_SHELL_ACTIVITIES=$t/activities $root/build/dev/src/island-shell" >/dev/null
+"$here/../nested/kill-island.sh"
+hyprctl dispatch exec "sleep 0.5; DBUS_SYSTEM_BUS_ADDRESS=$address ISLAND_SHELL_BACKLIGHT=$t/backlight XDG_STATE_HOME=$t/state XDG_CACHE_HOME=$t/cache ISLAND_SHELL_DRY_RUN=1 ISLAND_SHELL_CONFIG=$t/config.toml ISLAND_SHELL_ACTIVITIES=$t/activities $root/build/dev/src/island-shell" >/dev/null
 sleep 1.5
 "$here/wait-island.sh"
 echo "fake system bus: $address"

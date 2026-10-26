@@ -32,5 +32,5 @@ layerrule = ignore_alpha 0.01, match:namespace island-shell
 $mod = SUPER
 bind = $mod, Return, exec, @TERMINAL@
 bind = $mod, Q, killactive
-bind = $mod, R, exec, pkill -x island-shell; @ISLAND_CMD@
+bind = $mod, R, exec, @ROOT@/scripts/nested/kill-island.sh; @ISLAND_CMD@
 bind = $mod SHIFT, E, exit

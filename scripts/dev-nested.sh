@@ -40,6 +40,7 @@ for arg in "$@"; do island_cmd+=" $(printf '%q' "$arg")"; done
 sed -e "s|@ISLAND_CMD@|$island_cmd|" \
     -e "s|@TERMINAL@|${terminal:-true}|" \
     -e "s|@SIZE@|$size|" \
+    -e "s|@ROOT@|$root|" \
     "$root/scripts/nested/hyprland.conf.in" >"$conf"
 
 echo "dev-nested: config $conf"
