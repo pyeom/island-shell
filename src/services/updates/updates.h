@@ -12,7 +12,7 @@ class QJSEngine;
 namespace island {
 
 // Pending Arch updates: checkupdates (pacman-contrib) for the repos, plus
-// paru/yay -Qua for the AUR. Checks every [updates] interval and again when
+// paru/yay -Qua for the AUR when [updates] manager is one of them. Checks every [updates] interval and again when
 // the local package database changes (an upgrade, from here or elsewhere).
 class Updates : public QObject {
     Q_OBJECT
@@ -30,6 +30,8 @@ class Updates : public QObject {
     Q_PROPERTY(bool failed READ failed NOTIFY changed)
     // A check has finished since startup.
     Q_PROPERTY(bool checked READ checked NOTIFY changed)
+    // The package manager in use: "paru", "yay" or "pacman" ([updates] manager).
+    Q_PROPERTY(QString manager READ manager NOTIFY changed)
 
 public:
     static Updates* instance();
@@ -42,6 +44,7 @@ public:
     QStringList packages() const { return m_packages; }
     bool failed() const { return m_failed; }
     bool checked() const { return m_checked; }
+    QString manager() const;
 
     Q_INVOKABLE void check();
     // Runs the upgrade command in the terminal (through island-run when
@@ -65,6 +68,7 @@ private:
     int m_aurCount = 0;
     bool m_failed = false;
     bool m_checked = false;
+    QString m_manager;
     bool m_recheck = false;
     QTimer m_timer;
     QTimer m_dbChanged;

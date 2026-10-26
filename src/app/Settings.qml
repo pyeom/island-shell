@@ -123,8 +123,11 @@ Window {
                 { key: "system.nvme_hot", label: qsTr("SSD alert (°C)"), kind: "int", def: 70, from: 0, to: 150 },
             ]},
             { title: qsTr("Updates"), options: [
+                { key: "updates.manager", label: qsTr("Package manager"), kind: "choice", def: "auto",
+                  hint: qsTr("In use: %1").arg(Updates.manager),
+                  choices: [["auto", qsTr("Automatic")], ["paru", "paru"], ["yay", "yay"], ["pacman", "pacman"]] },
                 { key: "updates.command", label: qsTr("Upgrade command"), kind: "text", def: "",
-                  hint: qsTr("empty: paru, yay or sudo pacman -Syu") },
+                  hint: qsTr("empty: <manager> -Syu") },
                 { key: "updates.interval", label: qsTr("Check every (minutes)"), kind: "int", def: 60, from: 0, to: 10080, step: 15 },
             ]},
         ]},

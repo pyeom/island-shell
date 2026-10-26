@@ -243,6 +243,7 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
     }
 
     if (const auto* t = cfg.raw["updates"].as_table()) {
+        readString(*t, "updates", "manager", cfg.updates.manager, {"auto", "paru", "yay", "pacman"}, errors);
         readString(*t, "updates", "command", cfg.updates.command, {}, errors);
         readInt(*t, "updates", "interval", cfg.updates.interval, 0, 10080, errors);
     }

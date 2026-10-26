@@ -116,8 +116,11 @@ sound = ""
 volume = 1.0              # 0..1
 
 [updates]
-# Upgrade command for the updates button in quick settings, run in the
-# terminal. Empty: paru -Syu, yay -Syu, else sudo pacman -Syu.
+# Package manager for the updates button in quick settings: auto (paru, else
+# yay, else pacman), paru, yay or pacman. paru and yay also check the AUR.
+manager = "auto"
+# Upgrade command run in the terminal instead of `<manager> -Syu`
+# (sudo pacman -Syu for pacman). Empty: the manager's.
 command = ""
 interval = 60             # minutes between checks for updates (0 disables)
 

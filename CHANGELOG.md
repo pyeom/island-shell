@@ -17,6 +17,8 @@ listed here.
   (`Audio.streams`, `AudioStream`, `setStreamVolume`, `setStreamMuted`).
 - Pending updates in quick settings (checkupdates, plus paru or yay for the
   AUR); the button runs the upgrade in the terminal (`[updates]`, `Updates`).
+  The package manager (paru, yay or pacman) is picked in the settings
+  window (`[updates] manager`).
 - Default apps page in the settings window, through xdg-mime
   (`DefaultApps`).
 - Hide over fullscreen windows (`[island] fullscreen`), with an empty input

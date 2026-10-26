@@ -38,7 +38,13 @@ Updates::Updates(QObject* parent) : QObject(parent) {
     if (!available())
         return;
     connect(&m_timer, &QTimer::timeout, this, &Updates::check);
-    connect(Config::instance(), &Config::changed, this, &Updates::applyInterval);
+    connect(Config::instance(), &Config::changed, this, [this] {
+        applyInterval();
+        // Another manager counts the AUR or not: count again.
+        if (std::exchange(m_manager, manager()) != m_manager && m_checked)
+            check();
+    });
+    m_manager = manager();
     applyInterval();
 
     // pacman writes many files per package: check once it has settled.
@@ -67,11 +73,20 @@ void Updates::applyInterval() {
         m_timer.start(minutes * 60 * 1000);
 }
 
-QString Updates::aurHelper() const {
+QString Updates::manager() const {
+    const auto chosen = QString::fromStdString(Config::instance()->data().updates.manager);
+    if (chosen != u"auto")
+        // A helper that is not installed falls back to pacman.
+        return chosen == u"pacman" || installed(chosen) ? chosen : QStringLiteral("pacman");
     for (const auto* helper : {"paru", "yay"})
         if (installed(QLatin1String(helper)))
             return QLatin1String(helper);
-    return {};
+    return QStringLiteral("pacman");
+}
+
+QString Updates::aurHelper() const {
+    const auto m = manager();
+    return m == u"pacman" ? QString() : m;
 }
 
 void Updates::check() {

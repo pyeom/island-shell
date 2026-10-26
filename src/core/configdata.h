@@ -97,8 +97,10 @@ struct TimerConfig {
 };
 
 struct UpdatesConfig {
-    // Upgrade command run in the terminal; empty: paru, yay, then
-    // sudo pacman -Syu.
+    // "auto" (paru, else yay, else pacman), "paru", "yay" or "pacman": checks
+    // the AUR too unless pacman, and runs `<manager> -Syu`.
+    std::string manager = "auto";
+    // Upgrade command run in the terminal, overriding the manager's.
     std::string command;
     int interval = 60; // minutes between checks; 0 disables them
 };
