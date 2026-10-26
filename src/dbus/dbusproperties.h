@@ -7,7 +7,9 @@
 namespace island {
 
 // Mirror of one D-Bus object's properties on one interface: fetched with
-// GetAll, kept current through PropertiesChanged.
+// GetAll, kept current through PropertiesChanged, and fetched again when
+// another process takes over the service (a daemon restarted or replaced,
+// e.g. power-profiles-daemon by tuned-ppd).
 class DBusProperties : public QObject {
     Q_OBJECT
 

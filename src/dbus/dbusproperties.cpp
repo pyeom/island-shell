@@ -5,6 +5,7 @@
 #include <QDBusMessage>
 #include <QDBusPendingCallWatcher>
 #include <QDBusPendingReply>
+#include <QDBusServiceWatcher>
 
 namespace island {
 
@@ -17,6 +18,17 @@ DBusProperties::DBusProperties(const QDBusConnection& bus, const QString& servic
     : QObject(parent), m_bus(bus), m_service(service), m_path(path), m_interface(interface) {
     m_bus.connect(m_service, m_path, QLatin1String(kProps), QStringLiteral("PropertiesChanged"),
                   this, SLOT(onPropertiesChanged(QString, QVariantMap, QStringList)));
+    auto* watcher = new QDBusServiceWatcher(m_service, m_bus, QDBusServiceWatcher::WatchForOwnerChange, this);
+    connect(watcher, &QDBusServiceWatcher::serviceOwnerChanged, this,
+            [this](const QString&, const QString&, const QString& newOwner) {
+                if (!newOwner.isEmpty()) {
+                    refresh();
+                    return;
+                }
+                m_values.clear();
+                m_ready = false;
+                emit changed();
+            });
     refresh();
 }
 
