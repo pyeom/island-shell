@@ -22,17 +22,21 @@ Version 0.1. The design notes and roadmap are in
 - Media controls for any MPRIS player, and a volume and mic OSD.
 - Launcher for apps, open windows, a calculator, shell commands, web search,
   emoji, timers and new calendar events.
-- Calendar from local `.ics` folders, synced with vdirsyncer.
+- Timers that count down in the pill and ring with the sound you pick.
+- Calendar from local `.ics` folders, synced with vdirsyncer, in the island
+  and as a full month view in the settings window.
 - Quick settings for Wi-Fi, Bluetooth, night light, audio devices, per-app
-  volume, brightness, power profile and pending updates (pacman, paru,
-  yay).
+  volume, brightness, power profile and pending updates with paru, yay or
+  pacman.
 - Microphone, camera and screen sharing indicators.
 - CPU, GPU, RAM and SSD gauges with temperatures, and an alert when
   something stays hot.
-- Weather from Open-Meteo, with no account, and a rain alert.
+- Weather from Open-Meteo, with no account, and a rain alert that does not
+  stay in the pill.
 - Screenshot results (open, copy, edit, delete) and a wallpaper picker.
-- A settings window that edits `config.toml` and keeps its comments, and
-  picks the default apps (browser, file manager, viewers...).
+- A settings window that edits `config.toml` and keeps its comments, with
+  search, the calendar and the default apps (browser, file manager, text
+  editor, viewers...).
 - Your own activities in QML, reloaded on save, and Live Activities over
   D-Bus from any script.
 
@@ -236,17 +240,22 @@ Then `vdirsyncer discover && vdirsyncer sync` (and a timer for periodic
 syncs). `~/.calendars` is in the default `[calendar] paths`. For Google
 Calendar use vdirsyncer's `google_calendar` storage.
 
-New events, from the launcher's `+` prefix or the `+` button on the
-expanded calendar, go to the local folder. vdirsyncer uploads them on its
-next sync.
+New events, from the launcher's `+` prefix, the `+` button on the
+expanded calendar or the settings window, go to the local folder.
+vdirsyncer uploads them on its next sync.
+
+The Calendar page of the settings window (`islandctl settings calendar`)
+shows any month with its events, an event in detail (time, calendar,
+location, description, its `.ics` file) and a form for new events;
+double-click a day to start one there. Clicking an event in the expanded
+island opens it on that page.
 
 ## Launcher
 
 `islandctl launcher toggle` opens it (bind it to SUPER+R). Typing searches
 apps and open windows. A query that looks like math, such as `2*(3+4)` or
-`sqrt(2)`, shows the result. A duration starts a timer that counts down in
-the island: `15 min`, `15'`, `90''`, `1 hour`, `1 h`, `1h30`, `timer 5 pasta`
-(the words after it are its label). Prefixes switch modes:
+`sqrt(2)`, shows the result. A duration starts a timer (see [Timers](#timers)).
+Prefixes switch modes:
 
 | Prefix | Does |
 |---|---|
@@ -256,11 +265,34 @@ the island: `15 min`, `15'`, `90''`, `1 hour`, `1 h`, `1h30`, `timer 5 pasta`
 | `:` | emoji; Enter types it into the focused window (with `wtype` installed) and copies it |
 | `+` | new calendar event, in English or Spanish: `+ tomorrow 3pm dentist 1h`, `+ fri 9 meeting`, `+ mañana 15:00 dentista` |
 
+## Timers
+
+Type a duration in the launcher and press Enter: `15 min`, `15m`, `15'`,
+`90''`, `90"`, `1 hour`, `1 h`, `1h30`, `1h 30m`, `1.5 h`, Spanish units
+(`10 minutos`, `2 horas`) or `timer 5` / `temporizador 5` for minutes. Words
+after the duration are its label: `15 min pasta`.
+
+The soonest timer counts down in the pill with a progress ring; the expanded
+view lists them all with +1 min and cancel. When one ends it plays a sound,
+expands the island and stays until you dismiss it (or for ten minutes). Pick
+the sound and its volume on the General page of the settings window
+(`[timer]`).
+
 ## Quick settings
 
 Right-click the island or run `islandctl quick`. The panel has network,
 Bluetooth, night light, do-not-disturb, output volume and device, microphone
 level, mute and device, brightness (laptops only) and power profile.
+
+The arrow on the volume slider lists the output devices and, below them,
+every app playing audio with its own volume and mute.
+
+The button at the bottom left shows pending updates: checkupdates for the
+repos plus `-Qua` for the AUR with paru or yay, every `[updates] interval`
+minutes and after any upgrade. Clicking it runs the upgrade in your terminal
+(through `island-run`, so the island shows how it goes). Choose paru, yay or
+pacman on the System page of the settings window (`[updates] manager`), or
+set your own `command`.
 
 The arrows on the Wi-Fi and Bluetooth tiles list networks and devices to
 connect to. Secured networks ask for the password. Bluetooth devices that
@@ -273,6 +305,21 @@ and any battery, including headphones and controllers, raises an alert below
 > Wi-Fi, Bluetooth and battery support was tested against simulated
 > NetworkManager, BlueZ and UPower (`scripts/testing/fake-system.py`), not
 > real hardware.
+
+## Settings window
+
+`islandctl settings` (or the gear in quick settings) opens it; `islandctl
+settings calendar` opens the calendar. Every control writes one line of
+`config.toml` and keeps the rest of the file as it was.
+
+The search field above the pages (Ctrl+F) finds options by name, hint,
+section or page, ignoring accents. A result opens its page, scrolls to the
+option and highlights it.
+
+The Default apps page sets the browser, file manager, mail client, text
+editor, image, video and music players and PDF viewer for `xdg-open`
+(`~/.config/mimeapps.list`). It offers the apps that declare those file
+types and the ones in the matching menu category, such as VS Code for text.
 
 ## Wallpaper
 
