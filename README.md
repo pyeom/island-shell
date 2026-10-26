@@ -48,6 +48,7 @@ volume OSD with one native C++/Qt process. Everything is configured in one
 | **Launcher** | Apps, open windows, a calculator, shell commands, web search, emoji, timers and new calendar events from one search field. |
 | **Timers** | Type `15 min` in the launcher. The pill counts down and rings with the sound you pick. |
 | **Quick settings** | Wi-Fi, Bluetooth, night light, do-not-disturb, volume per device and per app, microphone, brightness, power profile and pending updates. |
+| **Power modes** | Power saver and performance turn off Hyprland's animations, blur and shadows and the island's animations, and put them back afterwards. |
 | **Updates** | Counts pending updates from the repos and the AUR with paru, yay or pacman, and upgrades in your terminal with one click. |
 | **Calendar** | Local `.ics` and vdirsyncer calendars in the island and as a month view in the settings window. |
 | **Media** | Controls for any MPRIS player, album art, and media keys that follow the player the island shows. |
@@ -65,6 +66,7 @@ volume OSD with one native C++/Qt process. Everything is configured in one
 - [Timers](#timers)
 - [Quick settings](#quick-settings)
 - [Per-app volume](#per-app-volume)
+- [Power modes](#power-modes)
 - [Updates](#updates)
 - [Dashboard](#dashboard)
 - [Calendar](#calendar)
@@ -159,6 +161,26 @@ The arrow on the volume slider lists your output devices and, below them,
 every app playing audio with its own slider and mute. The list follows
 PipeWire live. Apps that report an audio library instead of their own name
 ("WEBRTC VoiceEngine") show the program's name, such as Discord.
+
+### Power modes
+
+The power profile in quick settings (power-profiles-daemon or tuned-ppd)
+changes more than the CPU. Each profile can turn off Hyprland's
+animations, blur and shadows and the island's own animations, and run your
+commands:
+
+| | Power saver | Balanced | Performance |
+|---|---|---|---|
+| Hyprland animations | off | as configured | as configured |
+| Hyprland blur | off | as configured | off |
+| Hyprland shadows | off | as configured | off |
+| Island animations | off | as configured | as configured |
+
+Change them on the Power modes page of the settings window
+(`[power_modes.<profile>]`). The island changes Hyprland's options at
+runtime and puts your values back when you leave the profile, when
+Hyprland reloads its config and when the island quits; your config files
+never change.
 
 ### Updates
 

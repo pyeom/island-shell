@@ -40,7 +40,8 @@ class Config : public QObject {
     Q_PROPERTY(int surfaceHeight READ surfaceHeight NOTIFY changed)
 
     // "full" | "reduced" | "off"
-    Q_PROPERTY(QString animations READ animations NOTIFY changed)
+    // [animations] mode, unless a power mode overrides it.
+    Q_PROPERTY(QString animations READ animations NOTIFY animationsChanged)
     Q_PROPERTY(QString clockFormat READ clockFormat NOTIFY changed)
     Q_PROPERTY(int powerHoldMs READ powerHoldMs NOTIFY changed)
     // "minimal" | "hide" | "show"
@@ -67,6 +68,9 @@ public:
     int surfaceWidth() const { return m_data.island.surfaceWidth; }
     int surfaceHeight() const { return m_data.island.surfaceHeight; }
     QString animations() const;
+    // "full", "reduced" or "off" while a power mode wants it; empty: the
+    // configured mode.
+    void setAnimationsOverride(const QString& mode);
     QString clockFormat() const { return QString::fromStdString(m_data.clock.format); }
     int powerHoldMs() const { return m_data.power.holdMs; }
     QString fullscreen() const { return QString::fromStdString(m_data.island.fullscreen); }
@@ -84,12 +88,14 @@ public slots:
 
 signals:
     void changed();
+    void animationsChanged();
 
 private:
     explicit Config(QObject* parent = nullptr);
 
     FileWatch m_watch;
     ConfigData m_data;
+    QString m_animationsOverride;
     QStringList m_errors;
     int m_revision = 0;
 };

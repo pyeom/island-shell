@@ -8,6 +8,18 @@ class TestHyprlandParse : public QObject {
     Q_OBJECT
 
 private slots:
+    void setOption() {
+        QCOMPARE(luaSetOption(u"decoration:blur:enabled", false),
+                 QByteArray("eval hl.config({ decoration = { blur = { enabled = false } } })"));
+        QCOMPARE(luaSetOption(u"animations:enabled", true),
+                 QByteArray("eval hl.config({ animations = { enabled = true } })"));
+        QCOMPARE(confSetOption(u"decoration:shadow:enabled", false),
+                 QByteArray("keyword decoration:shadow:enabled false"));
+        QCOMPARE(parseBoolOption(R"({"option": "animations:enabled", "bool": true, "set": true })"), true);
+        QCOMPARE(parseBoolOption(R"({"option": "animations:enabled", "int": 0})"), false);
+        QVERIFY(!parseBoolOption("no such option"));
+    }
+
     void eventLine() {
         const auto ev = parseEventLine("focusedmon>>DP-3,2");
         QVERIFY(ev);

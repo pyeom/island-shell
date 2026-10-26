@@ -10,6 +10,7 @@
 #include <QtQml/qqmlregistration.h>
 
 #include <functional>
+#include <optional>
 
 class QQmlEngine;
 class QJSEngine;
@@ -60,6 +61,13 @@ public:
     // Calls back with true for a Lua config (hyprland.lua), false for
     // hyprland.conf; asks Hyprland the first time.
     void configIsLua(std::function<void(bool)> callback);
+    // Whether the config is Lua, once configIsLua() has found out.
+    std::optional<bool> knownLua() const {
+        return m_syntax == Syntax::Unknown ? std::nullopt : std::optional(m_syntax == Syntax::Lua);
+    }
+    // A request that blocks until Hyprland answers (up to 2 s), for when the
+    // event loop is about to stop.
+    QByteArray requestNow(const QByteArray& command) const;
 
 signals:
     void availableChanged();

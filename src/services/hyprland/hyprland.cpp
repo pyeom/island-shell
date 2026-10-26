@@ -6,6 +6,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QJSEngine>
+#include <QLocalSocket>
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(lcHypr, "island.hyprland")
@@ -116,6 +117,21 @@ void Hyprland::configIsLua(std::function<void(bool)> callback) {
             m_syntax = lua ? Syntax::Lua : Syntax::Conf;
         callback(lua);
     });
+}
+
+QByteArray Hyprland::requestNow(const QByteArray& command) const {
+    if (!available())
+        return {};
+    QLocalSocket socket;
+    socket.connectToServer(m_socketDir + QLatin1String("/.socket.sock"));
+    if (!socket.waitForConnected(2000))
+        return {};
+    socket.write(command);
+    socket.waitForBytesWritten(2000);
+    QByteArray data;
+    while (socket.state() == QLocalSocket::ConnectedState && socket.waitForReadyRead(2000))
+        data += socket.readAll();
+    return data + socket.readAll();
 }
 
 void Hyprland::exec(const QString& command) {

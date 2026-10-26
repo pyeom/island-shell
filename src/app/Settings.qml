@@ -131,6 +131,32 @@ Window {
                 { key: "updates.interval", label: qsTr("Check every (minutes)"), kind: "int", def: 60, from: 0, to: 10080, step: 15 },
             ]},
         ]},
+        { key: "power_modes", title: qsTr("Power modes"), icon: "speedometer", groups: [
+            { title: qsTr("Power saver"), options: [
+                { key: "power_modes.power-saver.island_animations", label: qsTr("Island animations"), kind: "choice", def: "off",
+                  choices: [["keep", qsTr("As configured")], ["full", qsTr("Springs")], ["reduced", qsTr("Reduced")], ["off", qsTr("Off")]] },
+                { key: "power_modes.power-saver.hyprland_animations", label: qsTr("Hyprland animations"), kind: "choice", def: "off", choices: win.keepOnOff },
+                { key: "power_modes.power-saver.hyprland_blur", label: qsTr("Hyprland blur"), kind: "choice", def: "off", choices: win.keepOnOff },
+                { key: "power_modes.power-saver.hyprland_shadows", label: qsTr("Hyprland shadows"), kind: "choice", def: "off", choices: win.keepOnOff },
+                { key: "power_modes.power-saver.commands", label: qsTr("Commands on entering"), kind: "list", def: [] },
+            ]},
+            { title: qsTr("Balanced"), options: [
+                { key: "power_modes.balanced.island_animations", label: qsTr("Island animations"), kind: "choice", def: "keep",
+                  choices: [["keep", qsTr("As configured")], ["full", qsTr("Springs")], ["reduced", qsTr("Reduced")], ["off", qsTr("Off")]] },
+                { key: "power_modes.balanced.hyprland_animations", label: qsTr("Hyprland animations"), kind: "choice", def: "keep", choices: win.keepOnOff },
+                { key: "power_modes.balanced.hyprland_blur", label: qsTr("Hyprland blur"), kind: "choice", def: "keep", choices: win.keepOnOff },
+                { key: "power_modes.balanced.hyprland_shadows", label: qsTr("Hyprland shadows"), kind: "choice", def: "keep", choices: win.keepOnOff },
+                { key: "power_modes.balanced.commands", label: qsTr("Commands on entering"), kind: "list", def: [] },
+            ]},
+            { title: qsTr("Performance"), options: [
+                { key: "power_modes.performance.island_animations", label: qsTr("Island animations"), kind: "choice", def: "keep",
+                  choices: [["keep", qsTr("As configured")], ["full", qsTr("Springs")], ["reduced", qsTr("Reduced")], ["off", qsTr("Off")]] },
+                { key: "power_modes.performance.hyprland_animations", label: qsTr("Hyprland animations"), kind: "choice", def: "keep", choices: win.keepOnOff },
+                { key: "power_modes.performance.hyprland_blur", label: qsTr("Hyprland blur"), kind: "choice", def: "off", choices: win.keepOnOff },
+                { key: "power_modes.performance.hyprland_shadows", label: qsTr("Hyprland shadows"), kind: "choice", def: "off", choices: win.keepOnOff },
+                { key: "power_modes.performance.commands", label: qsTr("Commands on entering"), kind: "list", def: [] },
+            ]},
+        ], note: qsTr("Each power profile (quick settings) can turn effects off while it is active. \"As configured\" leaves your Hyprland and island config alone; the island puts every value back when you leave the profile.") },
         { title: qsTr("Screenshots && wallpaper"), icon: "camera-photo-symbolic", groups: [
             { title: qsTr("Screenshots"), options: [
                 { key: "screenshots.directory", label: qsTr("Screenshot folder"), kind: "text", def: "~/Pictures/Screenshots" },
@@ -234,6 +260,7 @@ Window {
         ]},
     ]
     property int page: 0
+    readonly property var keepOnOff: [["keep", qsTr("As configured")], ["on", qsTr("On")], ["off", qsTr("Off")]]
     // Arguments of the page opened with openPage().
     property var pageArgs: ({})
 

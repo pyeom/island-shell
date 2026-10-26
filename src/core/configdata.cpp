@@ -55,6 +55,25 @@ void readString(const toml::table& t, std::string_view section, std::string_view
     out = *v;
 }
 
+void readStringList(const toml::table& t, std::string_view section, std::string_view key,
+                    std::vector<std::string>& out, std::vector<std::string>& errors) {
+    const auto* node = t.get(key);
+    if (!node)
+        return;
+    const auto* arr = node->as_array();
+    if (!arr) {
+        errors.push_back(std::format("{}.{}: expected an array of strings", section, key));
+        return;
+    }
+    out.clear();
+    for (const auto& item : *arr) {
+        if (const auto v = item.value<std::string>())
+            out.push_back(*v);
+        else
+            errors.push_back(std::format("{}.{}: expected strings", section, key));
+    }
+}
+
 void readDouble(const toml::table& t, std::string_view section, std::string_view key, double& out,
                 double min, double max, std::vector<std::string>& errors) {
     const auto* node = t.get(key);
@@ -85,6 +104,18 @@ std::string searchEngineUrl(std::string_view engine) {
             return std::string(url);
     }
     return {};
+}
+
+std::map<std::string, PowerModeConfig> defaultPowerModes() {
+    PowerModeConfig saver;
+    saver.islandAnimations = "off";
+    saver.hyprAnimations = "off";
+    saver.hyprBlur = "off";
+    saver.hyprShadows = "off";
+    PowerModeConfig performance;
+    performance.hyprBlur = "off";
+    performance.hyprShadows = "off";
+    return {{"power-saver", saver}, {"balanced", {}}, {"performance", performance}};
 }
 
 ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) {
@@ -315,6 +346,24 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
             readInt(*t, "priorities", key, priority, 0, 99, errors);
             if (priority >= 0)
                 cfg.priorities[key] = priority;
+        }
+    }
+
+    if (const auto* modes = cfg.raw["power_modes"].as_table()) {
+        for (const auto& [name, node] : *modes) {
+            const std::string profile(name.str());
+            const auto* t = node.as_table();
+            const std::string section = "power_modes." + profile;
+            if (!t || !cfg.powerModes.contains(profile)) {
+                errors.push_back(section + ": unknown power profile (power-saver, balanced, performance)");
+                continue;
+            }
+            auto& m = cfg.powerModes[profile];
+            readString(*t, section, "island_animations", m.islandAnimations, {"keep", "full", "reduced", "off"}, errors);
+            readString(*t, section, "hyprland_animations", m.hyprAnimations, {"keep", "on", "off"}, errors);
+            readString(*t, section, "hyprland_blur", m.hyprBlur, {"keep", "on", "off"}, errors);
+            readString(*t, section, "hyprland_shadows", m.hyprShadows, {"keep", "on", "off"}, errors);
+            readStringList(*t, section, "commands", m.commands, errors);
         }
     }
 

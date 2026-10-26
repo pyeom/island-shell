@@ -14,6 +14,8 @@ Restart=on-failure
 RestartSec=1
 # Exit status 3: another instance already owns the D-Bus name.
 RestartPreventExitStatus=3
+# SIGINT / SIGTERM: island-shell quits cleanly and exits 128 + signal.
+SuccessExitStatus=130 143
 Slice=app-graphical.slice
 
 [Install]

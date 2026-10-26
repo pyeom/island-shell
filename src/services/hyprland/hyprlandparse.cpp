@@ -144,4 +144,25 @@ bool isLuaSyntaxError(QByteArrayView reply) {
     return reply.contains("hl.dispatch(") || reply.contains("dispatch in lua");
 }
 
+QByteArray luaSetOption(QStringView option, bool value) {
+    const auto parts = option.split(u':');
+    QString table = value ? QStringLiteral("true") : QStringLiteral("false");
+    for (auto it = parts.crbegin(); it != parts.crend(); ++it)
+        table = QStringLiteral("{ %1 = %2 }").arg(it->toString(), table);
+    return "eval hl.config(" + table.toUtf8() + ")";
+}
+
+QByteArray confSetOption(QStringView option, bool value) {
+    return "keyword " + option.toUtf8() + (value ? " true" : " false");
+}
+
+std::optional<bool> parseBoolOption(const QByteArray& json) {
+    const auto obj = QJsonDocument::fromJson(json).object();
+    if (obj.contains(u"bool"))
+        return obj.value(u"bool").toBool();
+    if (obj.contains(u"int"))
+        return obj.value(u"int").toInt() != 0;
+    return std::nullopt;
+}
+
 } // namespace island::hypr

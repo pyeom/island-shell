@@ -6,6 +6,12 @@ listed here.
 ## Unreleased
 
 ### Added
+- Power modes (`[power_modes.<profile>]`, also in the settings window):
+  each power profile can turn off Hyprland's animations, blur and shadows
+  and the island's animations, and run commands. Power saver turns
+  everything off and performance the blur and shadows by default; the
+  island restores Hyprland's values when you leave the profile, when
+  Hyprland reloads and when it quits.
 - Search in the settings window (Ctrl+F): matches option names, hints,
   sections and pages, accents ignored; a result opens its page, scrolls to
   the option and highlights it.
@@ -124,6 +130,10 @@ listed here.
   played (1.7% → 0.3% CPU).
 
 ### Changed
+- SIGTERM, SIGINT and SIGHUP quit through the event loop, so cleanup runs;
+  the exit status is still 128 + signal.
+- D-Bus properties are read again when their service restarts or changes
+  hands (power-profiles-daemon replaced by tuned-ppd).
 - The rain alert leaves the pill a minute after alerting, and alerts again
   only after a dry spell instead of every rainy hour.
 - Settings: each page groups its options in titled sections.

@@ -205,6 +205,32 @@ lock_command = "hyprlock"
 # Press-and-hold time for shut down and restart (ms).
 hold_ms = 800
 
+# What changes with the power profile (quick settings, power-profiles-daemon
+# or tuned-ppd). Each setting is "keep" (your config), "on" or "off";
+# island_animations is "keep", "full", "reduced" or "off". The island puts
+# Hyprland's values back when you leave the profile, when Hyprland reloads
+# its config and when the island quits. commands run on entering.
+[power_modes.power-saver]
+island_animations = "off"
+hyprland_animations = "off"
+hyprland_blur = "off"
+hyprland_shadows = "off"
+commands = []
+
+[power_modes.balanced]
+island_animations = "keep"
+hyprland_animations = "keep"
+hyprland_blur = "keep"
+hyprland_shadows = "keep"
+commands = []
+
+[power_modes.performance]
+island_animations = "keep"
+hyprland_animations = "keep"
+hyprland_blur = "off"
+hyprland_shadows = "off"
+commands = []
+
 # Settings for activities live under [activities.<name>] and are read with
 # Config.get("activities.<name>.<key>", default).
 #

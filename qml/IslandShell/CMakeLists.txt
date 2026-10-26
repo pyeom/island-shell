@@ -71,6 +71,7 @@ qt_add_qml_module(islandshell
         ${src}/services/network/network.h ${src}/services/network/network.cpp
         ${src}/services/bluetooth/bluetooth.h ${src}/services/bluetooth/bluetooth.cpp
         ${src}/services/powerprofiles/powerprofiles.h ${src}/services/powerprofiles/powerprofiles.cpp
+        ${src}/services/powerprofiles/powermodes.h ${src}/services/powerprofiles/powermodes.cpp
         ${src}/services/privacy/privacy.h ${src}/services/privacy/privacy.cpp
         ${src}/services/calendar/calendar.h ${src}/services/calendar/calendar.cpp
         ${src}/services/launcher/launchersearch.h ${src}/services/launcher/launchersearch.cpp

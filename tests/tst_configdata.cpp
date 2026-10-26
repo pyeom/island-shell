@@ -248,6 +248,34 @@ rain = "high"
         QCOMPARE(errors.size(), size_t(2));
     }
 
+    void powerModes() {
+        std::vector<std::string> errors;
+        auto cfg = parseConfig("", errors);
+        QCOMPARE(cfg.powerModes.size(), size_t(3));
+        QCOMPARE(cfg.powerModes["power-saver"].hyprBlur, std::string("off"));
+        QCOMPARE(cfg.powerModes["power-saver"].islandAnimations, std::string("off"));
+        QCOMPARE(cfg.powerModes["balanced"].hyprBlur, std::string("keep"));
+        QCOMPARE(cfg.powerModes["performance"].hyprShadows, std::string("off"));
+        QCOMPARE(cfg.powerModes["performance"].hyprAnimations, std::string("keep"));
+        cfg = parseConfig(R"(
+            [power_modes.performance]
+            hyprland_animations = "off"
+            island_animations = "reduced"
+            commands = ["notify-send fast"]
+            [power_modes.power-saver]
+            hyprland_blur = "keep"
+        )",
+                          errors);
+        QVERIFY2(errors.empty(), errors.empty() ? "" : errors.front().c_str());
+        QCOMPARE(cfg.powerModes["performance"].hyprAnimations, std::string("off"));
+        QCOMPARE(cfg.powerModes["performance"].hyprBlur, std::string("off")); // default kept
+        QCOMPARE(cfg.powerModes["performance"].islandAnimations, std::string("reduced"));
+        QCOMPARE(cfg.powerModes["performance"].commands, std::vector<std::string>{"notify-send fast"});
+        QCOMPARE(cfg.powerModes["power-saver"].hyprBlur, std::string("keep"));
+        parseConfig("[power_modes.turbo]\nhyprland_blur = \"off\"\n[power_modes.balanced]\nhyprland_blur = \"maybe\"\n", errors);
+        QCOMPARE(errors.size(), size_t(2));
+    }
+
     void rawKeepsUnknownSections() {
         std::vector<std::string> errors;
         const auto cfg = parseConfig("[activities.weather]\ncity = \"Santiago\"\n", errors);

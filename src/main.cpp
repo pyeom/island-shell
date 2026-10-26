@@ -5,16 +5,22 @@
 #include "keybinds.h"
 #include "liveactivities.h"
 #include "notifications.h"
+#include "powermodes.h"
 #include "shellcontrol.h"
 #include "updates.h"
 #include "useractivities.h"
 
 #include <QCommandLineParser>
+#include <QSocketNotifier>
 #include <QLocale>
 #include <QTranslator>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml/qqmlextensionplugin.h>
+
+#include <csignal>
+#include <sys/socket.h>
+#include <unistd.h>
 
 Q_IMPORT_QML_PLUGIN(IslandShellPlugin)
 Q_IMPORT_QML_PLUGIN(IslandShell_ActivitiesPlugin)
@@ -31,6 +37,35 @@ bool wantsInfoOnly(int argc, char* argv[]) {
             return true;
     }
     return false;
+}
+
+// SIGTERM, SIGINT and SIGHUP quit through the event loop, so aboutToQuit
+// handlers run (PowerModes puts Hyprland's options back). The handler only
+// writes to a socket; the notifier does the rest on the main thread.
+int g_signalPipe[2] = {-1, -1};
+volatile std::sig_atomic_t g_signal = 0;
+
+void onSignal(int sig) {
+    g_signal = sig;
+    const char c = 1;
+    [[maybe_unused]] const auto n = ::write(g_signalPipe[0], &c, 1);
+}
+
+void quitOnSignals(QObject* parent) {
+    if (::socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, g_signalPipe) != 0)
+        return;
+    auto* notifier = new QSocketNotifier(g_signalPipe[1], QSocketNotifier::Read, parent);
+    QObject::connect(notifier, &QSocketNotifier::activated, parent, [] {
+        char c = 0;
+        [[maybe_unused]] const auto n = ::read(g_signalPipe[1], &c, 1);
+        QCoreApplication::quit();
+    });
+    struct sigaction sa {};
+    sa.sa_handler = onSignal;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    for (const int sig : {SIGTERM, SIGINT, SIGHUP})
+        sigaction(sig, &sa, nullptr);
 }
 
 } // namespace
@@ -53,6 +88,7 @@ int main(int argc, char* argv[]) {
     QGuiApplication::setApplicationName(QStringLiteral("island-shell"));
     QGuiApplication::setApplicationVersion(QStringLiteral(ISLAND_VERSION));
     QGuiApplication::setDesktopFileName(QStringLiteral("island-shell"));
+    quitOnSignals(&app);
 
     // Embedded translations (":/i18n/island-shell_es.qm"); English otherwise.
     QTranslator translator;
@@ -85,6 +121,8 @@ int main(int argc, char* argv[]) {
         island::DownloadWatch::instance();
         // Checks on its own schedule, not when quick settings first opens.
         island::Updates::instance();
+        // Hyprland effects follow the power profile; one instance does it.
+        island::PowerModes::instance();
         break;
     }
 
@@ -102,5 +140,8 @@ int main(int argc, char* argv[]) {
     userActivities->setEngine(&engine);
     userActivities->reload();
 
-    return QGuiApplication::exec();
+    const int status = QGuiApplication::exec();
+    // Same exit status as dying from the signal: island-shell-run and
+    // systemd tell a stop from a crash by it.
+    return g_signal != 0 ? 128 + g_signal : status;
 }

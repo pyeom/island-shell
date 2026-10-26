@@ -71,7 +71,16 @@ Config::Config(QObject* parent) : QObject(parent) {
     reload();
 }
 
+void Config::setAnimationsOverride(const QString& mode) {
+    if (mode == m_animationsOverride)
+        return;
+    m_animationsOverride = mode;
+    emit animationsChanged();
+}
+
 QString Config::animations() const {
+    if (!m_animationsOverride.isEmpty())
+        return m_animationsOverride;
     switch (m_data.animations) {
     case AnimationMode::Reduced:
         return QStringLiteral("reduced");
@@ -136,6 +145,7 @@ void Config::reload() {
                                << path();
     ++m_revision;
     emit changed();
+    emit animationsChanged();
 }
 
 } // namespace island

@@ -156,6 +156,22 @@ struct PowerConfig {
     int holdMs = 800; // press-and-hold time for shutdown and reboot
 };
 
+// [power_modes.<profile>]: what changes with the power profile
+// (power-saver, balanced, performance). Each setting is "keep" (leave it as
+// your config has it), "on" or "off"; island_animations is "keep", "full",
+// "reduced" or "off".
+struct PowerModeConfig {
+    std::string islandAnimations = "keep";
+    std::string hyprAnimations = "keep";
+    std::string hyprBlur = "keep";
+    std::string hyprShadows = "keep";
+    std::vector<std::string> commands; // shell commands run on entering the mode
+};
+
+// The defaults: power saver turns every effect off, performance the GPU-heavy
+// ones (blur, shadows), balanced leaves your config alone.
+std::map<std::string, PowerModeConfig> defaultPowerModes();
+
 struct ConfigData {
     IslandConfig island;
     AnimationMode animations = AnimationMode::Full;
@@ -164,6 +180,7 @@ struct ConfigData {
     NotificationsConfig notifications;
     LauncherConfig launcher;
     PowerConfig power;
+    std::map<std::string, PowerModeConfig> powerModes = defaultPowerModes();
     CalendarConfig calendar;
     SystemConfig system;
     WeatherConfig weather;
