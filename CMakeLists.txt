@@ -43,8 +43,10 @@ add_subdirectory(tools/islandctl)
 
 # Translations: `cmake --build --preset dev --target update_translations`
 # refreshes i18n/*.ts from the sources; .qm files are embedded in the binary.
+# island-shell_en.ts only holds English plurals ("%n update(s)").
 qt_add_translations(TARGETS island-shell
     TS_FILES i18n/island-shell_es.ts
+    PLURALS_TS_FILE i18n/island-shell_en.ts
     SOURCE_TARGETS islandshell islandactivities islandapp
     RESOURCE_PREFIX /i18n
     LUPDATE_OPTIONS -no-obsolete)
