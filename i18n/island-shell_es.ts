@@ -1362,68 +1362,78 @@
         <translation>Mantener para confirmar (ms)</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="334"/>
+        <location filename="../src/app/Settings.qml" line="327"/>
+        <source>Search settings</source>
+        <translation>Buscar ajustes</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="412"/>
+        <source>No settings match</source>
+        <translation>Ningún ajuste coincide</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="453"/>
         <source>Hyprland is not running: these keys are not bound.</source>
         <translation>Hyprland no está corriendo: estos atajos no están registrados.</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="335"/>
+        <location filename="../src/app/Settings.qml" line="454"/>
         <source>Hyprland refused some binds:</source>
         <translation>Hyprland rechazó algunos atajos:</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="392"/>
+        <location filename="../src/app/Settings.qml" line="512"/>
         <source>Replaces a bind from your Hyprland config</source>
         <translation>Reemplaza un atajo de tu config de Hyprland</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="520"/>
+        <location filename="../src/app/Settings.qml" line="671"/>
         <source>Press the keys…</source>
         <translation>Presiona las teclas…</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="522"/>
-        <location filename="../src/app/Settings.qml" line="608"/>
+        <location filename="../src/app/Settings.qml" line="673"/>
+        <location filename="../src/app/Settings.qml" line="759"/>
         <source>Not set</source>
         <translation>Sin asignar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="538"/>
+        <location filename="../src/app/Settings.qml" line="689"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="538"/>
+        <location filename="../src/app/Settings.qml" line="689"/>
         <source>Record</source>
         <translation>Grabar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="554"/>
+        <location filename="../src/app/Settings.qml" line="705"/>
         <source>Remove</source>
         <translation>Quitar</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="566"/>
+        <location filename="../src/app/Settings.qml" line="717"/>
         <source>None</source>
         <translation>Ninguno</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="592"/>
+        <location filename="../src/app/Settings.qml" line="743"/>
         <source>Play</source>
         <translation>Reproducir</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="607"/>
+        <location filename="../src/app/Settings.qml" line="758"/>
         <source>No apps installed</source>
         <translation>Ninguna app instalada</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="626"/>
+        <location filename="../src/app/Settings.qml" line="777"/>
         <source>comma separated</source>
         <translation>separadas por comas</translation>
     </message>
     <message>
-        <location filename="../src/app/Settings.qml" line="661"/>
+        <location filename="../src/app/Settings.qml" line="812"/>
         <source>Open config.toml</source>
         <translation>Abrir config.toml</translation>
     </message>

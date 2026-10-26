@@ -6,6 +6,9 @@ listed here.
 ## Unreleased
 
 ### Added
+- Search in the settings window (Ctrl+F): matches option names, hints,
+  sections and pages, accents ignored; a result opens its page, scrolls to
+  the option and highlights it.
 - Calendar in the settings window (`islandctl settings calendar`): the
   month with its events, an event in detail, and a form for new events.
   Clicking an event in the expanded island opens it there.

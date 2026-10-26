@@ -237,6 +237,47 @@ Window {
     // Arguments of the page opened with openPage().
     property var pageArgs: ({})
 
+    // Option to scroll to and flash once its page is shown (optionId()).
+    property string focusOption: ""
+    property string query: ""
+    readonly property var results: query.trim() === "" ? [] : search(query)
+
+    function optionId(option: var): string {
+        return option.key ?? option.category ?? ""
+    }
+    // Lower case, without accents: "Título" matches "titulo".
+    function fold(text: string): string {
+        return text.replace("&&", "&").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    }
+    // Options whose label, hint, group, page or key contain every word of
+    // `text`; label matches first. [{ page, option, label, where, icon }]
+    function search(text: string): var {
+        const words = fold(text).split(/\s+/).filter(w => w.length > 0)
+        const out = []
+        pages.forEach((p, pageIndex) => {
+            const pageTitle = p.title.replace("&&", "&")
+            if (words.every(w => fold(pageTitle).includes(w)))
+                out.push({ page: pageIndex, option: "", label: pageTitle, where: "", icon: p.icon, score: 3 })
+            p.groups.forEach(g => g.options.forEach(o => {
+                const label = fold(o.label)
+                const rest = fold([o.hint ?? "", g.title, pageTitle, o.key ?? "",
+                                   (o.choices ?? []).map(c => c[1]).join(" ")].join(" "))
+                if (!words.every(w => label.includes(w) || rest.includes(w)))
+                    return
+                const score = label.startsWith(words[0]) ? 2 : words.every(w => label.includes(w)) ? 1 : 0
+                out.push({ page: pageIndex, option: optionId(o), label: o.label,
+                           where: pageTitle + "  ›  " + g.title, icon: p.icon, score: score })
+            }))
+        })
+        // Stable: pages keep their order within a score.
+        return out.map((r, i) => ({ r, i })).sort((a, b) => b.r.score - a.r.score || a.i - b.i).map(x => x.r)
+    }
+    function openResult(result: var) {
+        page = result.page
+        focusOption = ""
+        focusOption = result.option
+    }
+
     // Shows the page with `key` (pages[].key), e.g. an event in the calendar.
     function openPage(key: string, args: var) {
         const index = pages.findIndex(p => p.key === key)
@@ -277,9 +318,34 @@ Window {
             Layout.preferredWidth: 260
             color: "#0e0e0e"
 
+            TextField {
+                id: searchField
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: 12
+                placeholderText: qsTr("Search settings")
+                selectByMouse: true
+                onTextChanged: win.query = text
+                onAccepted: if (win.results.length > 0) win.openResult(win.results[0])
+                Keys.onEscapePressed: text = ""
+            }
+            Shortcut {
+                sequences: [StandardKey.Find]
+                onActivated: {
+                    searchField.forceActiveFocus()
+                    searchField.selectAll()
+                }
+            }
+
             ListView {
-                anchors.fill: parent
-                anchors.topMargin: 16
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: searchField.bottom
+                anchors.bottom: parent.bottom
+                anchors.topMargin: 8
+                clip: true
+                visible: win.query.trim() === ""
                 model: win.pages
                 spacing: 2
                 delegate: ItemDelegate {
@@ -292,6 +358,59 @@ Window {
                     icon.color: "transparent" // keep the theme's own icon colors
                     text: modelData.title
                     onClicked: win.page = index
+                }
+            }
+
+            // Search results: the option and where it is.
+            ListView {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: searchField.bottom
+                anchors.bottom: parent.bottom
+                anchors.topMargin: 8
+                clip: true
+                visible: win.query.trim() !== ""
+                model: win.results
+                spacing: 2
+                delegate: ItemDelegate {
+                    id: result
+                    required property var modelData
+                    required property int index
+                    width: ListView.view.width
+                    icon.source: Icons.source(modelData.icon, "preferences-system")
+                    icon.color: "transparent"
+                    highlighted: modelData.page === win.page && modelData.option === win.focusOption
+                    onClicked: win.openResult(modelData)
+                    contentItem: RowLayout {
+                        spacing: 12
+                        IconImage {
+                            source: result.icon.source
+                            size: 18
+                        }
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 0
+                            Label {
+                                Layout.fillWidth: true
+                                text: result.modelData.label
+                                elide: Text.ElideRight
+                            }
+                            Label {
+                                Layout.fillWidth: true
+                                visible: result.modelData.where !== ""
+                                text: result.modelData.where
+                                elide: Text.ElideRight
+                                opacity: 0.6
+                                font.pixelSize: 11
+                            }
+                        }
+                    }
+                }
+                Label {
+                    anchors.centerIn: parent
+                    visible: win.results.length === 0
+                    text: qsTr("No settings match")
+                    opacity: 0.6
                 }
             }
         }
@@ -368,6 +487,7 @@ Window {
                         }
 
                         Rectangle {
+                            id: card
                             Layout.fillWidth: true
                             implicitHeight: rows.implicitHeight + 8
                             radius: 12
@@ -390,8 +510,39 @@ Window {
                                         readonly property string hint: modelData.kind === "key"
                                             && Keybinds.replaced.includes(modelData.key.split(".")[1])
                                             ? qsTr("Replaces a bind from your Hyprland config") : (modelData.hint ?? "")
+                                        readonly property bool focused: win.focusOption !== ""
+                                                                        && win.focusOption === win.optionId(modelData)
                                         Layout.fillWidth: true
                                         spacing: 0
+
+                                        // Opened from the search: scroll here and flash.
+                                        function reveal() {
+                                            const y = row.mapToItem(content, 0, 0).y + content.y
+                                            flick.contentY = Math.max(0, Math.min(y - flick.height / 3,
+                                                                                  flick.contentHeight - flick.height))
+                                            flash.restart()
+                                        }
+                                        onFocusedChanged: if (focused) Qt.callLater(row.reveal)
+                                        Component.onCompleted: if (focused) Qt.callLater(row.reveal)
+
+                                        // In the card, not the layout.
+                                        Rectangle {
+                                            parent: card
+                                            x: 4
+                                            y: rows.y + row.y
+                                            width: card.width - 8
+                                            height: row.height
+                                            radius: 8
+                                            color: Theme.accent
+                                            opacity: 0
+                                            SequentialAnimation on opacity {
+                                                id: flash
+                                                running: false
+                                                NumberAnimation { to: 0.3; duration: 150 }
+                                                PauseAnimation { duration: 600 }
+                                                NumberAnimation { to: 0; duration: 900 }
+                                            }
+                                        }
 
                                         Rectangle {
                                             Layout.fillWidth: true
