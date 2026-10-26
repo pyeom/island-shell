@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QGuiApplication>
 #include <QTemporaryDir>
+#include <QSignalSpy>
 #include <QTest>
 
 using island::LauncherSearch;
@@ -69,6 +70,18 @@ private slots:
         QCOMPARE(timers.size(), 1);
         QCOMPARE(timers.first().toMap().value(QStringLiteral("label")).toString(), QStringLiteral("pasta"));
         island::Timers::instance()->remove(timers.first().toMap().value(QStringLiteral("id")).toInt());
+    }
+
+    void timerRingsAndStays() {
+        auto* timers = island::Timers::instance();
+        const int id = timers->start(1, QStringLiteral("tea"));
+        QSignalSpy finished(timers, &island::Timers::finished);
+        QVERIFY(finished.wait(3000));
+        QTest::qWait(1500);
+        const auto list = timers->timers();
+        QCOMPARE(list.size(), 1);
+        QVERIFY(list.first().toMap().value(QStringLiteral("done")).toBool());
+        timers->remove(id);
     }
 
     void timerHint() {
