@@ -6,6 +6,9 @@ listed here.
 ## Unreleased
 
 ### Added
+- Timers from the launcher: `15 min`, `15'`, `90''`, `1 h`, `1h30`,
+  `timer 5 pasta`. The pill counts down; a finished timer rings, expands
+  the island and stays until dismissed (`Timers`).
 - Per-app volume in quick settings, under the output devices
   (`Audio.streams`, `AudioStream`, `setStreamVolume`, `setStreamMuted`).
 - Pending updates in quick settings (checkupdates, plus paru or yay for the

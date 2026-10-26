@@ -8,6 +8,8 @@
 #include "hyprland.h"
 #include "hyprlandparse.h"
 #include "icons.h"
+#include "timerparse.h"
+#include "timers.h"
 
 #include <QCoreApplication>
 #include <QFile>
@@ -30,6 +32,29 @@ QVariantMap item(const char* kind, const QString& title, const QString& subtitle
         {QStringLiteral("icon"), icon},
         {QStringLiteral("value"), value},
     };
+}
+
+QString timerIcon() {
+    return Icons::source(QStringLiteral("alarm-symbolic"), QStringLiteral("kalarm"));
+}
+
+QVariantMap timerItem(const TimerRequest& t) {
+    const auto duration = formatDuration(t.seconds);
+    auto it = item("timer",
+                   t.label.isEmpty()
+                       ? QCoreApplication::translate("LauncherSearch", "Timer · %1").arg(duration)
+                       : QStringLiteral("%1 · %2").arg(t.label, duration),
+                   QCoreApplication::translate("LauncherSearch", "Enter starts the timer"), timerIcon(),
+                   t.seconds);
+    it.insert(QStringLiteral("label"), t.label);
+    return it;
+}
+
+// "timer" or "temporizador" alone or with something that is not a duration.
+bool asksForTimer(const QString& text) {
+    const auto word = text.section(u' ', 0, 0);
+    return word.compare(QLatin1String("timer"), Qt::CaseInsensitive) == 0 ||
+           word.compare(QLatin1String("temporizador"), Qt::CaseInsensitive) == 0;
 }
 
 QVariantMap calcItem(const QString& expression, bool explicitMode) {
@@ -194,6 +219,12 @@ QVariantList LauncherSearch::query(const QString& text, int limit) const {
     }
 
     QVariantList out;
+    if (const auto timer = parseTimer(t))
+        out.append(timerItem(*timer));
+    else if (asksForTimer(t))
+        out.append(item("error", QCoreApplication::translate("LauncherSearch", "Timer"),
+                        QCoreApplication::translate("LauncherSearch", "e.g. 15 min, 15', 90'', 1 h, 1h30, timer 5 pasta"),
+                        timerIcon(), {}));
     if (looksLikeMath(t)) {
         const auto calc = calcItem(t, false);
         if (!calc.isEmpty())
@@ -244,6 +275,9 @@ void LauncherSearch::activate(const QVariantMap& it, int action) {
             apps->runInTerminal(value);
         else
             apps->run(value);
+    } else if (kind == u"timer") {
+        Timers::instance()->start(it.value(QStringLiteral("value")).toInt(),
+                                  it.value(QStringLiteral("label")).toString());
     } else if (kind == u"event") {
         if (m_calendarAdd)
             m_calendarAdd(value);

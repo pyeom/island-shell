@@ -24,6 +24,7 @@ island_test(camerascan)
 island_test(progressparse)
 island_test(volumestep)
 island_test(shotgeometry)
+island_test(timerparse)
 
 # Integration test against the QML module's services (needs a QGuiApplication).
 qt_add_executable(tst_launchersearch tst_launchersearch.cpp)

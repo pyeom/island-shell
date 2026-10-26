@@ -22,9 +22,10 @@ namespace island {
 //   ?words       search the web ([launcher] search_engine)
 //   :name        emoji
 //   +text        new calendar event ("+ mañana 15:00 dentista")
+//   15 min       a timer (15', 90'', 1 h, 1h30, "timer 5 pasta"), first
 //
 // Items are maps: { kind, title, subtitle, icon, value, actions? } with kind
-// one of app, window, calc, command, web, emoji, event, error.
+// one of app, window, calc, command, web, emoji, event, timer, error.
 class LauncherSearch : public QObject {
     Q_OBJECT
     QML_ELEMENT

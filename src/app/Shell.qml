@@ -24,6 +24,7 @@ QtObject {
         EventSoon {},
         SystemHeat {},
         RainAlert {},
+        TimerActivity {},
         ScreenshotActivity {},
         WallpaperPicker {},
         EventForm {},

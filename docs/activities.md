@@ -72,6 +72,8 @@ Built-in priorities:
 | `notification` | 70 |
 | `privacy` (mic, camera, screen) | 60 |
 | `event` (calendar event starting soon) | 55 |
+| `timer` (ringing) | 95 |
+| `timer` | 52 |
 | `live:<id>` | 50 |
 | `media` | 40 |
 | `idle` (workspaces, clock, notification history) | 0 |
@@ -125,7 +127,8 @@ Activity {
 | `Mpris` | `players`, `current` (title, artist, artUrl, position, length, playPause(), next(), previous(), seekTo(s)). |
 | `LiveActivities` | Model of pushed live activities; `invoke(id, key)`. |
 | `Apps` | `search(query)`, `launch(id, action)`, `run(command)`, `runInTerminal`, `openUrl`, `copyText`, `iconForClass(windowClass)`. |
-| `LauncherSearch` | `query(text)` over apps, windows, calculator, commands, web and emoji; `activate(item, action)`. |
+| `LauncherSearch` | `query(text)` over apps, windows, calculator, commands, web, emoji and timers; `activate(item, action)`. |
+| `Timers` | `timers` (`id`, `label`, `duration`, `endsAt`, `done`), `start(seconds, label)`, `extend(id, seconds)`, `remove(id)`, `finished(id, label)` signal. |
 | `Power` | `run("shutdown" \| "reboot" \| "suspend" \| "logout" \| "lock")`. |
 | `Icons` | `Icons.source(nameOrPath, fallback)` → an `Image` source from the icon theme. |
 | `Network` | `connected`, `primaryType`, `ssid`, `strength`, `iconName`, `wifiEnabled`, `setWifiEnabled(b)`. |

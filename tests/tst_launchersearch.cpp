@@ -3,6 +3,7 @@
 #include "calendar.h"
 #include "config.h"
 #include "launchersearch.h"
+#include "timers.h"
 
 #include <QDir>
 #include <QFile>
@@ -56,6 +57,23 @@ private slots:
         const auto r = first(QStringLiteral("sqrt(16)+1"));
         QCOMPARE(r.value(QStringLiteral("kind")).toString(), QStringLiteral("calc"));
         QCOMPARE(r.value(QStringLiteral("value")).toString(), QStringLiteral("5"));
+    }
+
+    void timer() {
+        const auto r = first(QStringLiteral("15 min pasta"));
+        QCOMPARE(r.value(QStringLiteral("kind")).toString(), QStringLiteral("timer"));
+        QCOMPARE(r.value(QStringLiteral("value")).toInt(), 900);
+        QCOMPARE(r.value(QStringLiteral("label")).toString(), QStringLiteral("pasta"));
+        search->activate(r);
+        const auto timers = island::Timers::instance()->timers();
+        QCOMPARE(timers.size(), 1);
+        QCOMPARE(timers.first().toMap().value(QStringLiteral("label")).toString(), QStringLiteral("pasta"));
+        island::Timers::instance()->remove(timers.first().toMap().value(QStringLiteral("id")).toInt());
+    }
+
+    void timerHint() {
+        QCOMPARE(first(QStringLiteral("timer")).value(QStringLiteral("kind")).toString(),
+                 QStringLiteral("error"));
     }
 
     void command() {

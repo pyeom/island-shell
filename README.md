@@ -21,7 +21,7 @@ Version 0.1. The design notes and roadmap are in
 - Workspaces as dots on the pill, a clock on every monitor.
 - Media controls for any MPRIS player, and a volume and mic OSD.
 - Launcher for apps, open windows, a calculator, shell commands, web search,
-  emoji and new calendar events.
+  emoji, timers and new calendar events.
 - Calendar from local `.ics` folders, synced with vdirsyncer.
 - Quick settings for Wi-Fi, Bluetooth, night light, audio devices, per-app
   volume, brightness, power profile and pending updates (pacman, paru,
@@ -244,7 +244,9 @@ next sync.
 
 `islandctl launcher toggle` opens it (bind it to SUPER+R). Typing searches
 apps and open windows. A query that looks like math, such as `2*(3+4)` or
-`sqrt(2)`, shows the result. Prefixes switch modes:
+`sqrt(2)`, shows the result. A duration starts a timer that counts down in
+the island: `15 min`, `15'`, `90''`, `1 hour`, `1 h`, `1h30`, `timer 5 pasta`
+(the words after it are its label). Prefixes switch modes:
 
 | Prefix | Does |
 |---|---|

@@ -215,60 +215,80 @@
 <context>
     <name>LauncherSearch</name>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="41"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="45"/>
+        <source>Timer · %1</source>
+        <translation>Temporizador · %1</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="47"/>
+        <source>Enter starts the timer</source>
+        <translation>Enter lo inicia</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="66"/>
         <source>Calculator</source>
         <translation>Calculadora</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="47"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="72"/>
         <source>Enter copies the result</source>
         <translation>Enter copia el resultado</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="110"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="135"/>
         <source>Window · %1 · workspace %2</source>
         <translation>Ventana · %1 · workspace %2</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="153"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="178"/>
         <source>Type a command</source>
         <translation>Escribe un comando</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="154"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="179"/>
         <source>Enter runs it (in a terminal unless it is an app), Shift+Enter the other way</source>
         <translation>Enter lo ejecuta (en una terminal salvo que sea una app); Shift+Enter, al revés</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="158"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="183"/>
         <source>Run · Shift+Enter: in a terminal</source>
         <translation>Ejecutar · Shift+Enter: en una terminal</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="159"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="184"/>
         <source>Run in a terminal · Shift+Enter: without one</source>
         <translation>Ejecutar en una terminal · Shift+Enter: sin terminal</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="165"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="190"/>
         <source>Search the web for “%1”</source>
         <translation>Buscar “%1” en la web</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="175"/>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="180"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="200"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="205"/>
         <source>New event</source>
         <translation>Nuevo evento</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="176"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="201"/>
         <source>e.g. + tomorrow 15:00 dentist 1h</source>
         <translation>ej.: + mañana 15:00 dentista 1h</translation>
     </message>
     <message>
-        <location filename="../src/services/launcher/launchersearch.cpp" line="192"/>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="217"/>
         <source>Enter adds it</source>
         <translation>Enter lo agrega</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="225"/>
+        <source>Timer</source>
+        <translation>Temporizador</translation>
+    </message>
+    <message>
+        <location filename="../src/services/launcher/launchersearch.cpp" line="226"/>
+        <source>e.g. 15 min, 15&apos;, 90&apos;&apos;, 1 h, 1h30, timer 5 pasta</source>
+        <translation>p. ej. 15 min, 15&apos;, 90&apos;&apos;, 1 h, 1h30, temporizador 5 pasta</translation>
     </message>
 </context>
 <context>
@@ -1403,6 +1423,25 @@
         <location filename="../activities/SystemHeat.qml" line="61"/>
         <source>%1 is running hot: %2 °C</source>
         <translation>%1 está muy caliente: %2 °C</translation>
+    </message>
+</context>
+<context>
+    <name>TimerActivity</name>
+    <message>
+        <location filename="../activities/TimerActivity.qml" line="82"/>
+        <location filename="../activities/TimerActivity.qml" line="126"/>
+        <source>Time&apos;s up</source>
+        <translation>Se acabó el tiempo</translation>
+    </message>
+    <message>
+        <location filename="../activities/TimerActivity.qml" line="136"/>
+        <source>%1 timer</source>
+        <translation>Temporizador de %1</translation>
+    </message>
+    <message>
+        <location filename="../activities/TimerActivity.qml" line="148"/>
+        <source>+1 min</source>
+        <translation>+1 min</translation>
     </message>
 </context>
 <context>

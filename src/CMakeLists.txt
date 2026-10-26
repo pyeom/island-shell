@@ -14,6 +14,7 @@ add_library(islandlogic STATIC
     services/privacy/camerascan.h services/privacy/camerascan.cpp
     services/live/progressparse.h services/live/progressparse.cpp
     services/launcher/calc.h services/launcher/calc.cpp
+    services/launcher/timerparse.h services/launcher/timerparse.cpp
     services/system/sysparse.h services/system/sysparse.cpp
     services/screenshots/shotgeometry.h services/screenshots/shotgeometry.cpp
     services/weather/weatherparse.h services/weather/weatherparse.cpp
