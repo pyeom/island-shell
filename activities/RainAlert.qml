@@ -3,28 +3,35 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import IslandShell
 
-// Rain likely within 2 hours ([weather] rain_alert). Alerts once per rainy
-// hour; then sits in the pill until that hour passes.
+// Rain likely within 2 hours ([weather] rain_alert). Alerts once when rain
+// becomes likely, stays in the pill for a minute, then leaves it; the forecast
+// is still in the expanded clock. Alerts again only after a dry spell.
 Activity {
     id: root
 
     readonly property var rain: Weather.rainSoon
     readonly property bool likely: rain.probability !== undefined
-    property string _alertedFor: ""
+    property bool _showing: false
 
     name: "rain"
     priority: 45
     ambient: true
-    active: likely
+    active: likely && _showing
 
-    onRainChanged: {
-        if (!likely)
+    onLikelyChanged: {
+        if (!likely) {
+            _showing = false
             return
-        const key = String(rain.time)
-        if (key !== _alertedFor) {
-            _alertedFor = key
-            alert(4000)
         }
+        _showing = true
+        _hide.restart()
+        alert(4000)
+    }
+    Component.onCompleted: if (likely) likelyChanged()
+
+    property Timer _hide: Timer {
+        interval: 60 * 1000
+        onTriggered: root._showing = false
     }
 
     readonly property string label: qsTr("Rain %1% · %2").arg(rain.probability ?? 0)

@@ -438,7 +438,7 @@
 <context>
     <name>RainAlert</name>
     <message>
-        <location filename="../activities/RainAlert.qml" line="30"/>
+        <location filename="../activities/RainAlert.qml" line="37"/>
         <source>Rain %1% · %2</source>
         <translation>Lluvia %1% · %2</translation>
     </message>

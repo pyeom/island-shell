@@ -106,6 +106,8 @@ listed here.
   played (1.7% → 0.3% CPU).
 
 ### Changed
+- The rain alert leaves the pill a minute after alerting, and alerts again
+  only after a dry spell instead of every rainy hour.
 - Settings: each page groups its options in titled sections.
 - Default `[island] surface_height` is 560 so the richer expanded view fits.
 - Tapping the island over background information (music, microphone,
