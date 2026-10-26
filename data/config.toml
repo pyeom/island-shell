@@ -109,6 +109,12 @@ units = "metric"          # metric | imperial
 # Alert when rain is at least this likely within 2 hours (%, 0 disables).
 rain_alert = 60
 
+[timer]
+# Sound when a launcher timer ends: a file, empty for the freedesktop alarm
+# (alarm-clock-elapsed), or "none". Pick one in the settings window.
+sound = ""
+volume = 1.0              # 0..1
+
 [updates]
 # Upgrade command for the updates button in quick settings, run in the
 # terminal. Empty: paru -Syu, yay -Syu, else sudo pacman -Syu.

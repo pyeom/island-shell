@@ -23,7 +23,7 @@ Window {
 
     // Each page holds groups, each group its options: section.key, label,
     // kind, default, extra.
-    // kind: text | int | double | bool | choice | color | list | key | app
+    // kind: text | int | double | bool | choice | color | list | key | app | sound
     // (app: the default application for `category`, see DefaultApps)
     readonly property var pages: [
         { title: qsTr("General"), icon: "preferences-system-symbolic", groups: [
@@ -35,6 +35,10 @@ Window {
             ]},
             { title: qsTr("Clock"), options: [
                 { key: "clock.format", label: qsTr("Clock format"), kind: "text", def: "HH:mm", hint: "HH:mm · h:mm AP · HH:mm:ss" },
+            ]},
+            { title: qsTr("Timer"), note: qsTr("Start a timer from the launcher: 15 min, 15', 90'', 1 h, 1h30, timer 5 pasta."), options: [
+                { key: "timer.sound", label: qsTr("Sound"), kind: "sound", def: "" },
+                { key: "timer.volume", label: qsTr("Volume"), kind: "double", def: 1.0 },
             ]},
             { title: qsTr("Size and position"), options: [
                 { key: "island.compact_width", label: qsTr("Pill width"), kind: "int", def: 190, from: 40, to: 2000 },
@@ -397,6 +401,7 @@ Window {
                                                                : row.modelData.kind === "bool" ? boolEditor
                                                                : row.modelData.kind === "key" ? keyEditor
                                                                : row.modelData.kind === "app" ? appEditor
+                                                               : row.modelData.kind === "sound" ? soundEditor
                                                                : textEditor
 
                                                 Component {
@@ -512,6 +517,44 @@ Window {
                                                             onClicked: Config.set(row.modelData.key, "")
                                                             ToolTip.visible: hovered
                                                             ToolTip.text: qsTr("Remove")
+                                                        }
+                                                    }
+                                                }
+                                                Component {
+                                                    id: soundEditor
+                                                    RowLayout {
+                                                        id: soundRow
+                                                        // "" is the default sound: the first one listed.
+                                                        readonly property string current: row.current === "" && Timers.sounds.length > 0
+                                                            ? Timers.sounds[0].path : row.current
+                                                        readonly property var choices: {
+                                                            const list = [{ path: "none", label: qsTr("None") }]
+                                                                .concat(Timers.sounds.map(s => ({ path: s.path, label: s.name + "  ·  " + s.theme })))
+                                                            if (current !== "" && !list.some(c => c.path === current))
+                                                                list.push({ path: current, label: current.split("/").pop() })
+                                                            return list
+                                                        }
+                                                        function play(path: string) {
+                                                            Timers.playSound(path, Config.get("timer.volume", 1.0))
+                                                        }
+                                                        spacing: 6
+                                                        ComboBox {
+                                                            Layout.fillWidth: true
+                                                            model: soundRow.choices
+                                                            textRole: "label"
+                                                            currentIndex: soundRow.choices.findIndex(c => c.path === soundRow.current)
+                                                            onActivated: index => {
+                                                                const path = soundRow.choices[index].path
+                                                                Config.set(row.modelData.key, path)
+                                                                soundRow.play(path)
+                                                            }
+                                                        }
+                                                        ToolButton {
+                                                            icon.source: Icons.source("media-playback-start-symbolic", "media-playback-start")
+                                                            enabled: soundRow.current !== "none"
+                                                            onClicked: soundRow.play(soundRow.current)
+                                                            ToolTip.visible: hovered
+                                                            ToolTip.text: qsTr("Play")
                                                         }
                                                     }
                                                 }

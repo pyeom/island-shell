@@ -89,6 +89,13 @@ struct WeatherConfig {
     int rainAlert = 60;         // % chance within 2 hours to alert; 0 disables
 };
 
+struct TimerConfig {
+    // Sound file played when a timer ends; empty: the freedesktop
+    // alarm-clock-elapsed sound; "none": silent.
+    std::string sound;
+    double volume = 1.0; // 0..1
+};
+
 struct UpdatesConfig {
     // Upgrade command run in the terminal; empty: paru, yay, then
     // sudo pacman -Syu.
@@ -159,6 +166,7 @@ struct ConfigData {
     SystemConfig system;
     WeatherConfig weather;
     UpdatesConfig updates;
+    TimerConfig timer;
     NightLightConfig nightLight;
     ScreenshotsConfig screenshots;
     WallpaperConfig wallpaper;

@@ -128,7 +128,7 @@ Activity {
 | `LiveActivities` | Model of pushed live activities; `invoke(id, key)`. |
 | `Apps` | `search(query)`, `launch(id, action)`, `run(command)`, `runInTerminal`, `openUrl`, `copyText`, `iconForClass(windowClass)`. |
 | `LauncherSearch` | `query(text)` over apps, windows, calculator, commands, web, emoji and timers; `activate(item, action)`. |
-| `Timers` | `timers` (`id`, `label`, `duration`, `endsAt`, `done`), `start(seconds, label)`, `extend(id, seconds)`, `remove(id)`, `finished(id, label)` signal. |
+| `Timers` | `timers` (`id`, `label`, `duration`, `endsAt`, `done`), `start(seconds, label)`, `extend(id, seconds)`, `remove(id)`, `sounds`, `playSound(path, volume)`, `finished(id, label)` signal. |
 | `Power` | `run("shutdown" \| "reboot" \| "suspend" \| "logout" \| "lock")`. |
 | `Icons` | `Icons.source(nameOrPath, fallback)` → an `Image` source from the icon theme. |
 | `Network` | `connected`, `primaryType`, `ssid`, `strength`, `iconName`, `wifiEnabled`, `setWifiEnabled(b)`. |

@@ -1,7 +1,12 @@
 #include "timers.h"
 
+#include "config.h"
+
 #include <QCoreApplication>
+#include <QDir>
+#include <QDirIterator>
 #include <QFile>
+#include <QFileInfo>
 #include <QJSEngine>
 #include <QProcess>
 #include <QStandardPaths>
@@ -13,6 +18,12 @@ namespace island {
 namespace {
 // Finished timers leave on their own after this long.
 constexpr qint64 kDoneLingerMs = 10 * 60 * 1000;
+
+const QString kDefaultSound = QStringLiteral("/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga");
+
+bool installed(const QString& program) {
+    return !QStandardPaths::findExecutable(program).isEmpty();
+}
 } // namespace
 
 Timers* Timers::instance() {
@@ -128,13 +139,89 @@ void Timers::check() {
         emit finished(e.id, e.label);
 }
 
+QVariantList Timers::sounds() const {
+    if (!m_sounds.isEmpty())
+        return m_sounds;
+    // Sound themes (folders with an index.theme) in the XDG data dirs; not
+    // loose sounds like ALSA's speaker tests.
+    QStringList seen;
+    QVariantList found;
+    for (const auto& data : QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation)) {
+        const QDir root(data + QLatin1String("/sounds"));
+        for (const auto& theme : root.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
+            if (!QFileInfo::exists(root.filePath(theme + QLatin1String("/index.theme"))))
+                continue;
+            QDirIterator it(root.filePath(theme),
+                            {QStringLiteral("*.oga"), QStringLiteral("*.ogg"), QStringLiteral("*.wav"),
+                             QStringLiteral("*.flac")},
+                            QDir::Files, QDirIterator::Subdirectories);
+            while (it.hasNext()) {
+                const QFileInfo file(it.next());
+                const auto key = theme + u'/' + file.completeBaseName();
+                if (seen.contains(key))
+                    continue;
+                seen.append(key);
+                found.append(QVariantMap{
+                    {QStringLiteral("path"), file.filePath()},
+                    // "alarm-clock-elapsed" -> "alarm clock elapsed"
+                    {QStringLiteral("name"), file.completeBaseName().replace(u'-', u' ').replace(u'_', u' ')},
+                    {QStringLiteral("theme"), theme},
+                });
+            }
+        }
+    }
+    std::ranges::stable_sort(found, [](const QVariant& a, const QVariant& b) {
+        const auto ma = a.toMap();
+        const auto mb = b.toMap();
+        const bool da = ma.value(QStringLiteral("path")) == kDefaultSound;
+        const bool db = mb.value(QStringLiteral("path")) == kDefaultSound;
+        if (da != db)
+            return da;
+        const int theme = QString::localeAwareCompare(ma.value(QStringLiteral("theme")).toString(),
+                                                      mb.value(QStringLiteral("theme")).toString());
+        if (theme != 0)
+            return theme < 0;
+        return QString::localeAwareCompare(ma.value(QStringLiteral("name")).toString(),
+                                           mb.value(QStringLiteral("name")).toString()) < 0;
+    });
+    m_sounds = found;
+    return m_sounds;
+}
+
+void Timers::playSound(const QString& path, qreal volume) {
+    if (m_player) {
+        m_player->kill();
+        m_player = nullptr;
+    }
+    if (path == u"none")
+        return;
+    const auto file = path.isEmpty() ? kDefaultSound : path;
+    auto* p = new QProcess(this);
+    connect(p, &QProcess::finished, p, &QObject::deleteLater);
+    connect(p, &QProcess::finished, this, [this, p] {
+        if (m_player == p)
+            m_player = nullptr;
+    });
+    if (installed(QStringLiteral("pw-play")) && QFile::exists(file)) {
+        p->start(QStringLiteral("pw-play"),
+                 {QStringLiteral("--volume"), QString::number(std::clamp(volume, 0.0, 1.0), 'f', 2), file});
+    } else if (installed(QStringLiteral("paplay")) && QFile::exists(file)) {
+        // paplay: 65536 is 100%.
+        p->start(QStringLiteral("paplay"),
+                 {QStringLiteral("--volume=%1").arg(qRound(std::clamp(volume, 0.0, 1.0) * 65536)), file});
+    } else if (installed(QStringLiteral("canberra-gtk-play"))) {
+        p->start(QStringLiteral("canberra-gtk-play"),
+                 {QStringLiteral("-i"), QStringLiteral("alarm-clock-elapsed")});
+    } else {
+        delete p;
+        return;
+    }
+    m_player = p;
+}
+
 void Timers::ring() {
-    const auto sound = QStringLiteral("/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga");
-    if (QFile::exists(sound) && !QStandardPaths::findExecutable(QStringLiteral("pw-play")).isEmpty())
-        QProcess::startDetached(QStringLiteral("pw-play"), {sound});
-    else if (!QStandardPaths::findExecutable(QStringLiteral("canberra-gtk-play")).isEmpty())
-        QProcess::startDetached(QStringLiteral("canberra-gtk-play"),
-                                {QStringLiteral("-i"), QStringLiteral("alarm-clock-elapsed")});
+    const auto& cfg = Config::instance()->data().timer;
+    playSound(QString::fromStdString(cfg.sound), cfg.volume);
 }
 
 } // namespace island

@@ -221,6 +221,30 @@ rain = "high"
         QVERIFY(cfg.wallpaper.pywal);
     }
 
+    void timerAndUpdates() {
+        std::vector<std::string> errors;
+        auto cfg = parseConfig("", errors);
+        QVERIFY(cfg.timer.sound.empty());
+        QCOMPARE(cfg.timer.volume, 1.0);
+        QCOMPARE(cfg.updates.interval, 60);
+        cfg = parseConfig(R"(
+            [timer]
+            sound = "/usr/share/sounds/freedesktop/stereo/bell.oga"
+            volume = 0.4
+            [updates]
+            command = "paru -Syu --noconfirm"
+            interval = 0
+        )",
+                          errors);
+        QVERIFY(errors.empty());
+        QCOMPARE(cfg.timer.sound, std::string("/usr/share/sounds/freedesktop/stereo/bell.oga"));
+        QCOMPARE(cfg.timer.volume, 0.4);
+        QCOMPARE(cfg.updates.command, std::string("paru -Syu --noconfirm"));
+        QCOMPARE(cfg.updates.interval, 0);
+        parseConfig("[timer]\nvolume = 3.0\n", errors);
+        QCOMPARE(errors.size(), size_t(1));
+    }
+
     void rawKeepsUnknownSections() {
         std::vector<std::string> errors;
         const auto cfg = parseConfig("[activities.weather]\ncity = \"Santiago\"\n", errors);
