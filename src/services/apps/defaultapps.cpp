@@ -17,21 +17,28 @@ namespace {
 struct Category {
     const char* key;
     QStringList mimeTypes; // the first one is queried for the current default
+    // Apps in all of these menu categories are offered too, even when they
+    // do not declare the MIME types (VS Code only declares its workspaces).
+    QStringList menuCategories;
 };
 
 const QList<Category>& categoryList() {
     static const QList<Category> list = {
-        {"browser", {"x-scheme-handler/https", "x-scheme-handler/http", "text/html",
-                     "application/xhtml+xml"}},
-        {"files", {"inode/directory"}},
-        {"mail", {"x-scheme-handler/mailto"}},
-        {"text", {"text/plain", "text/markdown", "application/x-shellscript"}},
-        {"images", {"image/png", "image/jpeg", "image/gif", "image/webp", "image/bmp", "image/svg+xml",
-                    "image/avif"}},
-        {"video", {"video/mp4", "video/x-matroska", "video/webm", "video/quicktime", "video/x-msvideo",
-                   "video/mpeg"}},
-        {"music", {"audio/mpeg", "audio/flac", "audio/ogg", "audio/x-wav", "audio/mp4", "audio/x-opus+ogg"}},
-        {"pdf", {"application/pdf"}},
+        {"browser",
+         {"x-scheme-handler/https", "x-scheme-handler/http", "text/html", "application/xhtml+xml"},
+         {"WebBrowser"}},
+        {"files", {"inode/directory"}, {"FileManager"}},
+        {"mail", {"x-scheme-handler/mailto"}, {"Email"}},
+        {"text", {"text/plain", "text/markdown", "application/x-shellscript"}, {"TextEditor"}},
+        {"images",
+         {"image/png", "image/jpeg", "image/gif", "image/webp", "image/bmp", "image/svg+xml", "image/avif"},
+         {"Graphics", "Viewer"}},
+        {"video",
+         {"video/mp4", "video/x-matroska", "video/webm", "video/quicktime", "video/x-msvideo", "video/mpeg"},
+         {"Video", "Player"}},
+        {"music", {"audio/mpeg", "audio/flac", "audio/ogg", "audio/x-wav", "audio/mp4", "audio/x-opus+ogg"},
+         {"Audio", "Player"}},
+        {"pdf", {"application/pdf"}, {}},
     };
     return list;
 }
@@ -106,7 +113,9 @@ QVariantList DefaultApps::categories() const {
         bool hasCurrent = false;
         for (const auto& e : entries) {
             const bool handles =
-                std::ranges::any_of(c.mimeTypes, [&](const QString& m) { return e.mimeTypes.contains(m); });
+                std::ranges::any_of(c.mimeTypes, [&](const QString& m) { return e.mimeTypes.contains(m); }) ||
+                (!c.menuCategories.isEmpty() &&
+                 std::ranges::all_of(c.menuCategories, [&](const QString& m) { return e.categories.contains(m); }));
             if (!handles && e.id != current)
                 continue;
             hasCurrent = hasCurrent || e.id == current;

@@ -15,6 +15,7 @@ const QString kFirefox = QStringLiteral(
     "Exec=/usr/lib/firefox/firefox %u\n"
     "Icon=firefox\n"
     "MimeType=text/html;x-scheme-handler/http;\n"
+    "Categories=Network;WebBrowser;\n"
     "Actions=new-window;private;\n"
     "\n"
     "[Desktop Action new-window]\n"
@@ -64,6 +65,7 @@ private slots:
         QCOMPARE(e->keywords, QStringList({"Internet", "WWW", "Browser;Web"}));
         QCOMPARE(e->icon, QStringLiteral("firefox"));
         QCOMPARE(e->mimeTypes, QStringList({"text/html", "x-scheme-handler/http"}));
+        QCOMPARE(e->categories, QStringList({"Network", "WebBrowser"}));
         QCOMPARE(e->actions.size(), 2);
         QCOMPARE(e->actions[1].id, QStringLiteral("private"));
     }

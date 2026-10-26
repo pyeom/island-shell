@@ -31,6 +31,7 @@ struct DesktopEntry {
     QStringList onlyShowIn;
     QStringList notShowIn;
     QStringList mimeTypes;
+    QStringList categories; // freedesktop menu categories: WebBrowser, TextEditor...
     QList<DesktopAction> actions;
 
     // Whether it belongs in the launcher for `desktops` ($XDG_CURRENT_DESKTOP).
