@@ -126,7 +126,7 @@ Activity {
 | `Brightness` | Backlight `level` 0..1, `available`, `changed` signal. |
 | `Mpris` | `players`, `current` (title, artist, artUrl, position, length, playPause(), next(), previous(), seekTo(s)). |
 | `LiveActivities` | Model of pushed live activities; `count`, `invoke(id, key)`. `Config.liveEnabled` says whether they show. |
-| `Tray` | Model of tray items (`key`, `title`, `tooltip`, `status`, `shown`, `icon`, `hasMenu`, `service`, `menuPath`); `count`, `available`, `activate(key)`, `secondaryActivate(key)`, `contextMenu(key)`, `scroll(key, delta, horizontal)`, `item(key)`; `activated(key)` and `menuRequested(key)` signals. |
+| `Tray` | Model of tray items (`key`, `title`, `tooltip`, `status`, `shown`, `icon`, `badge`, `attention`, `hasMenu`, `service`, `menuPath`); `count`, `attentionCount`, `available`, `activate(key)`, `secondaryActivate(key)`, `contextMenu(key)`, `scroll(key, delta, horizontal)`, `item(key)`, `showMenu(key)`; `activated(key)`, `menuRequested(key)` and `openRequested(key)` signals. `Config.trayAlerts`. |
 | `TrayMenu` | A tray item's menu: `TrayMenu { service: ...; path: ... }`, then `entries` (`id`, `label`, `enabled`, `separator`, `toggle`, `checked`, `icon`, `submenu`, `children`), `loading`, `aboutToShow(id)`, `activate(id)`. |
 | `Apps` | `search(query)`, `launch(id, action)`, `run(command)`, `runInTerminal`, `openUrl`, `copyText`, `iconForClass(windowClass)`. |
 | `LauncherSearch` | `query(text)` over apps, windows, calculator, commands, web, emoji and timers; `activate(item, action)`. |

@@ -50,4 +50,34 @@
         </translation>
     </message>
 </context>
+<context>
+    <name>SystemTrayPanel</name>
+    <message numerus="yes">
+        <location filename="../activities/SystemTrayPanel.qml" line="200"/>
+        <source>%n unread</source>
+        <translation>
+            <numerusform>%n unread</numerusform>
+            <numerusform>%n unread</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../activities/SystemTrayPanel.qml" line="309"/>
+        <source>%n app(s)</source>
+        <translation>
+            <numerusform>%n app</numerusform>
+            <numerusform>%n apps</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>TrayAlert</name>
+    <message numerus="yes">
+        <location filename="../activities/TrayAlert.qml" line="21"/>
+        <source>%n unread</source>
+        <translation>
+            <numerusform>%n unread</numerusform>
+            <numerusform>%n unread</numerusform>
+        </translation>
+    </message>
+</context>
 </TS>

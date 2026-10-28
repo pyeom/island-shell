@@ -2,6 +2,9 @@
 
 #include <QtEndian>
 
+#include <array>
+#include <functional>
+
 using namespace Qt::StringLiterals;
 
 namespace island {
@@ -42,6 +45,39 @@ QImage trayPixmapImage(const QList<TrayPixmap>& pixmaps, int size) {
             line[x] = qFromBigEndian<quint32>(src + (qsizetype(y) * best->width + x) * 4);
     }
     return image;
+}
+
+QString trayDesktopId(const QString& itemId, const QString& title, const QList<DesktopEntry>& entries) {
+    QStringList keys;
+    for (const auto& k : {itemId, title}) {
+        const auto key = k.trimmed().toLower();
+        if (!key.isEmpty() && !keys.contains(key))
+            keys.append(key);
+    }
+    if (keys.isEmpty())
+        return {};
+    const auto fileName = [](const DesktopEntry& e) {
+        auto name = e.id.toLower();
+        if (name.endsWith(u".desktop"_s))
+            name.chop(8);
+        return name;
+    };
+    // Most specific first: "com.discordapp.Discord" ends in "discord".
+    const std::array<std::function<bool(const DesktopEntry&, const QString&)>, 4> rules{
+        [&](const DesktopEntry& e, const QString& k) { return fileName(e) == k; },
+        [&](const DesktopEntry& e, const QString& k) { return fileName(e).endsWith(u'.' + k); },
+        [](const DesktopEntry& e, const QString& k) { return e.startupWmClass.toLower() == k; },
+        [](const DesktopEntry& e, const QString& k) { return e.name.toLower() == k; },
+    };
+    for (const auto& rule : rules) {
+        for (const auto& key : keys) {
+            for (const auto& e : entries) {
+                if (!e.hidden && rule(e, key))
+                    return e.id;
+            }
+        }
+    }
+    return {};
 }
 
 QString trayMenuLabel(const QString& label) {

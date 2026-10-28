@@ -334,6 +334,9 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
         readString(*t, "live", "downloads_directory", cfg.live.downloadsDirectory, {}, errors);
     }
 
+    if (const auto* t = cfg.raw["tray"].as_table())
+        readBool(*t, "tray", "alerts", cfg.tray.alerts, errors);
+
     if (const auto* t = cfg.raw["privacy"].as_table()) {
         readBool(*t, "privacy", "microphone", cfg.privacy.microphone, errors);
         readBool(*t, "privacy", "camera", cfg.privacy.camera, errors);

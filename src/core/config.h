@@ -48,6 +48,8 @@ class Config : public QObject {
     Q_PROPERTY(QString fullscreen READ fullscreen NOTIFY changed)
     // [live] enabled: show live activities at all.
     Q_PROPERTY(bool liveEnabled READ liveEnabled NOTIFY changed)
+    // [tray] alerts: expand when a tray app wants attention.
+    Q_PROPERTY(bool trayAlerts READ trayAlerts NOTIFY changed)
 
 public:
     static Config* instance();
@@ -77,6 +79,7 @@ public:
     int powerHoldMs() const { return m_data.power.holdMs; }
     QString fullscreen() const { return QString::fromStdString(m_data.island.fullscreen); }
     bool liveEnabled() const { return m_data.live.enabled; }
+    bool trayAlerts() const { return m_data.tray.alerts; }
 
     // Any value by dotted path, for activity settings:
     //   Config.get("activities.weather.city", "Santiago")

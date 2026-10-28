@@ -67,6 +67,20 @@ QtObject {
         delegate: LiveActivity {}
     }
 
+    // One per tray app; active while it wants attention.
+    property bool settled: false
+    property Timer _settle: Timer {
+        interval: 3000
+        running: true
+        onTriggered: shell.settled = true
+    }
+    property Instantiator trayAlerts: Instantiator {
+        model: Tray
+        delegate: TrayAlert {
+            settled: shell.settled
+        }
+    }
+
     property Instantiator islands: Instantiator {
         model: Qt.application.screens
 

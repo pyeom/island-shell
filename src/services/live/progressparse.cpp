@@ -27,6 +27,14 @@ LauncherEntryUpdate parseLauncherEntry(const QString& appUri, const QVariantMap&
     }
     if (const auto it = props.find(u"progress-visible"_s); it != props.end())
         u.progressVisible = unwrap(*it).toBool();
+    if (const auto it = props.find(u"count"_s); it != props.end()) {
+        bool ok = false;
+        const qint64 n = unwrap(*it).toLongLong(&ok);
+        if (ok)
+            u.count = std::max<qint64>(n, 0);
+    }
+    if (const auto it = props.find(u"count-visible"_s); it != props.end())
+        u.countVisible = unwrap(*it).toBool();
     return u;
 }
 

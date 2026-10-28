@@ -8,9 +8,14 @@ listed here.
 ### Added
 - System tray (`islandctl tray`, a tile in quick settings, `keybinds.tray`):
   StatusNotifierItem icons of Discord, Steam, nm-applet and other apps,
-  with their dbusmenu menus inside the island. The island serves
+  with their dbusmenu menus inside the island, as a list with the apps
+  that want attention first. The island serves
   `org.kde.StatusNotifierWatcher` unless another program does (`Tray`,
   `TrayMenu`).
+- Tray apps that want attention (NeedsAttention, or an unread count from
+  the Unity LauncherEntry signal, as Electron apps send) expand the island
+  briefly and stay in the bubble until read (`[tray] alerts`,
+  `[priorities] tray`).
 - Live activities can be turned off as a whole: a tile in quick settings
   and `[live] enabled` (`Config.liveEnabled`, `LiveActivities.count`).
 - Power modes (`[power_modes.<profile>]`, also in the settings window):

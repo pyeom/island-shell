@@ -12,7 +12,7 @@ touching the real session. Everything they write goes to `/tmp/ish-test`.
 | `close-nested.sh` | Exits every nested Hyprland; never the real session. |
 | `notify.py` | `notify-send` replacement with actions, inline reply, image data and signal printing. |
 | `fakeplayer.py` | Fake MPRIS player. |
-| `faketray.py` | Two fake tray items (pixels and themed icon, a dbusmenu with check, radio, submenu, disabled entries); prints clicks and menu events. `tst_faketray` uses it too. |
+| `faketray.py` | Two fake tray items (pixels and themed icon, a dbusmenu with check, radio, submenu, disabled entries, 3 unread messages); prints clicks and menu events. `faketray.py 120 chat` runs only the chat one, so its unread count shows. `tst_faketray` uses it too. |
 | `fake-system.sh` | Fake NetworkManager, BlueZ and UPower (`fake-system.py`) on a private bus, and restarts the nested island with it as its system bus. Wi-Fi networks, Bluetooth devices and batteries without the hardware. `fake-system-stop.sh` stops it. |
 
 Run Python helpers with `python3 -I`.

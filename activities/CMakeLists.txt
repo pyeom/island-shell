@@ -29,6 +29,7 @@ qt_add_qml_module(islandactivities
         QuickSettingsPanel.qml
         SystemTray.qml
         SystemTrayPanel.qml
+        TrayAlert.qml
         AudioDeviceList.qml
         AudioStreamList.qml
         WeatherLine.qml

@@ -1,9 +1,10 @@
-"""Fake tray items for tests: faketray.py [SECONDS] (default 60).
+"""Fake tray items for tests: faketray.py [SECONDS] [chat|sync] (default 60, both).
 
 Registers two StatusNotifierItems with the watcher, the way apps do:
   - "Fake Chat": icon from pixels (IconPixmap) registered by object path
     (like Electron), a dbusmenu with a checkbox, radio items, a separator, a
-    submenu and a disabled entry. Goes NeedsAttention after 5 s.
+    submenu and a disabled entry. Reports 3 unread messages right away
+    (Unity LauncherEntry, as Electron does) and goes NeedsAttention after 5 s.
   - "Fake Sync": a themed icon, registered by bus name, no menu; Activate
     fails, so a left click falls back to ContextMenu.
 Prints every Activate / ContextMenu / Scroll / menu Event.
@@ -68,6 +69,12 @@ class Item(dbus.service.Object):
         pass
 
 
+class LauncherEntry(dbus.service.Object):
+    @dbus.service.signal("com.canonical.Unity.LauncherEntry", signature="sa{sv}")
+    def Update(self, app_uri, props):
+        pass
+
+
 class Menu(dbus.service.Object):
     def __init__(self, bus, path):
         super().__init__(bus, path)
@@ -126,6 +133,7 @@ class Menu(dbus.service.Object):
 
 def main():
     seconds = int(sys.argv[1]) if len(sys.argv) > 1 else 60
+    only = sys.argv[2] if len(sys.argv) > 2 else ""
     bus = dbus.SessionBus()
     chat_path = "/org/ayatana/NotificationItem/fake_chat"
     chat = Item(bus, chat_path, {
@@ -133,7 +141,7 @@ def main():
         "IconName": "", "IconThemePath": "",
         "IconPixmap": dbus.Array([pixmap(22, 0xff2fb5ff), pixmap(64, 0xff0a84ff)], signature="(iiay)"),
         "AttentionIconName": "", "AttentionIconPixmap": dbus.Array([pixmap(64, 0xffff453a)], signature="(iiay)"),
-        "ToolTip": dbus.Struct(("", dbus.Array([], signature="(iiay)"), "Fake Chat", "<b>3</b> unread"),
+        "ToolTip": dbus.Struct(("", dbus.Array([], signature="(iiay)"), "Fake Chat", "<b>Fake</b> messages"),
                                signature="sa(iiay)ss"),
         "ItemIsMenu": False, "Menu": dbus.ObjectPath("/MenuBar"),
     })
@@ -147,9 +155,20 @@ def main():
     })
     watcher = bus.get_object("org.kde.StatusNotifierWatcher", "/StatusNotifierWatcher")
     register = watcher.get_dbus_method("RegisterStatusNotifierItem", "org.kde.StatusNotifierWatcher")
-    register(chat_path)
-    register(name.get_name())
+    if only != "sync":
+        register(chat_path)
+    if only != "chat":
+        register(name.get_name())
     print("registered", flush=True)
+    entry = LauncherEntry(bus, "/com/canonical/unity/launcherentry/1")
+
+    def unread():
+        entry.Update("application://fakechat.desktop",
+                     dbus.Dictionary({"count": dbus.Int64(3), "count-visible": True}, signature="sv"))
+        print("fake-chat unread 3", flush=True)
+        return False
+
+    GLib.timeout_add(300, unread)
 
     def attention():
         chat.props["Status"] = "NeedsAttention"

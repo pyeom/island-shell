@@ -18,6 +18,8 @@ private slots:
         QCOMPARE(u.desktopId, u"chromium.desktop"_s);
         QCOMPARE(*u.progress, 0.42);
         QCOMPARE(*u.progressVisible, true);
+        QCOMPARE(*u.count, 2);
+        QVERIFY(!u.countVisible);
 
         u = parseLauncherEntry(u"application://telegram.desktop"_s, {{u"count"_s, 5}, {u"count-visible"_s, true}});
         QVERIFY(!u.progress);

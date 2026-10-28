@@ -334,10 +334,17 @@ Commands from a terminal:
 `islandctl tray`, the Tray tile in quick settings or `keybinds.tray` open
 the status icons apps put in a tray (StatusNotifierItem): Discord, Steam,
 Telegram, nm-applet, KDE Connect and other Electron, Qt and GTK apps. A
-click activates the app, a right click opens its menu inside the island
-(submenus, check marks and radio items included), a middle click runs its
-secondary action and the wheel scrolls it. A dot marks an app that wants
-attention.
+list shows each app with its tooltip, those that want attention first. A
+click activates the app, a right click or ⋯ opens its menu inside the
+island (submenus, check marks and radio items included), a middle click
+runs its secondary action and the wheel scrolls it.
+
+When an app wants attention (a new message: unread counts come from the
+same signal as taskbar badges, which Discord and other Electron apps use),
+the island expands for a moment with Open and its menu, then keeps the app
+in the bubble beside the pill until it is read. `[tray] alerts = false`
+keeps only the bubble; `[priorities] tray` (45) places it among the other
+activities.
 
 The island keeps the list of tray apps (`org.kde.StatusNotifierWatcher`)
 unless another program already does, such as waybar; then it reads that

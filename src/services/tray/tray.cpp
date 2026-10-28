@@ -3,6 +3,8 @@
 #include "dbusproperties.h"
 #include "dbusutil.h"
 #include "icons.h"
+#include "apps.h"
+#include "progressparse.h"
 #include "statusnotifierwatcher.h"
 #include "trayparse.h"
 
@@ -175,6 +177,9 @@ void Tray::start() {
                 SLOT(onItemRegistered(QString)));
     bus.connect(service, path, kWatcherInterface, u"StatusNotifierItemUnregistered"_s, this,
                 SLOT(onItemUnregistered(QString)));
+    // Any path: each app picks its own.
+    bus.connect({}, {}, u"com.canonical.Unity.LauncherEntry"_s, u"Update"_s, this,
+                SLOT(onLauncherEntry(QString, QVariantMap)));
     auto* owner = new QDBusServiceWatcher(service, bus, QDBusServiceWatcher::WatchForOwnerChange, this);
     connect(owner, &QDBusServiceWatcher::serviceOwnerChanged, this,
             [this](const QString&, const QString&, const QString& newOwner) {
@@ -280,6 +285,7 @@ void Tray::addItem(const QString& registered) {
     item.key = key;
     item.service = address.service;
     item.path = address.path;
+    item.pid = bus.interface()->servicePid(item.service).value();
     item.props = new DBusProperties(bus, item.service, item.path, kItemInterface, this);
     connect(item.props, &DBusProperties::changed, this, [this, key] { update(key); });
 
@@ -340,6 +346,10 @@ void Tray::update(const QString& key) {
     item.itemIsMenu = dbus::unwrap(p->value(u"ItemIsMenu"_s)).toBool();
     const auto menu = dbus::toPath(p->value(u"Menu"_s));
     item.menuPath = hasMenuPath(menu) ? menu : QString();
+    item.desktopId = trayDesktopId(item.itemId, item.title, Apps::instance()->entries());
+    item.badge = m_badges.contains(item.desktopId) ? m_badges.value(item.desktopId)
+               : soleItemOf(item.pid)           ? m_pidBadges.value(item.pid)
+                                                : 0;
 
     // Named icons before pixels, the attention icon while it wants attention.
     const auto themePath = str("IconThemePath");
@@ -367,11 +377,46 @@ void Tray::update(const QString& key) {
     recount();
 }
 
+bool Tray::soleItemOf(uint pid) const {
+    return pid != 0 && std::ranges::count(m_items, pid, &Item::pid) == 1;
+}
+
+void Tray::onLauncherEntry(const QString& appUri, const QVariantMap& props) {
+    const auto u = parseLauncherEntry(appUri, props);
+    if (!u.count && !u.countVisible)
+        return; // progress only
+    const auto sender = calledFromDBus() ? message().service() : QString();
+    const uint pid = sender.isEmpty() ? 0 : connection().interface()->servicePid(sender).value();
+    // count-visible may come alone; keep the count it hides or shows.
+    const int previous = m_badges.contains(u.desktopId) ? m_badges.value(u.desktopId) : m_pidBadges.value(pid);
+    const int count = u.countVisible == false ? 0 : int(u.count.value_or(previous));
+    if (!u.desktopId.isEmpty())
+        m_badges.insert(u.desktopId, count);
+    if (pid != 0)
+        m_pidBadges.insert(pid, count);
+    // The app's item by desktop file; else by process, when it has only one.
+    const bool byDesktop = !u.desktopId.isEmpty() &&
+                           std::ranges::any_of(m_items, [&](const Item& i) { return i.desktopId == u.desktopId; });
+    const bool byPid = !byDesktop && soleItemOf(pid);
+    for (int row = 0; row < m_items.size(); ++row) {
+        auto& item = m_items[row];
+        const bool mine = byDesktop ? item.desktopId == u.desktopId : byPid && item.pid == pid;
+        if (!mine || item.badge == count)
+            continue;
+        item.badge = count;
+        emit dataChanged(index(row), index(row));
+    }
+    recount();
+}
+
 void Tray::recount() {
     const int n = static_cast<int>(std::ranges::count_if(m_items, [](const Item& i) { return i.shown(); }));
-    if (n == m_count)
+    const int attention = static_cast<int>(
+        std::ranges::count_if(m_items, [](const Item& i) { return i.shown() && i.attention(); }));
+    if (n == m_count && attention == m_attentionCount)
         return;
     m_count = n;
+    m_attentionCount = attention;
     emit countChanged();
 }
 
@@ -400,6 +445,10 @@ QVariant Tray::data(const QModelIndex& index, int role) const {
         return it.status;
     case ShownRole:
         return it.shown();
+    case BadgeRole:
+        return it.badge;
+    case AttentionRole:
+        return it.attention();
     case IconRole:
         return it.icon;
     case HasMenuRole:
@@ -420,7 +469,8 @@ QHash<int, QByteArray> Tray::roleNames() const {
         {KeyRole, "key"},         {ItemIdRole, "itemId"},     {TitleRole, "title"},
         {TooltipRole, "tooltip"}, {StatusRole, "status"},     {ShownRole, "shown"},
         {IconRole, "icon"},       {HasMenuRole, "hasMenu"},   {ItemIsMenuRole, "itemIsMenu"},
-        {ServiceRole, "service"}, {MenuPathRole, "menuPath"},
+        {ServiceRole, "service"}, {MenuPathRole, "menuPath"}, {BadgeRole, "badge"},
+        {AttentionRole, "attention"},
     };
 }
 

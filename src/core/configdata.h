@@ -140,6 +140,12 @@ struct LiveConfig {
     std::string downloadsDirectory; // empty: XDG download dir
 };
 
+// [tray]: the system tray.
+struct TrayConfig {
+    // Expand the island when a tray app wants attention (a new message).
+    bool alerts = true;
+};
+
 // [privacy]: which devices the privacy indicator reports.
 struct PrivacyConfig {
     bool microphone = true;
@@ -194,6 +200,7 @@ struct ConfigData {
     std::vector<Keybind> keybinds;
     PrivacyConfig privacy;
     LiveConfig live;
+    TrayConfig tray;
     // [priorities]: activity name → priority, replacing the activity's own
     // below 100. "live" covers every live activity ("live:<id>").
     std::map<std::string, int> priorities;

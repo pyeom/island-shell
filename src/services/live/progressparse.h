@@ -14,6 +14,8 @@ struct LauncherEntryUpdate {
     QString desktopId; // "firefox.desktop"; empty for other URIs
     std::optional<double> progress;
     std::optional<bool> progressVisible;
+    std::optional<qint64> count; // unread messages...
+    std::optional<bool> countVisible;
 };
 LauncherEntryUpdate parseLauncherEntry(const QString& appUri, const QVariantMap& props);
 

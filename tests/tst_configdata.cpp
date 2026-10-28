@@ -211,6 +211,13 @@ rain = "high"
         QVERIFY(cfg.live.downloads); // the sources keep their own switches
     }
 
+    void tray() {
+        std::vector<std::string> errors;
+        QVERIFY(parseConfig("", errors).tray.alerts);
+        QVERIFY(!parseConfig("[tray]\nalerts = false\n", errors).tray.alerts);
+        QVERIFY(errors.empty());
+    }
+
     void wallpaper() {
         std::vector<std::string> errors;
         auto cfg = parseConfig("", errors);

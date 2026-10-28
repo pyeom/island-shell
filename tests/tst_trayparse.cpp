@@ -52,6 +52,30 @@ private slots:
         QCOMPARE(trayPixmapImage({solid(16, 0xffff0000), solid(22, 0xffff0000)}, 64).width(), 22);
     }
 
+    void desktopId() {
+        const auto entry = [](const char* id, const char* name, const char* wmClass = "") {
+            DesktopEntry e;
+            e.id = QString::fromLatin1(id);
+            e.name = QString::fromLatin1(name);
+            e.startupWmClass = QString::fromLatin1(wmClass);
+            return e;
+        };
+        const QList<DesktopEntry> entries{
+            entry("discord-canary.desktop", "Discord Canary"),
+            entry("com.discordapp.Discord.desktop", "Discord"),
+            entry("elecwhat.desktop", "ElecWhat", "elecwhat"),
+            entry("steam.desktop", "Steam"),
+            entry("org.telegram.desktop.desktop", "Telegram", "TelegramDesktop"),
+        };
+        QCOMPARE(trayDesktopId(u"steam"_s, u"Steam"_s, entries), u"steam.desktop"_s);
+        // Electron: a generic Id, the app name as Title.
+        QCOMPARE(trayDesktopId(u"chrome_status_icon_1"_s, u"Discord"_s, entries), u"com.discordapp.Discord.desktop"_s);
+        QCOMPARE(trayDesktopId(u"chrome_status_icon_1"_s, u"ElecWhat"_s, entries), u"elecwhat.desktop"_s);
+        QCOMPARE(trayDesktopId(u"TelegramDesktop"_s, {}, entries), u"org.telegram.desktop.desktop"_s);
+        QVERIFY(trayDesktopId(u"nm-applet"_s, u"Network"_s, entries).isEmpty());
+        QVERIFY(trayDesktopId({}, {}, entries).isEmpty());
+    }
+
     void menuLabel() {
         QCOMPARE(trayMenuLabel(u"_Quit"_s), u"Quit"_s);
         QCOMPARE(trayMenuLabel(u"Save __as"_s), u"Save _as"_s);

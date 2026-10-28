@@ -6,7 +6,9 @@
 
 #include <QGuiApplication>
 #include <QProcess>
+#include <QDir>
 #include <QSignalSpy>
+#include <QTemporaryDir>
 #include <QTest>
 
 using namespace island;
@@ -17,6 +19,7 @@ class TestFakeTray : public QObject {
 
     QProcess daemon;
     QProcess fake;
+    QTemporaryDir dataHome;
     QString log;
     Tray* tray = nullptr;
 
@@ -54,6 +57,13 @@ private slots:
         const auto address = QString::fromUtf8(daemon.readLine()).trimmed();
         // Before anything touches the session bus.
         qputenv("DBUS_SESSION_BUS_ADDRESS", address.toUtf8());
+        // The chat app is "installed"; the sync one is not.
+        QVERIFY(QDir(dataHome.path()).mkpath(u"applications"_s));
+        QFile desktop(dataHome.filePath(u"applications/fakechat.desktop"_s));
+        QVERIFY(desktop.open(QIODevice::WriteOnly));
+        desktop.write("[Desktop Entry]\nType=Application\nName=Fake Chat\nExec=true\n");
+        desktop.close();
+        qputenv("XDG_DATA_HOME", dataHome.path().toUtf8());
 
         tray = Tray::instance();
         tray->start();
@@ -79,13 +89,23 @@ private slots:
         const auto chat = keyOf(u"Fake Chat"_s);
         QVERIFY(chat.endsWith(u"/org/ayatana/NotificationItem/fake_chat"_s)); // registered by path
         QVERIFY(role(chat, Tray::IconRole).toString().startsWith(u"image://tray/"_s)); // from pixels
-        QCOMPARE(role(chat, Tray::TooltipRole).toString(), u"3 unread"_s); // HTML stripped
+        QCOMPARE(role(chat, Tray::TooltipRole).toString(), u"Fake messages"_s); // HTML stripped
         QVERIFY(role(chat, Tray::HasMenuRole).toBool());
 
         const auto sync = keyOf(u"Fake Sync"_s);
         QVERIFY(sync.startsWith(u"org.kde.StatusNotifierItem-"_s)); // registered by bus name
         QVERIFY(!role(sync, Tray::HasMenuRole).toBool()); // /NO_DBUSMENU
         QVERIFY(!role(sync, Tray::IconRole).toString().isEmpty());
+    }
+
+    void unread() {
+        // fakechat.desktop is installed only for this test (XDG_DATA_HOME).
+        const auto chat = keyOf(u"Fake Chat"_s);
+        QTRY_COMPARE_WITH_TIMEOUT(role(chat, Tray::BadgeRole).toInt(), 3, 3000);
+        QVERIFY(role(chat, Tray::AttentionRole).toBool());
+        // Same process, other app: not its count.
+        QCOMPARE(role(keyOf(u"Fake Sync"_s), Tray::BadgeRole).toInt(), 0);
+        QCOMPARE(tray->attentionCount(), 1);
     }
 
     void clicks() {

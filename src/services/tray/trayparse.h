@@ -5,6 +5,8 @@
 #include <QList>
 #include <QString>
 
+#include "desktopentry.h"
+
 namespace island {
 
 // Where a StatusNotifierItem lives. Apps register with a bus name
@@ -28,6 +30,11 @@ struct TrayPixmap {
 // The smallest pixmap at least `size` wide (else the largest), as an image;
 // null when there is none or its data is short.
 QImage trayPixmapImage(const QList<TrayPixmap>& pixmaps, int size);
+
+// The installed app a tray item belongs to, by its Id or Title ("discord",
+// "Discord"): desktop file name, StartupWMClass, then app name, ignoring
+// case. Empty when nothing matches.
+QString trayDesktopId(const QString& itemId, const QString& title, const QList<DesktopEntry>& entries);
 
 // dbusmenu labels mark mnemonics with "_" ("_Quit", "Save __as"): the text
 // without them.

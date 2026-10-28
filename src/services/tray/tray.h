@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QAbstractListModel>
+#include <QDBusContext>
 #include <QHash>
 #include <QImage>
 #include <QMutex>
@@ -38,10 +39,11 @@ private:
 
 // The system tray: StatusNotifierItems (Discord, Steam, nm-applet...). The
 // island serves org.kde.StatusNotifierWatcher itself unless another program
-// does, and then reads that one.
+// does, and then reads that one. Unread counts come from the Unity
+// LauncherEntry signal (Electron apps never set NeedsAttention).
 //
 //   Repeater { model: Tray; delegate: ... title, icon, status, hasMenu ... }
-class Tray : public QAbstractListModel {
+class Tray : public QAbstractListModel, protected QDBusContext {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
@@ -50,6 +52,8 @@ class Tray : public QAbstractListModel {
     Q_PROPERTY(bool available READ available NOTIFY availableChanged)
     // Items to show: those not Passive.
     Q_PROPERTY(int count READ count NOTIFY countChanged)
+    // Of those, the ones that want attention.
+    Q_PROPERTY(int attentionCount READ attentionCount NOTIFY countChanged)
 
 public:
     enum Role {
@@ -59,6 +63,8 @@ public:
         TooltipRole,
         StatusRole, // "Active" | "Passive" | "NeedsAttention"
         ShownRole,  // loaded and not Passive
+        BadgeRole,  // unread count the app reports; 0: none
+        AttentionRole, // NeedsAttention, or a badge
         IconRole,
         HasMenuRole,
         ItemIsMenuRole,
@@ -74,6 +80,7 @@ public:
 
     bool available() const { return m_available; }
     int count() const;
+    int attentionCount() const { return m_attentionCount; }
 
     int rowCount(const QModelIndex& parent = {}) const override;
     QVariant data(const QModelIndex& index, int role) const override;
@@ -89,12 +96,15 @@ public:
     Q_INVOKABLE void scroll(const QString& key, int delta, bool horizontal = false);
     // { title, icon, service, menuPath } of one item; empty when it is gone.
     Q_INVOKABLE QVariantMap item(const QString& key) const;
+    // Opens the tray panel on an item's menu (`openRequested`).
+    Q_INVOKABLE void showMenu(const QString& key) { emit openRequested(key); }
 
 signals:
     void availableChanged();
     void countChanged();
     void activated(const QString& key);
     void menuRequested(const QString& key);
+    void openRequested(const QString& key);
 
 private:
     struct Item {
@@ -109,16 +119,22 @@ private:
         QString icon;
         QString pixmapSource; // image://tray/ source owned by this item
         QString menuPath;
+        QString desktopId; // the installed app, when it can be told
+        uint pid = 0;      // of the item's bus connection
+        int badge = 0;
         bool itemIsMenu = false;
         bool ready = false; // first properties arrived
 
-        bool shown() const { return ready && status != u"Passive"; }
+        bool shown() const { return ready && (status != u"Passive" || badge > 0); }
+        bool attention() const { return status == u"NeedsAttention" || badge > 0; }
     };
 
     explicit Tray(QObject* parent = nullptr);
     int indexOf(const QString& key) const;
     void setAvailable(bool available);
     void recount();
+    // `pid` owns exactly one item (its unread count can only be that one's).
+    bool soleItemOf(uint pid) const;
     void useOwnWatcher();
     void useWatcher(const QString& owner);
     void reset();
@@ -133,16 +149,22 @@ private slots:
     // org.kde.StatusNotifierWatcher of another program.
     void onItemRegistered(const QString& service);
     void onItemUnregistered(const QString& service);
+    // com.canonical.Unity.LauncherEntry.Update
+    void onLauncherEntry(const QString& appUri, const QVariantMap& props);
 
 private:
     QList<Item> m_items;
     QStringList m_dirty; // items that sent New* signals
+    // Last unread counts, for items that show up after them.
+    QHash<QString, int> m_badges;   // by desktop file ID
+    QHash<uint, int> m_pidBadges;   // by process
     QTimer m_refresh;
     StatusNotifierWatcher* m_watcher = nullptr;
     QString m_hostName;
     bool m_started = false;
     bool m_available = false;
     int m_count = 0;
+    int m_attentionCount = 0;
 };
 
 } // namespace island
