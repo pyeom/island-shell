@@ -219,6 +219,7 @@ std::span<const KeyAction> keyActions() {
         KeyAction{"launcher", "launcher toggle"},
         KeyAction{"power", "power"},
         KeyAction{"quick_settings", "quick"},
+        KeyAction{"tray", "tray"},
         KeyAction{"settings", "settings"},
         KeyAction{"expand", "expand"},
         KeyAction{"collapse", "collapse"},

@@ -46,6 +46,8 @@ class Config : public QObject {
     Q_PROPERTY(int powerHoldMs READ powerHoldMs NOTIFY changed)
     // "minimal" | "hide" | "show"
     Q_PROPERTY(QString fullscreen READ fullscreen NOTIFY changed)
+    // [live] enabled: show live activities at all.
+    Q_PROPERTY(bool liveEnabled READ liveEnabled NOTIFY changed)
 
 public:
     static Config* instance();
@@ -74,6 +76,7 @@ public:
     QString clockFormat() const { return QString::fromStdString(m_data.clock.format); }
     int powerHoldMs() const { return m_data.power.holdMs; }
     QString fullscreen() const { return QString::fromStdString(m_data.island.fullscreen); }
+    bool liveEnabled() const { return m_data.live.enabled; }
 
     // Any value by dotted path, for activity settings:
     //   Config.get("activities.weather.city", "Santiago")

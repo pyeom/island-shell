@@ -6,6 +6,13 @@ listed here.
 ## Unreleased
 
 ### Added
+- System tray (`islandctl tray`, a tile in quick settings, `keybinds.tray`):
+  StatusNotifierItem icons of Discord, Steam, nm-applet and other apps,
+  with their dbusmenu menus inside the island. The island serves
+  `org.kde.StatusNotifierWatcher` unless another program does (`Tray`,
+  `TrayMenu`).
+- Live activities can be turned off as a whole: a tile in quick settings
+  and `[live] enabled` (`Config.liveEnabled`, `LiveActivities.count`).
 - Power modes (`[power_modes.<profile>]`, also in the settings window):
   each power profile can turn off Hyprland's animations, blur and shadows
   and the island's animations, and run commands. Power saver turns

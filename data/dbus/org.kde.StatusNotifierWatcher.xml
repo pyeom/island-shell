@@ -1,0 +1,32 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+  "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<!--
+  StatusNotifierItem watcher (system tray), served when no other program
+  (waybar, a desktop panel) already owns it.
+  Bus name: org.kde.StatusNotifierWatcher
+  Object:   /StatusNotifierWatcher
+-->
+<node>
+  <interface name="org.kde.StatusNotifierWatcher">
+    <!-- A bus name (default object /StatusNotifierItem) or an object path on
+         the caller's connection. -->
+    <method name="RegisterStatusNotifierItem">
+      <arg name="service" type="s" direction="in"/>
+    </method>
+    <method name="RegisterStatusNotifierHost">
+      <arg name="service" type="s" direction="in"/>
+    </method>
+    <!-- "<bus name>/<object path>" of every item. -->
+    <property name="RegisteredStatusNotifierItems" type="as" access="read"/>
+    <property name="IsStatusNotifierHostRegistered" type="b" access="read"/>
+    <property name="ProtocolVersion" type="i" access="read"/>
+    <signal name="StatusNotifierItemRegistered">
+      <arg name="service" type="s"/>
+    </signal>
+    <signal name="StatusNotifierItemUnregistered">
+      <arg name="service" type="s"/>
+    </signal>
+    <signal name="StatusNotifierHostRegistered"/>
+    <signal name="StatusNotifierHostUnregistered"/>
+  </interface>
+</node>

@@ -47,7 +47,8 @@ volume OSD with one native C++/Qt process. Everything is configured in one
 | **Notifications** | A full notification server with actions, inline reply, do-not-disturb, per-app rules and a history grouped by app. |
 | **Launcher** | Apps, open windows, a calculator, shell commands, web search, emoji, timers and new calendar events from one search field. |
 | **Timers** | Type `15 min` in the launcher. The pill counts down and rings with the sound you pick. |
-| **Quick settings** | Wi-Fi, Bluetooth, night light, do-not-disturb, volume per device and per app, microphone, brightness, power profile and pending updates. |
+| **Quick settings** | Wi-Fi, Bluetooth, night light, do-not-disturb, live activities on or off, volume per device and per app, microphone, brightness, power profile and pending updates. |
+| **System tray** | Status icons of Discord, Steam, nm-applet and other apps, with their menus inside the island. |
 | **Power modes** | Power saver and performance turn off Hyprland's animations, blur and shadows and the island's animations, and put them back afterwards. |
 | **Updates** | Counts pending updates from the repos and the AUR with paru, yay or pacman, and upgrades in your terminal with one click. |
 | **Calendar** | Local `.ics` and vdirsyncer calendars in the island and as a month view in the settings window. |
@@ -73,6 +74,7 @@ volume OSD with one native C++/Qt process. Everything is configured in one
 - [Settings window](#settings-window)
 - [Media](#media)
 - [Live Activities](#live-activities)
+- [System tray](#system-tray)
 - [Screenshots and wallpaper](#screenshots-and-wallpaper)
 - [Priorities, privacy and fullscreen](#priorities-privacy-and-fullscreen)
 
@@ -135,9 +137,10 @@ sound themes and set its volume on the General page of the settings window.
 <img src="docs/images/quick-settings.png" width="640" alt="Quick settings with Wi-Fi, Bluetooth, night light and do-not-disturb tiles, volume, microphone and brightness sliders and a 12 updates button">
 
 Right-click the island or run `islandctl quick`. The panel has network,
-Bluetooth, night light, do-not-disturb, output volume and device,
-microphone level, mute and device, brightness (laptops only), power profile
-and pending updates.
+Bluetooth, night light, do-not-disturb, live activities, the
+[system tray](#system-tray), output volume and device, microphone level,
+mute and device, brightness (laptops only), power profile and pending
+updates.
 
 <img src="docs/images/wifi-bluetooth.png" width="640" alt="Wi-Fi network list and Bluetooth device list">
 
@@ -301,6 +304,9 @@ islandctl end build
 `islandctl live` lists them. Other programs can use the D-Bus interface
 (`org.islandshell.LiveActivities`).
 
+The Live activities tile in quick settings (`[live] enabled`) hides all of
+them; they are still accepted, and show again when it is turned back on.
+
 Some show up on their own (`[live]`):
 
 - Browser downloads: a `.part` (Firefox) or `.crdownload` (Chromium) file in
@@ -322,6 +328,21 @@ Commands from a terminal:
   rsync...) show once they run for 2 s, and any other command that takes
   `ISLAND_NOTIFY_AFTER` seconds (30) shows how it ended. Editors, pagers and
   ssh (`ISLAND_IGNORE`) never show.
+
+### System tray
+
+`islandctl tray`, the Tray tile in quick settings or `keybinds.tray` open
+the status icons apps put in a tray (StatusNotifierItem): Discord, Steam,
+Telegram, nm-applet, KDE Connect and other Electron, Qt and GTK apps. A
+click activates the app, a right click opens its menu inside the island
+(submenus, check marks and radio items included), a middle click runs its
+secondary action and the wheel scrolls it. A dot marks an app that wants
+attention.
+
+The island keeps the list of tray apps (`org.kde.StatusNotifierWatcher`)
+unless another program already does, such as waybar; then it reads that
+one. Apps that started before the island add themselves again when it
+starts.
 
 ### Screenshots and wallpaper
 
@@ -438,8 +459,8 @@ The island adds these binds to Hyprland while it runs (with `hyprctl eval`
 for hyprland.lua, `hyprctl keyword` for hyprland.conf) and adds them again
 after Hyprland reloads its config. A bind replaces any other bind on the
 same keys, so it can stay in your Hyprland config as a fallback. Actions:
-`launcher`, `power`, `quick_settings`, `settings`, `expand`, `collapse`,
-`media`, `wallpaper`, `wallpaper_random`, `screenshot_region`,
+`launcher`, `power`, `quick_settings`, `tray`, `settings`, `expand`,
+`collapse`, `media`, `wallpaper`, `wallpaper_random`, `screenshot_region`,
 `screenshot_window`, `screenshot_output`, `dnd`, `notifications_clear`,
 `reload`, `media_play_pause`, `media_next`, `media_previous`, `volume_up`,
 `volume_down`, `volume_mute`, `mic_mute`.

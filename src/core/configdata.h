@@ -131,6 +131,8 @@ struct WallpaperConfig {
 
 // [live]: live activities the island creates on its own.
 struct LiveConfig {
+    // Master switch: off hides every live activity, whoever pushed it.
+    bool enabled = true;
     // Progress apps report for their taskbar icon (Chromium downloads...).
     bool appProgress = true;
     // Browser downloads (.part, .crdownload) in downloads_directory.

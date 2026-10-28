@@ -36,6 +36,7 @@ commands:
   collapse                collapse the island
   power                   open the power menu
   quick                   open quick settings
+  tray                    open the system tray
   settings [calendar]     open the settings window (on a page)
   screenshot MODE         region | window | output | active
   wallpaper [random]      open the wallpaper picker, or apply a random one
@@ -239,6 +240,8 @@ int main(int argc, char* argv[]) {
         return check(shell.ShowPower());
     if (cmd == u"quick")
         return check(shell.ShowQuickSettings());
+    if (cmd == u"tray")
+        return check(shell.ShowTray());
     if (cmd == u"settings")
         return check(args.isEmpty() ? shell.ShowSettings() : shell.ShowSettingsPage(args.value(0)));
     if (cmd == u"wallpaper")

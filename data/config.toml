@@ -155,6 +155,9 @@ pywal = true
 apply = ""
 
 [live]
+# Show live activities at all (also a tile in quick settings). Off, they are
+# still accepted over D-Bus and islandctl, just not shown.
+enabled = true
 # Live activities the island creates on its own: browser downloads (.part
 # and .crdownload files in downloads_directory, "" = your downloads folder)
 # and the progress apps report for their taskbar icon (Chromium downloads,
@@ -182,8 +185,8 @@ screen = true
 # Bound in Hyprland while the island runs, replacing any other bind on the
 # same keys; "" or a missing line leaves the action unbound. Keys as in
 # hl.bind: "SUPER + SHIFT + R", "ALT + TAB", "Print", "XF86AudioPlay".
-# Actions: launcher, power, quick_settings, settings, expand, collapse, media,
-# wallpaper, wallpaper_random, screenshot_region, screenshot_window,
+# Actions: launcher, power, quick_settings, tray, settings, expand, collapse,
+# media, wallpaper, wallpaper_random, screenshot_region, screenshot_window,
 # screenshot_output, dnd, notifications_clear, reload, media_play_pause,
 # media_next, media_previous, volume_up, volume_down, volume_mute, mic_mute.
 # Media keys control the player the island shows; volume keys repeat while

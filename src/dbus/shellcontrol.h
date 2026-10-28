@@ -53,6 +53,7 @@ public slots:
     void SetDnd(bool enabled);
     void ShowPower();
     void ShowQuickSettings();
+    void ShowTray();
     void Screenshot(const QString& mode);
     void Wallpaper(const QString& action);
     void ShowSettings();
@@ -67,6 +68,7 @@ signals:
     void collapseRequested();
     void powerRequested();
     void quickSettingsRequested();
+    void trayRequested();
     void wallpaperPickRequested();
     void settingsRequested();
     void settingsPageRequested(const QString& page, const QVariantMap& args);

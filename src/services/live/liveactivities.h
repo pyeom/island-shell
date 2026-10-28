@@ -21,6 +21,8 @@ class LiveActivities : public QAbstractListModel, protected QDBusContext {
     QML_ELEMENT
     QML_SINGLETON
 
+    Q_PROPERTY(int count READ count NOTIFY countChanged)
+
 public:
     enum Role {
         LiveIdRole = Qt::UserRole + 1,
@@ -36,6 +38,7 @@ public:
     static LiveActivities* instance();
     static LiveActivities* create(QQmlEngine*, QJSEngine*);
 
+    int count() const { return static_cast<int>(m_items.size()); }
     int rowCount(const QModelIndex& parent = {}) const override;
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
@@ -62,6 +65,7 @@ public slots:
 
 signals:
     void ActionInvoked(const QString& id, const QString& action);
+    void countChanged();
 
 private:
     struct Item {

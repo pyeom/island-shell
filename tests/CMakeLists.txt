@@ -25,6 +25,7 @@ island_test(progressparse)
 island_test(volumestep)
 island_test(shotgeometry)
 island_test(timerparse)
+island_test(trayparse)
 
 # Integration test against the QML module's services (needs a QGuiApplication).
 qt_add_executable(tst_launchersearch tst_launchersearch.cpp)
@@ -43,3 +44,10 @@ target_link_libraries(tst_fakehardware PRIVATE islandshell Qt6::Test)
 target_compile_definitions(tst_fakehardware PRIVATE SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 add_test(NAME fakehardware COMMAND tst_fakehardware)
 set_tests_properties(fakehardware PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+
+# Integration against fake tray items (skips without python-dbus).
+qt_add_executable(tst_faketray tst_faketray.cpp)
+target_link_libraries(tst_faketray PRIVATE islandshell Qt6::Test)
+target_compile_definitions(tst_faketray PRIVATE SOURCE_DIR="${PROJECT_SOURCE_DIR}")
+add_test(NAME faketray COMMAND tst_faketray)
+set_tests_properties(faketray PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")

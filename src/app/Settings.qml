@@ -185,6 +185,10 @@ Window {
             ]},
         ]},
         { title: qsTr("Live activities"), icon: "folder-download-symbolic", groups: [
+            { title: qsTr("General"), options: [
+                { key: "live.enabled", label: qsTr("Show live activities"), kind: "bool", def: true,
+                  hint: qsTr("Also a tile in quick settings") },
+            ]},
             { title: qsTr("Downloads"), options: [
                 { key: "live.downloads", label: qsTr("Show browser downloads"), kind: "bool", def: true },
                 { key: "live.downloads_directory", label: qsTr("Downloads folder"), kind: "text", def: "",
@@ -218,6 +222,7 @@ Window {
             { title: qsTr("Menus"), options: [
                 { key: "keybinds.launcher", label: qsTr("Launcher"), kind: "key" },
                 { key: "keybinds.quick_settings", label: qsTr("Quick settings"), kind: "key" },
+                { key: "keybinds.tray", label: qsTr("System tray"), kind: "key" },
                 { key: "keybinds.media", label: qsTr("Media player"), kind: "key" },
                 { key: "keybinds.power", label: qsTr("Power menu"), kind: "key" },
                 { key: "keybinds.settings", label: qsTr("Settings"), kind: "key" },

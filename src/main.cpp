@@ -7,6 +7,7 @@
 #include "notifications.h"
 #include "powermodes.h"
 #include "shellcontrol.h"
+#include "tray.h"
 #include "updates.h"
 #include "useractivities.h"
 
@@ -123,6 +124,8 @@ int main(int argc, char* argv[]) {
         island::Updates::instance();
         // Hyprland effects follow the power profile; one instance does it.
         island::PowerModes::instance();
+        // Serves org.kde.StatusNotifierWatcher unless waybar or a panel does.
+        island::Tray::instance()->start();
         break;
     }
 
@@ -131,6 +134,7 @@ int main(int argc, char* argv[]) {
 
     QQmlApplicationEngine engine;
     engine.addImageProvider(QStringLiteral("icon"), new island::IconProvider);
+    engine.addImageProvider(QStringLiteral("tray"), new island::TrayImageProvider);
     engine.setInitialProperties({{QStringLiteral("demo"), parser.isSet(demoOption)}});
     engine.loadFromModule("IslandShell.App", "Shell");
     if (engine.rootObjects().isEmpty())

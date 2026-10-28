@@ -20,6 +20,7 @@ QtObject {
         Launcher {},
         PowerMenu {},
         QuickSettings {},
+        SystemTray {},
         PrivacyIndicator {},
         EventSoon {},
         SystemHeat {},

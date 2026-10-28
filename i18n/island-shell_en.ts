@@ -15,7 +15,23 @@
 <context>
     <name>QuickSettingsPanel</name>
     <message numerus="yes">
-        <location filename="../activities/QuickSettingsPanel.qml" line="372"/>
+        <location filename="../activities/QuickSettingsPanel.qml" line="226"/>
+        <source>%n active</source>
+        <translation>
+            <numerusform>%n active</numerusform>
+            <numerusform>%n active</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../activities/QuickSettingsPanel.qml" line="236"/>
+        <source>%n app(s)</source>
+        <translation>
+            <numerusform>%n app</numerusform>
+            <numerusform>%n apps</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../activities/QuickSettingsPanel.qml" line="395"/>
         <source>%n update(s)</source>
         <translation>
             <numerusform>%n update</numerusform>

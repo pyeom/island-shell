@@ -23,9 +23,17 @@ Activity {
 
     name: "live:" + liveId
     priority: 50
+    // [live] enabled = false (quick settings tile): kept, but not shown.
+    active: Config.liveEnabled
 
-    onAlertSerialChanged: alert(3000)
-    Component.onCompleted: alert(3000)
+    onAlertSerialChanged: {
+        if (active)
+            alert(3000)
+    }
+    Component.onCompleted: {
+        if (active)
+            alert(3000)
+    }
 
     component Glyph: Item {
         property int size: 20

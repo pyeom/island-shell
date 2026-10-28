@@ -4,3 +4,6 @@
 *.user
 .qmlls.ini
 /local/
+# makepkg output
+/packaging/arch/*
+!/packaging/arch/PKGBUILD

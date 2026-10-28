@@ -201,6 +201,16 @@ rain = "high"
         QCOMPARE(errors.size(), 3u); // screen, media out of range, rain not a number
     }
 
+    void live() {
+        std::vector<std::string> errors;
+        auto cfg = parseConfig("", errors);
+        QVERIFY(cfg.live.enabled);
+        cfg = parseConfig("[live]\nenabled = false\n", errors);
+        QVERIFY(errors.empty());
+        QVERIFY(!cfg.live.enabled);
+        QVERIFY(cfg.live.downloads); // the sources keep their own switches
+    }
+
     void wallpaper() {
         std::vector<std::string> errors;
         auto cfg = parseConfig("", errors);

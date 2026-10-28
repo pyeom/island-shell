@@ -13,6 +13,7 @@ add_library(islandlogic STATIC
     services/power/nesteddetect.h services/power/nesteddetect.cpp
     services/privacy/camerascan.h services/privacy/camerascan.cpp
     services/live/progressparse.h services/live/progressparse.cpp
+    services/tray/trayparse.h services/tray/trayparse.cpp
     services/launcher/calc.h services/launcher/calc.cpp
     services/launcher/timerparse.h services/launcher/timerparse.cpp
     services/system/sysparse.h services/system/sysparse.cpp
@@ -33,6 +34,7 @@ target_include_directories(islandlogic PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/services/power
     ${CMAKE_CURRENT_SOURCE_DIR}/services/privacy
     ${CMAKE_CURRENT_SOURCE_DIR}/services/live
+    ${CMAKE_CURRENT_SOURCE_DIR}/services/tray
     ${CMAKE_CURRENT_SOURCE_DIR}/services/launcher
     ${CMAKE_CURRENT_SOURCE_DIR}/services/screenshots
     ${CMAKE_CURRENT_SOURCE_DIR}/services/wallpaper)

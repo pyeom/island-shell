@@ -125,7 +125,9 @@ Activity {
 | `Audio` | Output `volume` (1.0 = 100%), `muted`, `sinks`; microphone `micVolume`, `micMuted`, `sources`; apps playing audio `streams` (`AudioStream`: `id`, `name`, `title`, `iconName`, `volume`, `muted`); `setDefault(id)`, `setVolume`, `setMicMuted`, `setStreamVolume(id, v)`, `setStreamMuted(id, b)`...; `changed` / `micMuteChanged` signals. |
 | `Brightness` | Backlight `level` 0..1, `available`, `changed` signal. |
 | `Mpris` | `players`, `current` (title, artist, artUrl, position, length, playPause(), next(), previous(), seekTo(s)). |
-| `LiveActivities` | Model of pushed live activities; `invoke(id, key)`. |
+| `LiveActivities` | Model of pushed live activities; `count`, `invoke(id, key)`. `Config.liveEnabled` says whether they show. |
+| `Tray` | Model of tray items (`key`, `title`, `tooltip`, `status`, `shown`, `icon`, `hasMenu`, `service`, `menuPath`); `count`, `available`, `activate(key)`, `secondaryActivate(key)`, `contextMenu(key)`, `scroll(key, delta, horizontal)`, `item(key)`; `activated(key)` and `menuRequested(key)` signals. |
+| `TrayMenu` | A tray item's menu: `TrayMenu { service: ...; path: ... }`, then `entries` (`id`, `label`, `enabled`, `separator`, `toggle`, `checked`, `icon`, `submenu`, `children`), `loading`, `aboutToShow(id)`, `activate(id)`. |
 | `Apps` | `search(query)`, `launch(id, action)`, `run(command)`, `runInTerminal`, `openUrl`, `copyText`, `iconForClass(windowClass)`. |
 | `LauncherSearch` | `query(text)` over apps, windows, calculator, commands, web, emoji and timers; `activate(item, action)`. |
 | `Timers` | `timers` (`id`, `label`, `duration`, `endsAt`, `done`), `start(seconds, label)`, `extend(id, seconds)`, `remove(id)`, `sounds`, `playSound(path, volume)`, `finished(id, label)` signal. |

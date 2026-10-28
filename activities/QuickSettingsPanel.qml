@@ -33,7 +33,7 @@ Item {
         signal clicked()
         signal detailClicked()
 
-        width: (column.width - 3 * 10) / 4
+        width: (column.width - 2 * 10) / 3
         // From the content: fonts with tall line heights must not push the
         // title into the icon.
         height: 12 + tileIcon.height + 6 + texts.implicitHeight + 10
@@ -163,7 +163,8 @@ Item {
         anchors.margins: 18
         spacing: 14
 
-        Row {
+        Grid {
+            columns: 3
             spacing: 10
             visible: panel.devicePicker === ""
 
@@ -216,6 +217,28 @@ Item {
                 subtitle: ShellControl.dnd ? qsTr("On") : qsTr("Off")
                 on: ShellControl.dnd
                 onClicked: ShellControl.dnd = !ShellControl.dnd
+            }
+
+            Tile {
+                icon: "folder-download-symbolic"
+                title: qsTr("Live activities")
+                subtitle: !Config.liveEnabled ? qsTr("Off")
+                        : LiveActivities.count > 0 ? qsTr("%n active", "", LiveActivities.count)
+                        : qsTr("On")
+                on: Config.liveEnabled
+                onClicked: Config.set("live.enabled", !Config.liveEnabled)
+            }
+
+            Tile {
+                icon: "view-more-horizontal-symbolic"
+                fallbackIcon: "view-more-symbolic"
+                title: qsTr("Tray")
+                subtitle: Tray.count > 0 ? qsTr("%n app(s)", "", Tray.count) : qsTr("No apps")
+                available: Tray.available
+                onClicked: {
+                    panel.close()
+                    ShellControl.ShowTray()
+                }
             }
         }
 

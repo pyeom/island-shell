@@ -48,6 +48,8 @@ LiveActivities::LiveActivities(QObject* parent) : QAbstractListModel(parent) {
     m_watcher.setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
     connect(&m_watcher, &QDBusServiceWatcher::serviceUnregistered, this,
             &LiveActivities::onOwnerGone);
+    connect(this, &QAbstractItemModel::rowsInserted, this, &LiveActivities::countChanged);
+    connect(this, &QAbstractItemModel::rowsRemoved, this, &LiveActivities::countChanged);
     m_ttlTimer.setInterval(1000);
     connect(&m_ttlTimer, &QTimer::timeout, this, &LiveActivities::checkExpired);
 }

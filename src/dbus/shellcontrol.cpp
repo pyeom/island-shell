@@ -87,6 +87,10 @@ void ShellControl::ShowQuickSettings() {
     emit quickSettingsRequested();
 }
 
+void ShellControl::ShowTray() {
+    emit trayRequested();
+}
+
 void ShellControl::Screenshot(const QString& mode) {
     if (!Screenshots::instance()->take(mode) && calledFromDBus())
         sendErrorReply(QStringLiteral("org.islandshell.Error.InvalidArgs"),

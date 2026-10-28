@@ -33,6 +33,13 @@ qt_add_dbus_adaptor(dbus_adaptor
     liveactivitiesadaptor
     LiveActivitiesAdaptor)
 
+qt_add_dbus_adaptor(dbus_adaptor
+    ${PROJECT_SOURCE_DIR}/data/dbus/org.kde.StatusNotifierWatcher.xml
+    statusnotifierwatcher.h
+    island::StatusNotifierWatcher
+    statusnotifierwatcheradaptor
+    StatusNotifierWatcherAdaptor)
+
 # PipeWire's C headers are not -Wpedantic clean.
 set_source_files_properties(${src}/services/audio/audio.cpp ${src}/services/privacy/privacy.cpp PROPERTIES
     COMPILE_OPTIONS "-Wno-pedantic;-Wno-missing-field-initializers")
@@ -83,6 +90,9 @@ qt_add_qml_module(islandshell
         ${src}/services/batteries/batteries.h ${src}/services/batteries/batteries.cpp
         ${src}/services/updates/updates.h ${src}/services/updates/updates.cpp
         ${src}/services/timers/timers.h ${src}/services/timers/timers.cpp
+        ${src}/services/tray/tray.h ${src}/services/tray/tray.cpp
+        ${src}/services/tray/traymenu.h ${src}/services/tray/traymenu.cpp
+        ${src}/services/tray/statusnotifierwatcher.h ${src}/services/tray/statusnotifierwatcher.cpp
         ${src}/dbus/dbusutil.h
         ${src}/dbus/dbusproperties.h ${src}/dbus/dbusproperties.cpp
         ${src}/core/icons.h ${src}/core/icons.cpp
@@ -127,6 +137,7 @@ target_include_directories(islandshell PUBLIC
     ${src}/services/batteries
     ${src}/services/updates
     ${src}/services/timers
+    ${src}/services/tray
     ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(islandshell PUBLIC

@@ -25,6 +25,8 @@
     <method name="ShowPower"/>
     <!-- Open quick settings (network, bluetooth, volume, ...) on the focused monitor. -->
     <method name="ShowQuickSettings"/>
+    <!-- Open the system tray (apps' status icons and their menus) on the focused monitor. -->
+    <method name="ShowTray"/>
     <!-- Take a screenshot: region | window | output | active. -->
     <method name="Screenshot">
       <arg name="mode" type="s" direction="in"/>
