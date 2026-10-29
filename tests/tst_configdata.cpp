@@ -188,14 +188,16 @@ screen = "no"
 privacy = 30
 live = 65
 battery-low = 99
+tray = -1
 media = 150
 rain = "high"
 )", errors);
         QVERIFY(!cfg.privacy.microphone);
         QVERIFY(cfg.privacy.camera);
         QVERIFY(cfg.privacy.screen); // invalid value keeps the default
-        QCOMPARE(cfg.priorities.size(), 3u);
+        QCOMPARE(cfg.priorities.size(), 4u);
         QCOMPARE(cfg.priorities.at("privacy"), 30);
+        QCOMPARE(cfg.priorities.at("tray"), -1);
         QCOMPARE(cfg.priorities.at("live"), 65);
         QCOMPARE(cfg.priorities.at("battery-low"), 99);
         QCOMPARE(errors.size(), 3u); // screen, media out of range, rain not a number

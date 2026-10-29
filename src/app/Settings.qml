@@ -182,7 +182,7 @@ Window {
                 { key: "tray.alerts", label: qsTr("Expand when an app wants attention"), kind: "bool", def: true,
                   hint: qsTr("a new message in Discord, WhatsApp…") },
             ]},
-        ], note: qsTr("The tray opens with islandctl tray or the tile in quick settings. Apps that started before the island show up once they restart.") },
+        ], note: qsTr("The tray opens from the bubble beside the pill, islandctl tray or the tile in quick settings. Apps that started before the island show up once they restart.") },
         { title: qsTr("Privacy"), icon: "security-high-symbolic", groups: [
             { title: qsTr("Indicator"), note: qsTr("The privacy indicator shows which apps use these devices."), options: [
                 { key: "privacy.microphone", label: qsTr("Show microphone use"), kind: "bool", def: true },
@@ -218,7 +218,7 @@ Window {
                 { key: "priorities.battery-low", label: qsTr("Low battery"), kind: "int", def: 82, from: 0, to: 99 },
                 { key: "priorities.notification", label: qsTr("Notifications"), kind: "int", def: 70, from: 0, to: 99 },
                 { key: "priorities.rain", label: qsTr("Rain alert"), kind: "int", def: 45, from: 0, to: 99 },
-                { key: "priorities.tray", label: qsTr("Tray app wants attention"), kind: "int", def: 45, from: 0, to: 99 },
+                { key: "priorities.tray", label: qsTr("Tray (below 0: only the bubble)"), kind: "int", def: -1, from: -1, to: 99 },
             ]},
             { title: qsTr("Feedback"), options: [
                 { key: "priorities.osd", label: qsTr("Volume and brightness"), kind: "int", def: 80, from: 0, to: 99 },

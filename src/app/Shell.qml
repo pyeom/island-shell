@@ -67,18 +67,15 @@ QtObject {
         delegate: LiveActivity {}
     }
 
-    // One per tray app; active while it wants attention.
+    // The tray in the bubble; no alerts in its first seconds.
     property bool settled: false
     property Timer _settle: Timer {
         interval: 3000
         running: true
         onTriggered: shell.settled = true
     }
-    property Instantiator trayAlerts: Instantiator {
-        model: Tray
-        delegate: TrayAlert {
-            settled: shell.settled
-        }
+    property TrayBubble trayBubble: TrayBubble {
+        settled: shell.settled
     }
 
     property Instantiator islands: Instantiator {

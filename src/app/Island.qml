@@ -256,9 +256,10 @@ Item {
                                            && (root.secondary.ambient || root.hidden))
         property Activity activity: null
 
-        width: Config.compactHeight
-        height: width
-        radius: width / 2
+        // A circle, widened for content like the tray's app icons.
+        width: Math.max(Config.compactHeight, bubbleContent.implicitWidth + 16)
+        height: Config.compactHeight
+        radius: height / 2
         x: pill.x + pill.width + root.bubbleGap
         y: Config.topMargin
         color: Theme.background
@@ -282,6 +283,7 @@ Item {
         }
 
         Loader {
+            id: bubbleContent
             anchors.centerIn: parent
             sourceComponent: bubble.activity?.minimal ?? null
         }

@@ -12,10 +12,13 @@ listed here.
   that want attention first. The island serves
   `org.kde.StatusNotifierWatcher` unless another program does (`Tray`,
   `TrayMenu`).
-- Tray apps that want attention (NeedsAttention, or an unread count from
-  the Unity LauncherEntry signal, as Electron apps send) expand the island
-  briefly and stay in the bubble until read (`[tray] alerts`,
-  `[priorities] tray`).
+- The tray lives in the bubble beside the pill (`tray:apps`, below idle,
+  so the clock stays): the icons of apps that want attention
+  (NeedsAttention, or an unread count from the Unity LauncherEntry signal,
+  as Electron apps send), else a tray glyph; a click opens the tray. An app
+  that starts wanting attention expands the island briefly (`[tray]
+  alerts`, `[priorities] tray`).
+- The bubble widens to fit its `minimal` presentation.
 - Live activities can be turned off as a whole: a tile in quick settings
   and `[live] enabled` (`Config.liveEnabled`, `LiveActivities.count`).
 - Power modes (`[power_modes.<profile>]`, also in the settings window):

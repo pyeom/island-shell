@@ -70,11 +70,11 @@
     </message>
 </context>
 <context>
-    <name>TrayAlert</name>
+    <name>TrayBubble</name>
     <message numerus="yes">
-        <location filename="../activities/TrayAlert.qml" line="21"/>
+        <location filename="../activities/TrayBubble.qml" line="64"/>
         <source>%n unread</source>
-        <translation>
+        <translation type="unfinished">
             <numerusform>%n unread</numerusform>
             <numerusform>%n unread</numerusform>
         </translation>

@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <format>
+#include <limits>
 
 namespace island {
 
@@ -346,9 +347,10 @@ ConfigData parseConfig(std::string_view text, std::vector<std::string>& errors) 
     if (const auto* t = cfg.raw["priorities"].as_table()) {
         for (const auto& [name, node] : *t) {
             const std::string key(name.str());
-            int priority = -1;
-            readInt(*t, "priorities", key, priority, 0, 99, errors);
-            if (priority >= 0)
+            // Below 0: under idle, never the pill (the tray bubble).
+            int priority = std::numeric_limits<int>::min();
+            readInt(*t, "priorities", key, priority, -99, 99, errors);
+            if (priority != std::numeric_limits<int>::min())
                 cfg.priorities[key] = priority;
         }
     }

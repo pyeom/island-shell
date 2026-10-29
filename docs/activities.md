@@ -58,7 +58,8 @@ For each island, among activities that are `active` and allowed on that monitor
 
 1. The highest `priority` is the **primary**: it owns the pill.
 2. The next highest that has a `minimal` presentation is the **secondary**,
-   shown as a bubble next to the pill. Clicking it expands it.
+   shown as a bubble next to the pill. Clicking it expands it. The bubble
+   is round, or wider when `minimal`'s `implicitWidth` asks for it.
 3. Ties go to the activity registered first.
 
 Built-in priorities:
@@ -77,6 +78,7 @@ Built-in priorities:
 | `live:<id>` | 50 |
 | `media` | 40 |
 | `idle` (workspaces, clock, notification history) | 0 |
+| `tray:apps` (tray bubble) | -1 |
 
 ### Sizes
 

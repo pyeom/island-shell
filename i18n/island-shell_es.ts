@@ -1369,6 +1369,11 @@
         <translation>Luz nocturna</translation>
     </message>
     <message>
+        <location filename="../src/app/Settings.qml" line="185"/>
+        <source>The tray opens from the bubble beside the pill, islandctl tray or the tile in quick settings. Apps that started before the island show up once they restart.</source>
+        <translation>La bandeja se abre desde la burbuja junto a la píldora, con islandctl tray o con el tile en ajustes rápidos. Las apps abiertas antes que la isla aparecen al reiniciarlas.</translation>
+    </message>
+    <message>
         <location filename="../src/app/Settings.qml" line="187"/>
         <source>Indicator</source>
         <translation>Indicador</translation>
@@ -1397,6 +1402,11 @@
         <location filename="../src/app/Settings.qml" line="209"/>
         <source>Ongoing</source>
         <translation>En curso</translation>
+    </message>
+    <message>
+        <location filename="../src/app/Settings.qml" line="221"/>
+        <source>Tray (below 0: only the bubble)</source>
+        <translation>Bandeja (bajo 0: solo la burbuja)</translation>
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="223"/>
@@ -1428,16 +1438,6 @@
         <location filename="../src/app/Settings.qml" line="183"/>
         <source>a new message in Discord, WhatsApp…</source>
         <translation>un mensaje nuevo en Discord, WhatsApp…</translation>
-    </message>
-    <message>
-        <location filename="../src/app/Settings.qml" line="185"/>
-        <source>The tray opens with islandctl tray or the tile in quick settings. Apps that started before the island show up once they restart.</source>
-        <translation>La bandeja se abre con islandctl tray o con el tile en ajustes rápidos. Las apps abiertas antes que la isla aparecen al reiniciarlas.</translation>
-    </message>
-    <message>
-        <location filename="../src/app/Settings.qml" line="221"/>
-        <source>Tray app wants attention</source>
-        <translation>App de la bandeja pide atención</translation>
     </message>
     <message>
         <location filename="../src/app/Settings.qml" line="237"/>
@@ -1789,9 +1789,9 @@
     </message>
 </context>
 <context>
-    <name>TrayAlert</name>
+    <name>TrayBubble</name>
     <message numerus="yes">
-        <location filename="../activities/TrayAlert.qml" line="21"/>
+        <location filename="../activities/TrayBubble.qml" line="64"/>
         <source>%n unread</source>
         <translation>
             <numerusform>%n sin leer</numerusform>
@@ -1799,12 +1799,12 @@
         </translation>
     </message>
     <message>
-        <location filename="../activities/TrayAlert.qml" line="22"/>
+        <location filename="../activities/TrayBubble.qml" line="65"/>
         <source>Wants attention</source>
         <translation>Pide atención</translation>
     </message>
     <message>
-        <location filename="../activities/TrayAlert.qml" line="147"/>
+        <location filename="../activities/TrayBubble.qml" line="223"/>
         <source>Open</source>
         <translation>Abrir</translation>
     </message>

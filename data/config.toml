@@ -168,8 +168,8 @@ app_progress = true
 
 [tray]
 # Expand the island for a moment when a tray app wants attention (a new
-# message in Discord, WhatsApp...). It stays in the bubble beside the pill
-# until it is read either way.
+# message in Discord, WhatsApp...). Its icon stays in the tray bubble beside
+# the pill until it is read either way.
 alerts = true
 
 [privacy]
@@ -183,7 +183,7 @@ screen = true
 # the bubble. Below 100; critical notifications and menus always come first.
 # "live" covers every live activity. Defaults:
 # notification = 70, osd = 80, screenshot = 75, privacy = 60, event = 55,
-# live = 50, tray = 45, rain = 45, media = 40, battery-low = 82,
+# live = 50, tray = -1 (bubble only), rain = 45, media = 40, battery-low = 82,
 # system-heat = 85, errors = 90
 # privacy = 30
 
